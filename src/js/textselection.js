@@ -2,7 +2,6 @@ jQuery.fn.cleanWhitespace = function() {
     textNodes = this.contents().filter(
         function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
         .remove();
-}
 
 // TEXT SELECTION
 
@@ -63,6 +62,7 @@ var _sel = {
     restoreStamp: function(stamp){
         //scrolled = scrolled || false;
         rangy.deserializeSelection(stamp);
+
         _sel.tSelection();
         _sel.count++;
     },
@@ -169,13 +169,10 @@ var _sel = {
 
 
 
-
-
 window.onload = function() {
-    
     $('#selectable-content').cleanWhitespace();
     $('#selectable-content blockquote, #selectable-content blockquote p').cleanWhitespace();
-    
+
     rangy.init();
     var range = rangy.createRangyRange();
     $('div.b-entry > p, div.b-entry > div.imp p, div.b-entry blockquote').each(function(){
@@ -189,11 +186,11 @@ window.onload = function() {
     $('div.b-entry > p, div.b-entry > div.imp p, div.b-entry blockquote').bind('textselect', function(e) {
         var nodes = _sel.getFirstRange().getNodes();
         //_sel.logger(nodes);
+
         for (var i=0; i<nodes.length; i++) { 
             if ($(nodes[i]).hasClass('user_selection_true') || 
                 $(nodes[i]).hasClass('b-multimedia') ||
                 $(nodes[i]).hasClass('inpost')) {
-                    //console.log('отказ');
                     return;
                     break;
                 }
@@ -211,7 +208,6 @@ window.onload = function() {
     $marker.click(function(){
         _sel.tSelection();
         _sel.count++;
-        
         
         
         $marker.fadeOut('fast', function(){
@@ -239,6 +235,7 @@ window.onload = function() {
                 _sel.count = _sel.count - 1;
                 delete _sel.ranges[numclass];
                 _sel.updateHash();
+
                 rangy.getSelection().removeAllRanges();
             }
         });
@@ -269,19 +266,7 @@ window.onload = function() {
   	});
   	
     $('body').append('<div id="logger" style="position:fixed; bottom:0; left:0; width: 100%; height: auto; background: white; max-height: 150px; overflow: auto;"></div>');
-
   	_sel.readHash();
-  	
-  	//alert(selection.getNodes().length);
-  	//alert(document.getElementById('selectable-content').childNodes.length);
-  	
-  	//selection.logger(console.dir($('#selectable-content').contents()));
-  	
-  	
-
-
-    
-    
-}
+  }
 
 
