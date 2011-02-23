@@ -3,8 +3,6 @@ jQuery.fn.cleanWhitespace = function() {
         function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
         .remove();
 
-// TEXT SELECTION
-
 var addSelection, removeSelection1, removeSelection2, logger_count = 0;
 
 var _sel = {
