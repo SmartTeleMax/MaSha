@@ -2,7 +2,7 @@ jQuery.fn.cleanWhitespace = function() {
     textNodes = this.contents().filter(
         function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
         .remove();
-    )};
+    }
 
 var addSelection, removeSelection1, removeSelection2, logger_count = 0;
 
