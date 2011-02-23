@@ -29,7 +29,7 @@ var _sel = {
     readHash: function(){
         
         var hash = location.hash;
-        //console.log(hash);
+        ////console.log(hash);
         if (hash == '' || !hash) return;
         
         hash = hash.split('#')[1];
@@ -39,7 +39,7 @@ var _sel = {
         hash = hash.substring(4, hash.length);
         //console.log(hash);
         hashAr = hash.split(';');
-        console.log(hashAr);
+        //console.log(hashAr);
         
         // восстанавливаем первое выделение + скроллим до него.
         //selection.restoreStamp(hashAr[0], true);
@@ -169,8 +169,7 @@ var _sel = {
 
 
 window.onload = function() {
-    $('#selectable-content').cleanWhitespace();
-    $('#selectable-content blockquote, #selectable-content blockquote p').cleanWhitespace();
+//console.log
 
     rangy.init();
     var range = rangy.createRangyRange();
@@ -227,7 +226,7 @@ window.onload = function() {
             var res = _sel.restoreSelection(numclass);
             
             if (res == true) {
-                //console.log('res', res);
+                ////console.log('res', res);
                 removeSelection2.cssClass = numclass;
                 _sel.onlytSelection(removeSelection2);
                 _sel.onlytSelection(removeSelection1);
