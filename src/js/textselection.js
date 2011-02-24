@@ -183,7 +183,7 @@ window.onload = function() {
     
     
     $marker = $('#txtselect_marker');
-    var textselect_event = true;
+    var textselect_event = true, dontshow = false;
     
     $(document).bind('textselect', function(e) {
         
@@ -193,7 +193,6 @@ window.onload = function() {
         var nodes = _sel.getFirstRange().getNodes();
         //_sel.logger(nodes);
         
-        console.log(nodes);
         for (var i=0; i<nodes.length; i++) { 
             if (!$(nodes[i]).parents('#selectable-content').length
                 || $(nodes[i]).parents('.user_selection_true').length) { 
@@ -214,9 +213,11 @@ window.onload = function() {
         }
         
         window.setTimeout(function(){
-            $marker.css({'top':e.pageY-33, 'left': e.pageX}).fadeIn('fast', function(){
-                $marker.addClass('show');
-            });        
+            if (!dontshow) {
+                $marker.css({'top':e.pageY-33, 'left': e.pageX}).fadeIn('fast', function(){
+                    $marker.addClass('show');
+                });
+            }
         }, 1);
         
 
@@ -225,7 +226,9 @@ window.onload = function() {
     
     
     $marker.click(function(){
-    
+        
+        dontshow = true;
+        
         _sel.tSelection();
         _sel.count++;
         
@@ -235,6 +238,7 @@ window.onload = function() {
         $marker.fadeOut('fast', function(){
 		    $(this).removeClass('show');
 		    _sel.upmsg();
+		    dontshow = false;
 		});
 		
 		return false;
