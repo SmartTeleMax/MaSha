@@ -183,15 +183,25 @@ window.onload = function() {
     
     
     $marker = $('#txtselect_marker');
+    var textselect_event = true;
     
     $(document).bind('textselect', function(e) {
+        
+        if (!textselect_event) return;
+        
+        
         var nodes = _sel.getFirstRange().getNodes();
         //_sel.logger(nodes);
-
+        
+        console.log(nodes);
         for (var i=0; i<nodes.length; i++) { 
+            if (!$(nodes[i]).parents('#selectable-content').length
+                || $(nodes[i]).parents('.user_selection_true').length) { 
+                    return; 
+                    break; 
+                } 
             if (nodes[i].nodeType == 1) {
-                if (!$(nodes[i]).parents('#selectable-content').length
-                 || $(nodes[i]).hasClass('user_selection_true')
+                if ($(nodes[i]).hasClass('user_selection_true')
                  || $(nodes[i]).hasClass('inpost')
                  || $(nodes[i]).hasClass('b-multimedia')
                  || $(nodes[i]).hasClass('photo')) {
@@ -208,13 +218,18 @@ window.onload = function() {
                 $marker.addClass('show');
             });        
         }, 1);
+        
+
     });
     
     
     
     $marker.click(function(){
+    
         _sel.tSelection();
         _sel.count++;
+        
+        
         
         
         $marker.fadeOut('fast', function(){
@@ -265,10 +280,13 @@ window.onload = function() {
     
     $(document).click(function(e){
   		tar = $(e.target);
-  		if($('#txtselect_marker').hasClass('show') && tar.attr('id') != 'txtselect_marker'){
-  			$('#txtselect_marker').fadeOut('fast', function(){
-  			    $(this).removeClass('show');
-  			});
+  		if (tar.attr('id') != 'txtselect_marker') {
+  		    dontrun = false;
+  		    if($('#txtselect_marker').hasClass('show')){
+      			$('#txtselect_marker').fadeOut('fast', function(){
+      			    $(this).removeClass('show');
+      			});
+      		}
   		}
   	});
   	
