@@ -44,7 +44,7 @@ var _sel = {
         // восстанавливаем первое выделение + скроллим до него.
         //selection.restoreStamp(hashAr[0], true);
         
-        for (var i=0; i < hashAr.length; i++) {
+        for (var i=0; i <= hashAr.length; i++) {
             //console.log('i', i, 'hashAr', hashAr, 'hashAr.length', hashAr.length);
             _sel.restoreStamp(hashAr[i]);
         }
@@ -61,8 +61,8 @@ var _sel = {
     restoreStamp: function(stamp){
         //scrolled = scrolled || false;
         rangy.deserializeSelection(stamp);
-
-        _sel.tSelection();
+        //console.log('восстанавливаю стамп: ', stamp);
+        _sel.tSelection(false);
         _sel.count++;
     },
     upmsg: function(){
@@ -99,7 +99,7 @@ var _sel = {
         });
         
     },
-    tSelection:function(scrolled) {
+    tSelection:function(hash) {
 
         // генерируем и сохраняем якоря для выделенного
         _sel.ranges['num'+_sel.count] = rangy.serializeSelection();
@@ -137,8 +137,9 @@ var _sel = {
         });
 
         $('.num'+_sel.count+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
-
-        _sel.updateHash();
+        
+        hash = hash || true;
+        if (hash) _sel.updateHash();
 
         rangy.getSelection().removeAllRanges();
     },
@@ -169,6 +170,10 @@ var _sel = {
 
 
 window.onload = function() {
+    
+    $('#selectable-content').cleanWhitespace();
+    $('#selectable-content *').cleanWhitespace();
+    
     rangy.init();
     var range = rangy.createRangyRange();
     $('div.b-entry > p, div.b-entry > div.imp, div.b-entry > div.imp p, div.b-entry blockquote').each(function(){
@@ -179,7 +184,7 @@ window.onload = function() {
     
     $marker = $('#txtselect_marker');
     
-    $('body').bind('textselect', function(e) {
+    $(document).bind('textselect', function(e) {
         var nodes = _sel.getFirstRange().getNodes();
         //_sel.logger(nodes);
 
@@ -190,7 +195,8 @@ window.onload = function() {
                  || $(nodes[i]).hasClass('inpost')
                  || $(nodes[i]).hasClass('b-multimedia')
                  || $(nodes[i]).hasClass('photo')) {
-                     console.log('отказ! все из-за ', nodes[i]);
+                     //alert('отказ');
+                     //console.log('отказ! все из-за ', nodes[i]);
                      return;
                      break;
                  }
