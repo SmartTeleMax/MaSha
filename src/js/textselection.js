@@ -44,7 +44,7 @@ var _sel = {
         // восстанавливаем первое выделение + скроллим до него.
         //selection.restoreStamp(hashAr[0], true);
         
-        for (var i=0; i <= hashAr.length; i++) {
+        for (var i=0; i < hashAr.length; i++) {
             //console.log('i', i, 'hashAr', hashAr, 'hashAr.length', hashAr.length);
             _sel.restoreStamp(hashAr[i]);
         }
