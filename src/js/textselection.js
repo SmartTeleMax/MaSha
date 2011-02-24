@@ -169,11 +169,9 @@ var _sel = {
 
 
 window.onload = function() {
-//console.log
-
     rangy.init();
     var range = rangy.createRangyRange();
-    $('div.b-entry > p, div.b-entry > div.imp p, div.b-entry blockquote').each(function(){
+    $('div.b-entry > p, div.b-entry > div.imp, div.b-entry > div.imp p, div.b-entry blockquote').each(function(){
         range.selectNodeContents(this);
         //$(this).addClass('selectable');
     });
@@ -181,17 +179,22 @@ window.onload = function() {
     
     $marker = $('#txtselect_marker');
     
-    $('div.b-entry > p, div.b-entry > div.imp p, div.b-entry blockquote').bind('textselect', function(e) {
+    $('body').bind('textselect', function(e) {
         var nodes = _sel.getFirstRange().getNodes();
         //_sel.logger(nodes);
 
         for (var i=0; i<nodes.length; i++) { 
-            if ($(nodes[i]).hasClass('user_selection_true') || 
-                $(nodes[i]).hasClass('b-multimedia') ||
-                $(nodes[i]).hasClass('inpost')) {
-                    return;
-                    break;
-                }
+            if (nodes[i].nodeType == 1) {
+                if (!$(nodes[i]).parents('#selectable-content').length
+                 || $(nodes[i]).hasClass('user_selection_true')
+                 || $(nodes[i]).hasClass('inpost')
+                 || $(nodes[i]).hasClass('b-multimedia')
+                 || $(nodes[i]).hasClass('photo')) {
+                     console.log('отказ! все из-за ', nodes[i]);
+                     return;
+                     break;
+                 }
+            }
         }
         
         window.setTimeout(function(){
