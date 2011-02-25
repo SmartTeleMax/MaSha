@@ -122,7 +122,7 @@ var _sel = {
             startDone = false, endDone = false;
         console.log(checker);
         
-        if (checker.startOffset > 1) {
+        if (checker.startOffset > 0) {
             for (var i=0; i<=checker.startOffset; i++) {
                 console.log('CORRECTING START OFFSET. Loop #', i, '; Check = "', checker.startContainer.data[checker.startOffset - i], '"');
                 if (checker.startContainer.data[checker.startOffset - i] == ' ') {
@@ -143,8 +143,12 @@ var _sel = {
                 console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
                 if (checker.endContainer.data[checker.endOffset + i] == ' ') {
                     checker.setEnd(checker.endContainer, checker.endOffset+i);
+                    endDone = true;
                     break;
                 }
+            }
+            if (!endDone) {
+                checker.setEnd(checker.endContainer, checker.endOffset+i);
             }
         }
         //sel.setRanges(checker);
@@ -224,6 +228,8 @@ var _sel = {
 
 
 window.onload = function() {
+    
+    if (!$('#selectable-content').length) return;
     
     $('#selectable-content').cleanWhitespace();
     $('#selectable-content *').cleanWhitespace();
