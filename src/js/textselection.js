@@ -75,18 +75,35 @@ var _sel = {
         
         clearTimeout(autoclose);
         
-        $msg.animate({
-            'top': '0px',
-            'opacity': '1'
-        }, { duration: 1000, easing: 'easeOutQuint' });
+        var opacity_start = 0;
+        
+        if ($.browser.msie) {
+            $msg.animate({
+                'top': '0px'
+            }, { duration: 1000, easing: 'easeOutQuint' });
+        } else {
+            $msg.animate({
+                'top': '0px',
+                'opacity': '1'
+            }, { duration: 1000, easing: 'easeOutQuint' });
+        }
+        
         
         function closemsg(){
-            $msg.animate({
-                'top': '-57px',
-                'opacity': '0'
-            }, 500,  "easeInQuint", function(){ 
-                $msg.removeClass('show');
-            });
+            if ($.browser.msie) {
+                $msg.animate({
+                    'top': '-57px'
+                }, 500,  "easeInQuint", function(){ 
+                    $msg.removeClass('show');
+                });
+            } else {
+                $msg.animate({
+                    'top': '-57px',
+                    'opacity': opacity_start
+                }, 500,  "easeInQuint", function(){ 
+                    $msg.removeClass('show');
+                });
+            }
             clearTimeout(autoclose);
             return false;
         }
@@ -99,8 +116,45 @@ var _sel = {
         });
         
     },
-    tSelection:function(hash) {
+    checkSelection: function(sel) {
+        sel = sel || rangy.getSelection();
+        var checker = sel._ranges[0],
+            startDone = false, endDone = false;
+        console.log(checker);
+        
+        if (checker.startOffset > 1) {
+            for (var i=0; i<=checker.startOffset; i++) {
+                console.log('CORRECTING START OFFSET. Loop #', i, '; Check = "', checker.startContainer.data[checker.startOffset - i], '"');
+                if (checker.startContainer.data[checker.startOffset - i] == ' ') {
+                    checker.setStart(checker.startContainer, checker.startOffset-i+1);
+                    startDone = true;
+                    break;
+                }
+            }
+            if (!startDone) {
+                checker.setStart(checker.startContainer, checker.startOffset-i+1);
+            }
+            
+        }
+        
+        if (checker.endOffset < checker.endContainer.data.length) {
+            
+            for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
+                console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
+                if (checker.endContainer.data[checker.endOffset + i] == ' ') {
+                    checker.setEnd(checker.endContainer, checker.endOffset+i);
+                    break;
+                }
+            }
+        }
+        //sel.setRanges(checker);
+        return checker;
 
+    },
+    tSelection:function(hash) {
+        
+        _sel.checkSelection();
+        
         // генерируем и сохраняем якоря для выделенного
         _sel.ranges['num'+_sel.count] = rangy.serializeSelection();
 
@@ -214,9 +268,14 @@ window.onload = function() {
         
         window.setTimeout(function(){
             if (!dontshow) {
-                $marker.css({'top':e.pageY-33, 'left': e.pageX}).fadeIn('fast', function(){
+                $marker.css({'top':e.pageY-33, 'left': e.pageX});
+                if ($.browser.msie) {
                     $marker.addClass('show');
-                });
+                } else {
+                    $marker.fadeIn('fast', function(){
+                        $marker.addClass('show');
+                    });
+                }
             }
         }, 1);
         
@@ -234,12 +293,17 @@ window.onload = function() {
         
         
         
-        
-        $marker.fadeOut('fast', function(){
-		    $(this).removeClass('show');
-		    _sel.upmsg();
+        if ($.browser.msie) {
+            $marker.removeClass('show');
+            _sel.upmsg();
 		    dontshow = false;
-		});
+        } else {
+            $marker.fadeOut('fast', function(){
+    		    $(this).removeClass('show');
+    		    _sel.upmsg();
+    		    dontshow = false;
+    		});
+        }
 		
 		return false;
 		
@@ -287,9 +351,13 @@ window.onload = function() {
   		if (tar.attr('id') != 'txtselect_marker') {
   		    dontrun = false;
   		    if($('#txtselect_marker').hasClass('show')){
-      			$('#txtselect_marker').fadeOut('fast', function(){
-      			    $(this).removeClass('show');
-      			});
+  		        if ($.browser.msie) {
+                    $('#txtselect_marker').removeClass('show');
+  		        } else {
+  		            $('#txtselect_marker').fadeOut('fast', function(){
+          			    $(this).removeClass('show');
+          			});
+  		        }
       		}
   		}
   	});
