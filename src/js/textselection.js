@@ -3,6 +3,10 @@ jQuery.fn.cleanWhitespace = function() {
         function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
         .remove();
     }
+    
+$.fn.hasAttr = function(name) {  
+    return this.attr(name) !== undefined;
+};
 
 var addSelection, removeSelection1, removeSelection2, logger_count = 0;
 
@@ -221,6 +225,21 @@ var _sel = {
     },
     onlytSelection: function(obj){
         obj.toggleSelection();
+    },
+    elNum: function(){
+        var counter = 0;
+        $('#selectable-content *').each(function(){
+            if (!$(this).is('img') ||
+                !$(this).is('script')) {
+                    $(this).attr('nodeNum', counter);
+                    $(this).addClass('nodeNum_'+counter);
+                    counter ++;
+            }
+        });
+        var tt = counter - 100;
+        //alert($('.nodeNum_'+tt).text());
+        
+        return counter;
     }
 }
 
@@ -241,6 +260,7 @@ window.onload = function() {
         //$(this).addClass('selectable');
     });
     
+    _sel.elNum();
     
     $marker = $('#txtselect_marker');
     var textselect_event = true, dontshow = false;
