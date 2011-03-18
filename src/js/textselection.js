@@ -10,12 +10,89 @@ $.fn.hasAttr = function(name) {
 
 var addSelection, removeSelection1, removeSelection2, logger_count = 0;
 
+
+var _len = {
+    words: function(_container, _offset, pos){
+        console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
+        console.log('countingWord: подсчет слов. аргументы: _container =', _container, '; _offset = ', _offset);
+
+        function wordCount(node) {
+            var _wcount = 0;
+            console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
+            if (node.nodeType == 3) { // Text only
+                _wcount += node.nodeValue.match(/[^\s,;:.!?]+/ig).length;
+                console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
+            } else if (node.childNodes && node.childNodes.length){ // Child element
+                var i = node.childNodes.length; 
+                console.log('countingWord.wordCount: рассматриваемая нода имеет '+i+' чайлд(ов)');
+                while (i--) {
+                    // assign node variable to childs object
+                    cnode = node.childNodes[i];
+                    // text node found, do the replacement
+                    if (cnode.nodeType == 3) {
+                        _wcount += cnode.nodeValue.match(/[^\s,;:.!?]+/ig).length;
+                        console.log('countingWord.wordCount: чайлд текстовый. кол-во слов: '+cnode.nodeValue.match(/[^\s,;:.!?]+/ig).length);
+                        console.log('countingWord.wordCount: теперь в _wcount', _wcount);
+                    } else if (cnode.childNodes && cnode.childNodes.length) {
+                        console.log('countingWord.wordCount: чайлд ', cnode, 'имеет своих чайлдов. обработаем их');
+                        wordCount(cnode);
+                    }
+                }
+            }
+            return _wcount;
+        }
+
+        // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
+        var wcount = _container.data.substring(0, _offset).match(/[^\s,;:.!?]+/ig);
+        if (wcount != null) { wcount = wcount.length; } else { wcount = 0;}
+        console.log('countingWord: в '+pos+'Container ноде до начала выделения слов:', wcount);
+
+        n = _container.previousSibling;
+
+        while (n) {
+            if (pos=='end') {
+                console.log('countingWord: подсчитываем слова в одной из предыдущих от '+pos+'Container ноде[n] = ', n);
+            } else {
+                console.log('countingWord: подсчитываем слова в '+pos+'Container ноде[n] = ', n);
+            }
+            var onei = wordCount(n);
+            wcount += onei;
+            console.log('countingWord: в ноде ', n, ' подсчитано ', onei, 'слов. Теперь в общей копилке ', wcount, 'слов');
+            n = n.previousSibling;
+        }
+
+        console.log('countingWord: итог работы (кол-во слов до первого/последнего слова)', wcount);
+        console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
+
+        return wcount;
+    },
+    symbols: function(_node){
+        var _count = 0;
+        if (_node.nodeType == 3) {
+            _count += _node.nodeValue.length;
+        } else if (_node.childNodes && _node.childNodes.length) {
+            var i = _node.childNodes.length;
+            while (i--) {
+                _cnode = _node.childNodes[i];
+                if (_cnode.nodeType == 3) {
+                    _count += _cnode.nodeValue.length;
+                } else if (_cnode.childNodes && _cnode.childNodes.length) {
+                    alert('АХТУНГ! Внутри есть еще ноды!!');
+                }
+            }
+        }
+        
+        return _count;
+    }
+}
+
 var _sel = {
     count: 0,
     savedSel: [],
     savedSelActiveElement: [],
     ranges: {},
     rootNode: 'selectable-content',
+    aftercheck: [],
     logger: function(str){
         logger_count++;
         $('#logger').append('<p style="font-size:12px;text-align: left;">#'+logger_count+' | '+str+'</p>');
@@ -29,28 +106,34 @@ var _sel = {
         hash = hash.substring(hash.length-1, 0);
         
         location.hash = 'sel='+hash;
+        
+        console.log('_sel.updateHash: ––––––––––––––––––––––––––––––');
+        console.log('_sel.updateHash: обновляем хэш: ', hash);
+        console.log('_sel.updateHash: ––––––––––––––––––––––––––––––');
+        
     },
     readHash: function(){
-        
+        console.log('_sel.readHash: ––––––––––––––––––––––––––––––');
+
         var hash = location.hash;
-        ////console.log(hash);
         if (hash == '' || !hash) return;
         
         hash = hash.split('#')[1];
-        //console.log(hash);
-        //if (hash.substring(0, 3) != 'sel') return;
 
         hash = hash.substring(4, hash.length);
-        //console.log(hash);
-        hashAr = hash.split(';');
-        //console.log(hashAr);
         
+        
+        
+        hashAr = hash.split(';');
+        console.log('_sel.readHash: из хэша получен массив меток выделений: ', hashAr);
         // восстанавливаем первое выделение + скроллим до него.
         //selection.restoreStamp(hashAr[0], true);
         
         for (var i=0; i < hashAr.length; i++) {
             //console.log('i', i, 'hashAr', hashAr, 'hashAr.length', hashAr.length);
+            console.log('_sel.readHash: восстанавливаем метку [запускаем _sel.restoreStamp('+hashAr[i]+');]');
             _sel.restoreStamp(hashAr[i]);
+            
         }
         
 
@@ -60,14 +143,21 @@ var _sel = {
             scrollTop:scrollTo
             }, 1500,  "easeInOutQuint");
         
+        
+        
+        console.log('_sel.readHash: ––––––––––––––––––––––––––––––');
 
     },
     restoreStamp: function(stamp){
         //scrolled = scrolled || false;
-        rangy.deserializeSelection(stamp);
-        //console.log('восстанавливаю стамп: ', stamp);
-        _sel.tSelection(false);
+        console.log('_sel.restoreStamp: ––––––––––––––––––––––––––––––');
+        console.log('_sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
+        var range = rangy.deserializeSelection(stamp);
+        console.log('_sel.restoreStamp: result = ', res);
+        console.log('_sel.restoreStamp: запускаем _sel.tSelection(false)');
+        _sel.tSelection(false, range);
         _sel.count++;
+        console.log('_sel.restoreStamp: ––––––––––––––––––––––––––––––');
     },
     upmsg: function(){
         $msg = $('#upmsg-selectable');
@@ -120,17 +210,22 @@ var _sel = {
         });
         
     },
-    checkSelection: function(sel) {
-        sel = sel || rangy.getSelection();
-        var checker = sel._ranges[0],
+    checkSelection: function(range) {
+        console.log('checkSelection: ––––––––––––––––––––––––––––––');
+        console.log('checkSelection: получен аргумент range = ', range);
+        range = range || rangy.getSelection();
+        console.log('checkSelection: range = ', range);
+        var checker = range._ranges[0],
             startDone = false, endDone = false;
-        console.log(checker);
         
         if (checker.startOffset > 0) {
+            console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
             for (var i=0; i<=checker.startOffset; i++) {
-                console.log('CORRECTING START OFFSET. Loop #', i, '; Check = "', checker.startContainer.data[checker.startOffset - i], '"');
+                console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
                 if (checker.startContainer.data[checker.startOffset - i] == ' ') {
+                    //checker.startOffset = checker.startOffset-i+1;
                     checker.setStart(checker.startContainer, checker.startOffset-i+1);
+                    console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
                     startDone = true;
                     break;
                 }
@@ -144,9 +239,12 @@ var _sel = {
         if (checker.endOffset < checker.endContainer.data.length) {
             
             for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
-                console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
+                console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
+                //console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
                 if (checker.endContainer.data[checker.endOffset + i] == ' ') {
                     checker.setEnd(checker.endContainer, checker.endOffset+i);
+                    console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
+                    //checker.endOffset = checker.endOffset+i;
                     endDone = true;
                     break;
                 }
@@ -156,15 +254,25 @@ var _sel = {
             }
         }
         //sel.setRanges(checker);
+        console.log('checkSelection: checker = ', checker);
+        
+        console.log('checkSelection: ––––––––––––––––––––––––––––––');
+        
+        _sel.aftercheck.push(checker);
+        
         return checker;
 
     },
-    tSelection:function(hash) {
+    tSelection:function(hash, range) {
         
-        _sel.checkSelection();
+        range = range || false;
         
+        range = _sel.checkSelection(range);
+        
+        if (!hash){
         // генерируем и сохраняем якоря для выделенного
         _sel.ranges['num'+_sel.count] = rangy.serializeSelection();
+        }
 
         addSelection.toggleSelection();
         $('.user_selection')
