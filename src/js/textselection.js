@@ -153,7 +153,6 @@ var _sel = {
         console.log('_sel.restoreStamp: ––––––––––––––––––––––––––––––');
         console.log('_sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
         var range = rangy.deserializeSelection(stamp);
-        console.log('_sel.restoreStamp: result = ', res);
         console.log('_sel.restoreStamp: запускаем _sel.tSelection(false)');
         _sel.tSelection(false, range);
         _sel.count++;
