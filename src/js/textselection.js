@@ -44,16 +44,23 @@ var _len = {
                         }
                     } else if (cnode.childNodes && cnode.childNodes.length) {
                         console.log('countingWord.wordCount: чайлд ', cnode, 'имеет своих чайлдов. обработаем их');
-                        wordCount(cnode);
+                        _wcount = wordCount(cnode);
                     }
                 }
             }
+            console.log('countingWord.wordCount: возвращаю _wcount = ', _wcount);
             return _wcount;
         }
 
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
         var wcount = _container.data.substring(0, _offset).match(/[^\s,;:.!?]+/ig);
-        if (wcount != null) { wcount = wcount.length; } else { wcount = 0;}
+        console.log('wcount', wcount);
+        if (wcount != null) { 
+            if (pos=='start') wcount = wcount.length+1; 
+            if (pos=='end') wcount = wcount.length;
+        } else { 
+            wcount = 1;
+        }
         console.log('countingWord: в '+pos+'Container ноде до начала выделения слов:', wcount);
 
         n = _container.previousSibling;
@@ -86,7 +93,15 @@ var _len = {
                 if (_cnode.nodeType == 3) {
                     _count += _cnode.nodeValue.length;
                 } else if (_cnode.childNodes && _cnode.childNodes.length) {
-                    alert('АХТУНГ! Внутри есть еще ноды!!');
+                    var ci = _cnode.childNodes.length;
+                    while (ci--) {
+                        _ccnode = _cnode.childNodes[i];
+                        if (_ccnode.nodeType == 3) {
+                            _count += _ccnode.nodeValue.length;
+                        } else if (_ccnode.childNodes && _ccnode.childNodes.length) {
+                            alert('АХТУНГ! Внутри есть еще ноды!!');
+                        }
+                    }
                 }
             }
         }
