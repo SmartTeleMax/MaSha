@@ -9,7 +9,7 @@ $.fn.hasAttr = function(name) {
 };
 
 var addSelection, removeSelection1, removeSelection2, logger_count = 0;
-
+var rrr = [];
 
 var _len = {
     words: function(_container, _offset, pos){
@@ -30,9 +30,18 @@ var _len = {
                     cnode = node.childNodes[i];
                     // text node found, do the replacement
                     if (cnode.nodeType == 3) {
-                        _wcount += cnode.nodeValue.match(/[^\s,;:.!?]+/ig).length;
-                        console.log('countingWord.wordCount: чайлд текстовый. кол-во слов: '+cnode.nodeValue.match(/[^\s,;:.!?]+/ig).length);
-                        console.log('countingWord.wordCount: теперь в _wcount', _wcount);
+                        if (cnode.nodeValue != null || cnode.nodeValue != ''){
+                            var __temp = cnode.nodeValue.match(/[^\s,;:.!?]+/ig);
+                            rrr.push(cnode);
+                            console.log('countingWord.wordCount: cnode = ', cnode, ';  __temp = ', __temp);
+                            if (__temp != null) {
+                                _wcount += __temp.length;
+                            } else {
+                                __temp = [];
+                            }
+                            console.log('countingWord.wordCount: чайлд текстовый. кол-во слов: '+__temp.length);
+                            console.log('countingWord.wordCount: теперь в _wcount', _wcount);
+                        }
                     } else if (cnode.childNodes && cnode.childNodes.length) {
                         console.log('countingWord.wordCount: чайлд ', cnode, 'имеет своих чайлдов. обработаем их');
                         wordCount(cnode);
@@ -221,7 +230,7 @@ var _sel = {
             console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
             for (var i=0; i<=checker.startOffset; i++) {
                 console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
-                if (checker.startContainer.data[checker.startOffset - i] == ' ') {
+                if ( /[^\s,;:.!?]+/ig.test(checker.startContainer.data[checker.startOffset - i]) ) {
                     //checker.startOffset = checker.startOffset-i+1;
                     checker.setStart(checker.startContainer, checker.startOffset-i+1);
                     console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
@@ -240,7 +249,7 @@ var _sel = {
             for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
                 console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
                 //console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
-                if (checker.endContainer.data[checker.endOffset + i] == ' ') {
+                if (/[^\s,;:.!?]+/ig.test(checker.endContainer.data[checker.endOffset + i])) {
                     checker.setEnd(checker.endContainer, checker.endOffset+i);
                     console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
                     //checker.endOffset = checker.endOffset+i;
@@ -257,7 +266,7 @@ var _sel = {
         
         console.log('checkSelection: ––––––––––––––––––––––––––––––');
         
-        _sel.aftercheck.push(checker);
+        _sel.aftercheck = []; _sel.aftercheck.push(checker);
         
         return checker;
 
