@@ -230,7 +230,7 @@ var _sel = {
             console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
             for (var i=0; i<=checker.startOffset; i++) {
                 console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
-                if ( /[^\s,;:.!?]+/ig.test(checker.startContainer.data[checker.startOffset - i]) ) {
+                if ( !(/[^\s,;:.!?]+/ig.test(checker.startContainer.data[checker.startOffset - i])) ) {
                     //checker.startOffset = checker.startOffset-i+1;
                     checker.setStart(checker.startContainer, checker.startOffset-i+1);
                     console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
@@ -249,7 +249,7 @@ var _sel = {
             for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
                 console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
                 //console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
-                if (/[^\s,;:.!?]+/ig.test(checker.endContainer.data[checker.endOffset + i])) {
+                if ( !(/[^\s,;:.!?]+/ig.test(checker.endContainer.data[checker.endOffset + i])) ) {
                     checker.setEnd(checker.endContainer, checker.endOffset+i);
                     console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
                     //checker.endOffset = checker.endOffset+i;
