@@ -17,6 +17,18 @@ var getTextNodesIn = (function() {
     };
 })();
 
+
+$.fn.textNodes = function() {
+  var ret = [];
+  this.contents().each( function() {
+    var fn = arguments.callee;
+      if ( this.nodeType == 3 ) 
+        ret.push( this );
+      else $(this).contents().each(fn);
+  });
+  return $(ret);
+}
+
 jQuery.fn.cleanWhitespace = function() {
     textNodes = this.contents().filter(
         function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
