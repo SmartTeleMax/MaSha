@@ -1,3 +1,22 @@
+var getTextNodesIn = (function() {
+    function textNodeFilter() {
+        return this.nodeType == 3;
+    }
+
+    return function(el) {
+        var $el = $(el);
+        return $el
+            .contents()
+            .filter(textNodeFilter)
+            .add(
+                $el
+                   .find("*")
+                   .contents()
+                   .filter(textNodeFilter)
+            );
+    };
+})();
+
 jQuery.fn.cleanWhitespace = function() {
     textNodes = this.contents().filter(
         function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
@@ -51,7 +70,11 @@ var _len = {
             console.log('countingWord.wordCount: возвращаю _wcount = ', _wcount);
             return _wcount;
         }
-
+        
+        
+        if (_container.nodeType == 1) {
+            _container = getTextNodesIn(_container)[0];
+        }
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
         var wcount = _container.data.substring(0, _offset).match(/[^\s,;:.!?]+/ig);
         console.log('wcount', wcount);
