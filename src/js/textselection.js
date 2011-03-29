@@ -1,6 +1,6 @@
 var getTextNodesIn = (function() {
     function textNodeFilter() {
-        return (this.nodeType == 3 && this.nodeValue.length > 0 && (/[^\s,;:.!?]+/ig.test(this.nodeValue)));
+        return (this.nodeType == 3 && this.nodeValue.length > 0 && (/[^\s,;:«».!?]+/ig.test(this.nodeValue)));
     }
 
     return function(el) {
@@ -39,15 +39,15 @@ var _len = {
             var _wcount = 0;
             console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
             if (node.nodeType == 3) { // Text only
-                _wcount += node.nodeValue.match(/[^\s,;:.!?]+/ig).length;
+                _wcount += node.nodeValue.match(/[^\s,;:«».!?]+/ig).length;
                 console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
             } else if (node.childNodes && node.childNodes.length){ // Child element
                 var alltxtNodes = getTextNodesIn(node);
                 console.log('countingWord.wordCount: рассматриваемая нода имеет '+alltxtNodes.length+' чайлд(ов)');
                 console.log('alltxtNodes: ', alltxtNodes);
                 for (i=0; i<alltxtNodes.length; i++) {
-                    console.log('countingWord.wordCount: Шаг №', i, '. Считаем кол-во слов в ноде', alltxtNodes[i], '. Слов = ', alltxtNodes[i].nodeValue.match(/[^\s,;:.!?]+/ig).length);
-                    _wcount += alltxtNodes[i].nodeValue.match(/[^\s,;:.!?]+/ig).length;
+                    console.log('countingWord.wordCount: Шаг №', i, '. Считаем кол-во слов в ноде', alltxtNodes[i], '. Слов = ', alltxtNodes[i].nodeValue.match(/[^\s,;:«».!?]+/ig).length);
+                    _wcount += alltxtNodes[i].nodeValue.match(/[^\s,;:«».!?]+/ig).length;
                     console.log('_wcount = ', _wcount);
                 }
                 
@@ -85,7 +85,7 @@ var _len = {
             _container = getTextNodesIn(_container)[0];
         }
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
-        var wcount = _container.data.substring(0, _offset).match(/[^\s,;:.!?]+/ig);
+        var wcount = _container.data.substring(0, _offset).match(/[^\s,;:«».!?]+/ig);
         console.log('wcount', wcount);
         if (wcount != null) { 
             if (pos=='start') wcount = wcount.length+1; 
@@ -277,7 +277,7 @@ var _sel = {
             console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
             for (var i=0; i<=checker.startOffset; i++) {
                 console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
-                if ( !(/[^\s,;:.!?]+/ig.test(checker.startContainer.data[checker.startOffset - i])) ) {
+                if ( !(/[^\s,;:«».!?]+/ig.test(checker.startContainer.data[checker.startOffset - i])) ) {
                     //checker.startOffset = checker.startOffset-i+1;
                     checker.setStart(checker.startContainer, checker.startOffset-i+1);
                     console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
@@ -298,9 +298,9 @@ var _sel = {
             for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
                 console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
                 //console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
-                if ( !(/[^\s,;:.!?]+/ig.test(checker.endContainer.data[checker.endOffset + i])) ) {
+                if ( !(/[^\s,;:«».!?]+/ig.test(checker.endContainer.data[checker.endOffset + i])) ) {
                     console.log('для доп if-a', checker.endContainer.data[(checker.endOffset + i)-1]);
-                    if (!(/[^\s,;:.!?]+/ig.test(checker.endContainer.data[(checker.endOffset + i)-1])) ) {
+                    if (!(/[^\s,;:«».!?]+/ig.test(checker.endContainer.data[(checker.endOffset + i)-1])) ) {
                         console.log('in added if');
                         checker.setEnd(checker.endContainer, checker.endOffset+(i-1));
                     } else {
@@ -319,7 +319,7 @@ var _sel = {
         } else if (checker.endOffset == checker_endContainer_data.length) {
             for (var i=1; i<checker_endContainer_data.length; i++) {
                 console.log('checkSelection: корректируем endовый offset. Шаг назад #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset - i], '"');
-                if ( (/[^\s,;:.!?]+/ig.test(checker.endContainer.data[checker.endContainer.data.length - i])) ) {
+                if ( (/[^\s,;:«».!?]+/ig.test(checker.endContainer.data[checker.endContainer.data.length - i])) ) {
                     checker.setEnd(checker.endContainer, checker.endOffset-(i-1));
                     console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
                     endDone = true;
