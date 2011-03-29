@@ -259,7 +259,9 @@ var _sel = {
             
         }
         
-        if (checker.endOffset < checker.endContainer.data.length) {
+        var checker_endContainer_data = checker.endContainer.data || '';
+        
+        if (checker.endOffset < checker_endContainer_data.length) {
             
             for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
                 console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
