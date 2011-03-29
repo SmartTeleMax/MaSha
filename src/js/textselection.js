@@ -317,7 +317,7 @@ var _sel = {
                 checker.setEnd(checker.endContainer, checker.endOffset+i);
             }
         } else if (checker.endOffset == checker_endContainer_data.length) {
-            for (var i=1; i<checker.endContainer.data.length; i++) {
+            for (var i=1; i<checker_endContainer_data.length; i++) {
                 console.log('checkSelection: корректируем endовый offset. Шаг назад #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset - i], '"');
                 if ( (/[^\s,;:.!?]+/ig.test(checker.endContainer.data[checker.endContainer.data.length - i])) ) {
                     checker.setEnd(checker.endContainer, checker.endOffset-(i-1));
