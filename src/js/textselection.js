@@ -289,6 +289,16 @@ var _sel = {
                 checker.setStart(checker.startContainer, checker.startOffset-i+1);
             }
             
+        } else if (checker.startOffset == 0) {
+            for (var i=0; i<checker.startContainer.data.length; i++) {
+                console.log('checkSelection: корректируем startовый offset. Шаг вперед #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset + i], '"');
+                if ( (/[^\s,;:«».!?]+/ig.test(checker.startContainer.data[checker.startOffset + i])) ) {
+                    checker.setStart(checker.startContainer, checker.startOffset+(i));
+                    console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
+                    startDone = true;
+                    break;
+                }
+            }
         }
         
         var checker_endContainer_data = checker.endContainer.data || '';
