@@ -480,7 +480,8 @@ window.onload = function() {
         for (var i=0; i<nodes.length; i++) { 
             if (!$(nodes[i]).parents('#selectable-content').length
                 || $(nodes[i]).parents('.user_selection_true').length
-                || $(nodes[i]).parents('div.b-multimedia').length) { 
+                || $(nodes[i]).parents('div.b-multimedia').length
+                || $(nodes[i]).parents('div.inpost').length) { 
                     return; 
                     break; 
                 } 
