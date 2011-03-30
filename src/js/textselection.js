@@ -35,7 +35,7 @@
 jQuery.MaSha = function(options) {
         
     var defaults = {
-        regexp: /[^\s,;:«».!?]+/ig,
+        regexp: /[^\s,;:«»–.!?]+/ig,
         hashStart: 'sel=',
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
@@ -303,44 +303,112 @@ jQuery.MaSha = function(options) {
             var checker = range._ranges[0],
                 startDone = false, endDone = false;
         
-            if (checker.startOffset > 0) {
-                console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
-                for (var i=0; i<=checker.startOffset; i++) {
-                    console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
-                    if ( !(options.regexp.test(checker.startContainer.data[checker.startOffset - i])) ) {
-                        //checker.startOffset = checker.startOffset-i+1;
-                        checker.setStart(checker.startContainer, checker.startOffset-i+1);
-                        console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
-                        startDone = true;
-                        break;
-                    }
-                }
-                if (!startDone) {
-                    checker.setStart(checker.startContainer, checker.startOffset-i+1);
-                }
-            
-            } else if (checker.startOffset == 0) {
-                for (var i=0; i<checker.startContainer.data.length; i++) {
-                    console.log('checkSelection: корректируем startовый offset. Шаг вперед #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset + i], '"');
-                    if ( (options.regexp.test(checker.startContainer.data[checker.startOffset + i])) ) {
-                        checker.setStart(checker.startContainer, checker.startOffset+(i));
-                        console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
-                        startDone = true;
-                        break;
-                    }
-                }
-            }
         
+            function kernel(offset, container, piu) {
+                
+                
+                function stepBack(maxStep, statement) {
+                    
+                    statement = statement || 'null';
+                    
+                    for (var step=0; step<=maxStep; step++) {
+                        console.log('checkSelection.stepBack: корректируем offset шагом назад. Шаг #', step, '; Проверяем символ "', container.data[offset - step], '"');
+                        if (statement == 'null') {
+                            if (container.data[offset - step].match(options.regexp) == null) {
+                                console.log('checkSelection.stepBack: скорректированный offset определен = ', (offset-step+1));
+                                return (offset-step+1)
+                            }
+                        }
+                        
+                        if (statement == '!null') {
+                            if (container.data[offset - step].match(options.regexp) != null) {
+                                console.log('checkSelection.stepBack: скорректированный offset определен = ', (offset-step+1));
+                                return (offset-step+1)
+                            }
+                        }
+                    }
+                }
+                
+                function stepForward(maxStep, statement) {
+                    statement = statement || 'null';
+                    for (var step=0; step<maxStep; step++) {
+                        console.log('checkSelection.stepForward: корректируем offset шагом вперед. Шаг #', step, '; Проверяем символ "', container.data[offset + step], '"');
+                        if (statement == 'null') {
+                            if (container.data[offset + step].match(options.regexp) == null) {
+                                console.log('checkSelection.stepForward: скорректированный offset определен = ', (offset+step));
+                                return (offset+step)
+                            }
+                        }
+                        if (statement == '!null') {
+                            if (container.data[offset + step].match(options.regexp) != null) {
+                                console.log('checkSelection.stepForward: скорректированный offset определен = ', (offset+step));
+                                return (offset+step)
+                            }
+                        }
+                    }
+                }
+                
+                if (piu == 'start') {
+                    
+                    if (container.data[offset].match(options.regexp) == null) {
+                        console.log('checkSelection: offset указывает на запрещенный символ. пробуем скорректировать шагами вперед.');
+                        offset = stepForward(container.data.length - offset, '!null');
+                        console.log('checkSelection: скорректированный offset = ', offset);
+                    }
+                    
+                    if (container.data[offset].match(options.regexp) != null && offset != 0) {
+                        console.log('checkSelection: offset указывает на букву. пробуем округлить до слова.');
+                        offset = stepBack(offset);
+                        console.log('checkSelection: скорректированный offset = ', offset);
+                    }
+                    
+                    return offset;
+                }
+                
+                if (piu == 'end') {
+                    
+                    if (container.data[offset].match(options.regexp) == null) {
+                        console.log('checkSelection: offset указывает на запрещенный символ. пробуем скорректировать шагами назад.');
+                        offset = stepBack(offset, '!null');
+                        console.log('checkSelection: скорректированный offset = ', offset);
+                    }
+                    
+                    if (container.data[offset].match(options.regexp) != null && offset != container.data.length) {
+                        console.log('checkSelection: offset указывает на букву. пробуем округлить до слова.');
+                        offset = stepForward(container.data.length - offset);
+                        console.log('checkSelection: скорректированный offset = ', offset);
+                    }
+                    
+                    return offset;
+                    
+                }
+                
+            }
+            
+            console.log('checker', checker);
+            
+            var newStartOffset = kernel(checker.startOffset, checker.startContainer, 'start');
+            var newEndOffset = kernel(checker.endOffset-1, checker.endContainer, 'end');
+            
+        
+            checker.setStart(checker.startContainer, newStartOffset);
+            checker.setEnd(checker.endContainer, newEndOffset);
+
+
+            /*
             var checker_endContainer_data = checker.endContainer.data || '';
         
             if (checker.endOffset < checker_endContainer_data.length) {
-            
                 for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
                     console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
                     //console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
-                    if ( !(options.regexp.test(checker.endContainer.data[checker.endOffset + i])) ) {
+                    console.log('-!!!!!!!!!!', new RegExp(options.regexp).test(checker.endContainer.data[checker.endOffset + i]));
+                    if (new RegExp(options.regexp).test(checker.endContainer.data[checker.endOffset + i]) ) {
+
+                    } else {
+                        console.log('---!!!!!!!!!!', new RegExp(options.regexp).test(checker.endContainer.data[checker.endOffset + i]));
                         console.log('для доп if-a', checker.endContainer.data[(checker.endOffset + i)-1]);
-                        if (!(options.regexp.test(checker.endContainer.data[(checker.endOffset + i)-1])) ) {
+                        if (!(new RegExp(options.regexp).test(checker.endContainer.data[(checker.endOffset + i)-1])) ) {
                             console.log('in added if');
                             checker.setEnd(checker.endContainer, checker.endOffset+(i-1));
                         } else {
@@ -359,7 +427,7 @@ jQuery.MaSha = function(options) {
             } else if (checker.endOffset == checker_endContainer_data.length) {
                 for (var i=1; i<checker_endContainer_data.length; i++) {
                     console.log('checkSelection: корректируем endовый offset. Шаг назад #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset - i], '"');
-                    if ( (options.regexp.test(checker.endContainer.data[checker.endContainer.data.length - i])) ) {
+                    if ( (new RegExp(options.regexp).test(checker.endContainer.data[checker.endContainer.data.length - i])) ) {
                         checker.setEnd(checker.endContainer, checker.endOffset-(i-1));
                         console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
                         endDone = true;
@@ -367,6 +435,39 @@ jQuery.MaSha = function(options) {
                     }
                 }
             }
+            
+            
+            /*
+                if (checker.startOffset > 0) {
+                    console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
+                    for (var i=0; i<=checker.startOffset; i++) {
+                        console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
+                        console.log('!!!!!!!', !(new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset - i])));
+                        if ( !(new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset - i])) ) {
+                            console.log('+!!!!!!!', !(new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset - i])));
+                            //checker.startOffset = checker.startOffset-i+1;
+                            checker.setStart(checker.startContainer, checker.startOffset-i+1);
+                            console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
+                            startDone = true;
+                            break;
+                        }
+                    }
+                    if (!startDone) {
+                        checker.setStart(checker.startContainer, checker.startOffset-i+1);
+                    }
+
+                } else if (checker.startOffset == 0) {
+                    for (var i=0; i<checker.startContainer.data.length; i++) {
+                        console.log('checkSelection: корректируем startовый offset. Шаг вперед #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset + i], '"');
+                        if (new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset + i]) ) {
+                            checker.setStart(checker.startContainer, checker.startOffset+(i));
+                            console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
+                            startDone = true;
+                            break;
+                        }
+                    }
+                }
+                */
             //sel.setRanges(checker);
             console.log('checkSelection: checker = ', checker);
         
@@ -511,7 +612,7 @@ jQuery.MaSha = function(options) {
         
             window.setTimeout(function(){
                 if (!dontshow) {
-                    $(marker).css({'top':e.pageY-33, 'left': e.pageX});
+                    $(marker).css({'top':e.pageY-33, 'left': e.pageX+5});
                     if ($.browser.msie) {
                         $(marker).addClass('show');
                     } else {
@@ -527,8 +628,10 @@ jQuery.MaSha = function(options) {
     
     
     
-        $(marker).click(function(){
-        
+        $(marker).click(function(e){
+            
+            e.preventDefault();
+            
             dontshow = true;
         
             $.MaSha._sel.tSelection();
@@ -547,8 +650,6 @@ jQuery.MaSha = function(options) {
                     dontshow = false;
                 });
             }
-        
-            return false;
         
         });
     
