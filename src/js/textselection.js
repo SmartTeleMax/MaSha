@@ -70,7 +70,7 @@ jQuery.MaSha = function(options) {
         var ret = [];
         this.contents().each( function() {
             var fn = arguments.callee;
-            if ( this.nodeType == 3 && $.trim(this.nodeValue) != '' ) 
+            if ( this.nodeType == 3 && $.trim(this.nodeValue) != '') 
                 ret.push( this );
             else $(this).contents().each(fn);
         });
@@ -331,6 +331,9 @@ jQuery.MaSha = function(options) {
                             }
                         }
                     }
+                    
+
+                    
                 }
                 
                 function stepForward(maxStep, statement) {
@@ -355,10 +358,13 @@ jQuery.MaSha = function(options) {
 
                 function prevNode(){
                     var n = container, prev = null, _prev = null;
+                    console.log('prevNode: container', container);
                     while (prev == null) {
                         n = n.parentNode;
                         if (n.nodeType == 1) {
+                            console.log('n = ', n);
                             var allnodes = $(n).textNodes();
+                            console.log('allnodes', allnodes);
                             if ( $(allnodes).index(container) == 0) {
                                 prev = n.previousSibling;
                             } else if ( $(allnodes).index(container) > 0 ){
@@ -415,7 +421,18 @@ jQuery.MaSha = function(options) {
                     
                     if (container.data[offset-1].match(options.regexp) == null) {
                         console.log('checkSelection: offset указывает на запрещенный символ ['+container.data[offset-1]+']. пробуем скорректировать шагами назад.');
-                        offset = stepBack(offset, '!null');
+                        var _offset = stepBack(offset, '!null');
+                        console.log('_offset', _offset);
+                        if (typeof(_offset) !== undefined) {
+                            console.log('checkSelection: в ноде нет "слов", нашли ноду из предыдущего элемента');
+                            //если нет внутри ноды ниодного слова
+                            var newdata = prevNode();
+                            container = newdata._container;
+                            offset = newdata._offset;
+                            checker.setEnd(container, offset);
+                        } else {
+                            offset = _offset;
+                        }
                         console.log('checkSelection: скорректированный offset = ', offset);
                     }
                     
