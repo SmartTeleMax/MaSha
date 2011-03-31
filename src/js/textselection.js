@@ -347,6 +347,19 @@ jQuery.MaSha = function(options) {
                         }
                     }
                 }
+
+                function prevNode(){
+                    var n = container;
+                    while (n.nodeType != 1) {
+                        n = n.parentNode;
+                    }
+                    var prev = n.previousSibling;
+                    var prevNodeChilds = $(prev).textNodes();
+                    var lastChild = prevNodeChilds[prevNodeChilds.length-1]
+
+                    return {newcontainer: lastChild, newOffset: lastChild.data.length}
+                }
+
                 
                 if (piu == 'start') {
                     
@@ -366,6 +379,14 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (piu == 'end') {
+                    console.log('!!!!!!!!!END', offset);
+                    if (offset == -1) {
+                        var newdata = prevNode();
+                        checker.setEnd(newdata.newcontainer, newdata.newOffset);
+                        container = newdata.container;
+                        offset = newdata.offset;
+                        console.log('!@!@!@!@', newdata);
+                    }
                     
                     if (container.data[offset].match(options.regexp) == null) {
                         console.log('checkSelection: offset указывает на запрещенный символ. пробуем скорректировать шагами назад.');
