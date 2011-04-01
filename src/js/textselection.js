@@ -423,7 +423,7 @@ jQuery.MaSha = function(options) {
                         console.log('checkSelection: offset указывает на запрещенный символ ['+container.data[offset-1]+']. пробуем скорректировать шагами назад.');
                         var _offset = stepBack(offset, '!null');
                         console.log('_offset', _offset);
-                        if (typeof(_offset) !== undefined) {
+                        if (!_offset) {
                             console.log('checkSelection: в ноде нет "слов", нашли ноду из предыдущего элемента');
                             //если нет внутри ноды ниодного слова
                             var newdata = prevNode();
