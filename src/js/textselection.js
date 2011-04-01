@@ -391,9 +391,53 @@ jQuery.MaSha = function(options) {
                     
                     
                 }
+                
+                function nextNode(){
+                    var n = container, next = null, _next = null;
+                    console.log('nextNode: container', container);
+                    while (next == null) {
+                        n = n.parentNode;
+                        if (n.nodeType == 1) {
+                            console.log('n = ', n);
+                            var allnodes = $(n).textNodes();
+                            console.log('allnodes', allnodes);
+                            if ( $(allnodes).index(container) == 0) {
+                                next = n.nextSibling;
+                            } else if ( $(allnodes).index(container) > 0 && $(allnodes).index(container) < allnodes.length ){
+                                _next = $(allnodes)[$(allnodes).index(container) + 1];
+                                break;
+                            }
+                            
+                        }
+                    }
+                    
+                    
+                    if (_next != null) {
+                        console.log('checkSelection.nextNode: найдена следующая соседка – нода', _next);
+                        return {_container: _next, _offset: _next.data.length}
+                    } else {
+                        console.log('checkSelection.nextNode: найден родитель nodeType == 1', n);
+                        console.log('checkSelection.nextNode: следующий от родителя элемент = ', next);
+                        var nextNodeChilds = $(next).textNodes();
+                        console.log('checkSelection.nextNode: все текстовые ноды предыдущего элемента = ', nextNodeChilds);
+                        var lastChild = nextNodeChilds[0]
+                        return {_container: lastChild, _offset: 0}
+                    }
+
+                    
+                    
+                }
 
                 
                 if (piu == 'start') {
+                    
+                    if ((container.data.length-1) == offset && container.data[offset].match(options.regexp) == null) {
+                        var newdata = nextNode();
+                        checker.setStart(newdata._container, newdata._offset);
+                        container = newdata._container;
+                        offset = newdata._offset;
+                        console.log('offset', offset);
+                    }
                     
                     if (container.data[offset].match(options.regexp) == null) {
                         console.log('checkSelection: offset указывает на запрещенный символ. пробуем скорректировать шагами вперед.');
