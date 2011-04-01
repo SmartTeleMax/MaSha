@@ -431,7 +431,7 @@ jQuery.MaSha = function(options) {
                 
                 if (piu == 'start') {
                     
-                    if ((container.data.length-1) == offset && container.data[offset].match(options.regexp) == null) {
+                    if ((container.data.length-1) == offset && container.data.substring(offset, container.data.length).match(options.regexp) == null) {
                         var newdata = nextNode();
                         checker.setStart(newdata._container, newdata._offset);
                         container = newdata._container;
