@@ -299,6 +299,10 @@ jQuery.MaSha = function(options) {
         
         },
         checkSelection: function(range) {
+            /*
+             * Corrects selection.
+             * Returns checker object
+             */
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
             console.log('checkSelection: получен аргумент range = ', range);
             range = range || rangy.getSelection();
@@ -308,32 +312,37 @@ jQuery.MaSha = function(options) {
             
             console.log('checker', checker.endContainer.data.length, checker.endOffset);
         
-            function kernel(offset, container, piu) {
-                
+            var newStartOffset = kernel(checker.startOffset, checker.startContainer, 'start');
+            var newEndOffset = kernel(checker.endOffset, checker.endContainer, 'end');
+            
+        
+            checker.setStart(checker.startContainer, newStartOffset);
+            checker.setEnd(checker.endContainer, newEndOffset);
+            console.log('checkSelection: checker = ', checker);
+        
+            console.log('checkSelection: ––––––––––––––––––––––––––––––');
+        
+            $.MaSha._sel.aftercheck = []; $.MaSha._sel.aftercheck.push(checker);
+        
+            return checker;
+
+
+            function kernel(offset, container, position) {
+                /*
+                 */
                 
                 function stepBack(maxStep, statement) {
-
                     statement = statement || 'null';
                     // maxStep должен равняться str.length
                     for (var step=1; step<=maxStep; step++) {
                         console.log('checkSelection.stepBack: корректируем offset шагом назад. Шаг #', step, '; Проверяем символ "', container.data[offset - step], '"');
-                        if (statement == 'null') {
-                            if (container.data[offset - step].match(options.regexp) == null) {
-                                console.log('checkSelection.stepBack: скорректированный offset определен = ', (offset-step+1));
-                                return (offset-step+1)
-                            }
-                        }
 
-                        if (statement == '!null') {
-                            if (container.data[offset - step].match(options.regexp) != null) {
-                                console.log('checkSelection.stepBack: скорректированный offset определен = ', (offset-step+1));
-                                return (offset-step+1)
-                            }
+                        var isnull = container.data[offset - step].match(options.regexp) == null;
+                        if (statement == 'null' ? isnull : !isnull) {
+                            console.log('checkSelection.stepBack: скорректированный offset определен = ', (offset-step+1));
+                            return (offset-step+1)
                         }
                     }
-                    
-
-                    
                 }
                 
                 function stepForward(maxStep, statement) {
@@ -341,17 +350,11 @@ jQuery.MaSha = function(options) {
                     var _step = 0;
                     for (var step=offset; step<container.data.length; step++) {
                         console.log('checkSelection.stepForward: корректируем offset шагом вперед. Шаг #', _step++, '; Проверяем символ ('+step+') "', container.data[step], '"');
-                        if (statement == 'null') {
-                            if (container.data[step].match(options.regexp) == null) {
-                                console.log('checkSelection.stepForward: скорректированный offset определен = ', (step));
-                                return (step)
-                            }
-                        }
-                        if (statement == '!null') {
-                            if (container.data[step].match(options.regexp) != null) {
-                                console.log('checkSelection.stepForward: скорректированный offset определен = ', (step));
-                                return (step)
-                            }
+                        var isnull = container.data[step].match(options.regexp) == null;
+
+                        if (statement == 'null'? isnull: !isnull) {
+                            console.log('checkSelection.stepForward: скорректированный offset определен = ', (step));
+                            return step;
                         }
                     }
                 }
@@ -371,11 +374,8 @@ jQuery.MaSha = function(options) {
                                 _prev = $(allnodes)[$(allnodes).index(container) - 1];
                                 break;
                             }
-                            
                         }
                     }
-                    
-                    
                     if (_prev != null) {
                         console.log('checkSelection.prevNode: найдена предыдущая соседка – нода', _prev);
                         return {_container: _prev, _offset: _prev.data.length}
@@ -387,9 +387,6 @@ jQuery.MaSha = function(options) {
                         var lastChild = prevNodeChilds[prevNodeChilds.length-1]
                         return {_container: lastChild, _offset: lastChild.data.length}
                     }
-
-                    
-                    
                 }
                 
                 function nextNode(){
@@ -411,7 +408,6 @@ jQuery.MaSha = function(options) {
                         }
                     }
                     
-                    
                     if (_next != null) {
                         console.log('checkSelection.nextNode: найдена следующая соседка – нода', _next);
                         return {_container: _next, _offset: _next.data.length}
@@ -423,13 +419,10 @@ jQuery.MaSha = function(options) {
                         var lastChild = nextNodeChilds[0]
                         return {_container: lastChild, _offset: 0}
                     }
-
-                    
-                    
                 }
 
                 
-                if (piu == 'start') {
+                if (position == 'start') {
                     
                     if ((container.data.length-1) == offset && container.data.substring(offset, container.data.length).match(options.regexp) == null) {
                         var newdata = nextNode();
@@ -454,7 +447,7 @@ jQuery.MaSha = function(options) {
                     return offset;
                 }
                 
-                if (piu == 'end') {
+                if (position == 'end') {
                     
                     if (offset == 0) {
                         var newdata = prevNode();
@@ -499,14 +492,6 @@ jQuery.MaSha = function(options) {
             }
             
             
-            var newStartOffset = kernel(checker.startOffset, checker.startContainer, 'start');
-            var newEndOffset = kernel(checker.endOffset, checker.endContainer, 'end');
-            
-        
-            checker.setStart(checker.startContainer, newStartOffset);
-            checker.setEnd(checker.endContainer, newEndOffset);
-
-
             /*
             var checker_endContainer_data = checker.endContainer.data || '';
         
@@ -581,13 +566,7 @@ jQuery.MaSha = function(options) {
                 }
                 */
             //sel.setRanges(checker);
-            console.log('checkSelection: checker = ', checker);
-        
-            console.log('checkSelection: ––––––––––––––––––––––––––––––');
-        
-            $.MaSha._sel.aftercheck = []; $.MaSha._sel.aftercheck.push(checker);
-        
-            return checker;
+
 
         },
         tSelection:function(hash, range) {
