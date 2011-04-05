@@ -102,14 +102,14 @@ jQuery.MaSha = function(options) {
 
             function wordCount(node) {
                 var _wcount = 0;
-                console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
+                //console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
                 if (node.nodeType == 3) { // Text only
                     _wcount += node.nodeValue.match(options.regexp).length;
-                    console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
+                    //console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
                 } else if (node.childNodes && node.childNodes.length){ // Child element
                     var alltxtNodes = getTextNodesIn(node);
-                    console.log('countingWord.wordCount: рассматриваемая нода имеет '+alltxtNodes.length+' чайлд(ов)');
-                    console.log('alltxtNodes: ', alltxtNodes);
+                    //console.log('countingWord.wordCount: рассматриваемая нода имеет '+alltxtNodes.length+' чайлд(ов)');
+                    //console.log('alltxtNodes: ', alltxtNodes);
                     for (i=0; i<alltxtNodes.length; i++) {
                         console.log('countingWord.wordCount: Шаг №', i, '. Считаем кол-во слов в ноде', alltxtNodes[i], '. Слов = ', alltxtNodes[i].nodeValue.match(options.regexp).length);
                         _wcount += alltxtNodes[i].nodeValue.match(options.regexp).length;
@@ -310,7 +310,6 @@ jQuery.MaSha = function(options) {
             var checker = range._ranges[0],
                 startDone = false, endDone = false;
             
-            console.log('checker', checker.endContainer.data.length, checker.endOffset);
         
             var newStartOffset = kernel(checker.startOffset, checker.startContainer, 'start');
             var newEndOffset = kernel(checker.endOffset, checker.endContainer, 'end');
@@ -326,10 +325,7 @@ jQuery.MaSha = function(options) {
         
             return checker;
 
-
             function kernel(offset, container, position) {
-                /*
-                 */
                 
                 function stepBack(maxStep, statement) {
                     statement = statement || 'null';
@@ -359,73 +355,48 @@ jQuery.MaSha = function(options) {
                     }
                 }
 
-                function prevNode(){
-                    var n = container, prev = null, _prev = null;
-                    console.log('prevNode: container', container);
-                    while (prev == null) {
-                        n = n.parentNode;
-                        if (n.nodeType == 1) {
-                            console.log('n = ', n);
-                            var allnodes = $(n).textNodes();
-                            console.log('allnodes', allnodes);
-                            if ( $(allnodes).index(container) == 0) {
-                                prev = n.previousSibling;
-                            } else if ( $(allnodes).index(container) > 0 ){
-                                _prev = $(allnodes)[$(allnodes).index(container) - 1];
-                                break;
+                function prevNode(container){
+                    console.log('getting prev', container);
+                    while (container.previousSibling){
+                        container = container.previousSibling;
+                        if (container.nodeType == container.ELEMENT_NODE){
+                            var allnodes = $(container).textNodes(); // XXX it's slow
+                            console.log(allnodes);
+                            if (allnodes.length > 0){
+                                container = allnodes[allnodes.length - 1];
                             }
                         }
-                    }
-                    if (_prev != null) {
-                        console.log('checkSelection.prevNode: найдена предыдущая соседка – нода', _prev);
-                        return {_container: _prev, _offset: _prev.data.length}
-                    } else {
-                        console.log('checkSelection.prevNode: найден родитель nodeType == 1', n);
-                        console.log('checkSelection.prevNode: предыдущий от родителя элемент = ', prev);
-                        var prevNodeChilds = $(prev).textNodes();
-                        console.log('checkSelection.prevNode: все текстовые ноды предыдущего элемента = ', prevNodeChilds);
-                        var lastChild = prevNodeChilds[prevNodeChilds.length-1]
-                        return {_container: lastChild, _offset: lastChild.data.length}
-                    }
-                }
-                
-                function nextNode(){
-                    var n = container, next = null, _next = null;
-                    console.log('nextNode: container', container);
-                    while (next == null) {
-                        n = n.parentNode;
-                        if (n.nodeType == 1) {
-                            console.log('n = ', n);
-                            var allnodes = $(n).textNodes();
-                            console.log('allnodes', allnodes);
-                            if ( $(allnodes).index(container) == 0) {
-                                next = n.nextSibling;
-                            } else if ( $(allnodes).index(container) > 0 && $(allnodes).index(container) < allnodes.length ){
-                                _next = $(allnodes)[$(allnodes).index(container) + 1];
-                                break;
-                            }
-                            
+                        if (container.nodeType == container.TEXT_NODE && container.data.match(options.regexp) != null){
+                            return {_container: container, _offset: container.data.length};
                         }
                     }
-                    
-                    if (_next != null) {
-                        console.log('checkSelection.nextNode: найдена следующая соседка – нода', _next);
-                        return {_container: _next, _offset: _next.data.length}
-                    } else {
-                        console.log('checkSelection.nextNode: найден родитель nodeType == 1', n);
-                        console.log('checkSelection.nextNode: следующий от родителя элемент = ', next);
-                        var nextNodeChilds = $(next).textNodes();
-                        console.log('checkSelection.nextNode: все текстовые ноды предыдущего элемента = ', nextNodeChilds);
-                        var lastChild = nextNodeChilds[0]
-                        return {_container: lastChild, _offset: 0}
-                    }
+                    // XXX check if you're out of selectable range
+                    return prevNode(container.parentNode);
                 }
 
+                function nextNode(container){
+                    console.log('getting next');
+                    while (container.nextSibling){
+                        container = container.nextSibling;
+                        if (container.nodeType == container.ELEMENT_NODE){
+                            var allnodes = $(container).textNodes(); // XXX it's slow
+                            console.log(allnodes);
+                            if (allnodes.length > 0){
+                                container = allnodes[0];
+                            }
+                        }
+                        if (container.nodeType == container.TEXT_NODE && container.data.match(options.regexp) != null){
+                            return {_container: container, _offset: container.data.length};
+                        }
+                    }
+                    // XXX check if you're out of selectable range
+                    return nextNode(container.parentNode);
+                }
                 
                 if (position == 'start') {
                     
                     if ((container.data.length-1) == offset && container.data.substring(offset, container.data.length).match(options.regexp) == null) {
-                        var newdata = nextNode();
+                        var newdata = nextNode(container);
                         checker.setStart(newdata._container, newdata._offset);
                         container = newdata._container;
                         offset = newdata._offset;
@@ -450,7 +421,7 @@ jQuery.MaSha = function(options) {
                 if (position == 'end') {
                     
                     if (offset == 0) {
-                        var newdata = prevNode();
+                        var newdata = prevNode(container);
                         checker.setEnd(newdata._container, newdata._offset);
                         container = newdata._container;
                         offset = newdata._offset;
@@ -463,7 +434,7 @@ jQuery.MaSha = function(options) {
                         if (!_offset) {
                             console.log('checkSelection: в ноде нет "слов", нашли ноду из предыдущего элемента');
                             //если нет внутри ноды ниодного слова
-                            var newdata = prevNode();
+                            var newdata = prevNode(container);
                             container = newdata._container;
                             offset = newdata._offset;
                             checker.setEnd(container, offset);
