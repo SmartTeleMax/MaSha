@@ -355,42 +355,40 @@ jQuery.MaSha = function(options) {
                     }
                 }
 
-                function prevNode(container){
-                    console.log('getting prev', container);
-                    while (container.previousSibling){
-                        container = container.previousSibling;
-                        if (container.nodeType == 1){
-                            var allnodes = $(container).textNodes(); // XXX it's slow
-                            console.log(allnodes);
+                function prevNode(cont){
+                    console.log('getting prev', cont);
+                    while (cont.previousSibling){
+                        cont = cont.previousSibling;
+                        if (cont.nodeType == 1){
+                            var allnodes = $(cont).textNodes(); // XXX it's slow
                             if (allnodes.length > 0){
-                                container = allnodes[allnodes.length - 1];
+                                cont = allnodes[allnodes.length - 1];
                             }
                         }
-                        if (container.nodeType == 3 && container.data.match(options.regexp) != null){
-                            return {_container: container, _offset: container.data.length};
+                        if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                            return {_container: cont, _offset: cont.data.length};
                         }
                     }
                     // XXX check if you're out of selectable range
-                    return prevNode(container.parentNode);
+                    return prevNode(cont.parentNode);
                 }
 
-                function nextNode(container){
+                function nextNode(cont){
                     console.log('getting next');
-                    while (container.nextSibling){
-                        container = container.nextSibling;
-                        if (container.nodeType == 1){
-                            var allnodes = $(container).textNodes(); // XXX it's slow
-                            console.log(allnodes);
+                    while (cont.nextSibling){
+                        cont = cont.nextSibling;
+                        if (cont.nodeType == 1){
+                            var allnodes = $(cont).textNodes(); // XXX it's slow
                             if (allnodes.length > 0){
-                                container = allnodes[0];
+                                cont = allnodes[0];
                             }
                         }
-                        if (container.nodeType == 3 && container.data.match(options.regexp) != null){
-                            return {_container: container, _offset: container.data.length};
+                        if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                            return {_container: cont, _offset: cont.data.length};
                         }
                     }
                     // XXX check if you're out of selectable range
-                    return nextNode(container.parentNode);
+                    return nextNode(cont.parentNode);
                 }
                 
                 if (position == 'start') {
