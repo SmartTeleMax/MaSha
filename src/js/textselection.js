@@ -35,7 +35,7 @@
 jQuery.MaSha = function(options) {
         
     var defaults = {
-        regexp: /[^\s,;:«»–.!?]+/ig,
+        regexp: /[^\s,;:«»–.!?\n]+/ig,
         hashStart: 'sel=',
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
@@ -370,7 +370,7 @@ jQuery.MaSha = function(options) {
                             }
                         }
                         if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
-                            return {_container: cont, _offset: cont.data.length};
+                            return {_container: cont, _offset: 0};
                         }
                     }
                     // XXX check if you're out of selectable range
@@ -378,8 +378,7 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'start') {
-                    
-                    if ((container.data.length-1) == offset && container.data.substring(offset, container.data.length).match(options.regexp) == null) {
+                    if ((container.data.length-1) == offset || container.data.substring(offset, container.data.length).match(options.regexp) == null) {
                         var newdata = nextNode(container);
                         checker.setStart(newdata._container, newdata._offset);
                         container = newdata._container;
@@ -403,7 +402,6 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'end') {
-                    
                     if (offset == 0) {
                         var newdata = prevNode(container);
                         checker.setEnd(newdata._container, newdata._offset);
