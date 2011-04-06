@@ -159,27 +159,13 @@ jQuery.MaSha = function(options) {
         symbols: function(_node){
             var _count = 0;
             if (_node.nodeType == 3) {
-                _count += _node.nodeValue.length;
+                _count = _node.nodeValue.length;
             } else if (_node.childNodes && _node.childNodes.length) {
-                var i = _node.childNodes.length;
-                while (i--) {
-                    _cnode = _node.childNodes[i];
-                    if (_cnode.nodeType == 3) {
-                        _count += _cnode.nodeValue.length;
-                    } else if (_cnode.childNodes && _cnode.childNodes.length) {
-                        var ci = _cnode.childNodes.length;
-                        while (ci--) {
-                            _ccnode = _cnode.childNodes[ci];
-                            if (_ccnode.nodeType == 3) {
-                                _count += _ccnode.nodeValue.length;
-                            } else if (_ccnode.childNodes && _ccnode.childNodes.length) {
-                                alert('АХТУНГ! Внутри есть еще ноды!!');
-                            }
-                        }
-                    }
+                var allnodes = $(_node).textNodes();
+                for (var i = allnodes.length; i--; ) {
+                    _count += allnodes[i].nodeValue.length;
                 }
             }
-        
             return _count;
         }
     }
