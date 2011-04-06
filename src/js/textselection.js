@@ -201,9 +201,12 @@ jQuery.MaSha = function(options) {
             console.log('readHash: ––––––––––––––––––––––––––––––');
 
             var hash = location.hash;
-            if (hash == '#sel=' || !hash) return;
+            if (!hash) return;
         
             hash = hash.split('#')[1];
+
+            if(! /sel\=(?:\d+\:\d+\,\d+\:\d+;)*\d+\:\d+\,\d+\:\d+/.test(hash)) return;
+
             hash = hash.substring(4, hash.length);
         
             hashAr = hash.split(';');
