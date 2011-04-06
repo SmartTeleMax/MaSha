@@ -510,7 +510,7 @@ jQuery.MaSha = function(options) {
             hash = hash || true;
             if (hash) $.MaSha._sel.updateHash();
 
-            //rangy.getSelection().removeAllRanges();
+            rangy.getSelection().removeAllRanges();
         },
         getFirstRange: function(){
             var sel = rangy.getSelection();
