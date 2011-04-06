@@ -359,14 +359,14 @@ jQuery.MaSha = function(options) {
                     console.log('getting prev', container);
                     while (container.previousSibling){
                         container = container.previousSibling;
-                        if (container.nodeType == container.ELEMENT_NODE){
+                        if (container.nodeType == 1){
                             var allnodes = $(container).textNodes(); // XXX it's slow
                             console.log(allnodes);
                             if (allnodes.length > 0){
                                 container = allnodes[allnodes.length - 1];
                             }
                         }
-                        if (container.nodeType == container.TEXT_NODE && container.data.match(options.regexp) != null){
+                        if (container.nodeType == 3 && container.data.match(options.regexp) != null){
                             return {_container: container, _offset: container.data.length};
                         }
                     }
@@ -378,14 +378,14 @@ jQuery.MaSha = function(options) {
                     console.log('getting next');
                     while (container.nextSibling){
                         container = container.nextSibling;
-                        if (container.nodeType == container.ELEMENT_NODE){
+                        if (container.nodeType == 1){
                             var allnodes = $(container).textNodes(); // XXX it's slow
                             console.log(allnodes);
                             if (allnodes.length > 0){
                                 container = allnodes[0];
                             }
                         }
-                        if (container.nodeType == container.TEXT_NODE && container.data.match(options.regexp) != null){
+                        if (container.nodeType == 3 && container.data.match(options.regexp) != null){
                             return {_container: container, _offset: container.data.length};
                         }
                     }
@@ -446,11 +446,11 @@ jQuery.MaSha = function(options) {
                     
                     //console.log('offset', offset, 'container.data[offset-1]', container.data[offset-1]);
                     
-                    if (container.data[offset-1].match(options.regexp) != null && offset != container.data.length) {
+                    //if (container.data[offset-1].match(options.regexp) != null && offset != container.data.length) {
                         console.log('checkSelection: offset указывает на букву ['+container.data[offset-1]+']. пробуем округлить до полного слова шагами вперед.');
                         offset = stepForward(container.data.length - offset);
                         console.log('checkSelection: скорректированный offset = ', offset);
-                    }
+                    //}
                     
                     if (offset == container.data.length) {
                         console.log('checkSelection: endOffset равен длине ноды, т.е. остается прежним =', offset);
@@ -461,84 +461,6 @@ jQuery.MaSha = function(options) {
                 }
                 
             }
-            
-            
-            /*
-            var checker_endContainer_data = checker.endContainer.data || '';
-        
-            if (checker.endOffset < checker_endContainer_data.length) {
-                for (var i=0; i<checker.endContainer.data.length-checker.endOffset; i++) {
-                    console.log('checkSelection: корректируем endовый offset. Шаг #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset + i], '"');
-                    //console.log('CORRECTING END OFFSET. Loop #', i, '; Check = "', checker.endContainer.data[checker.endOffset + i], '"');
-                    console.log('-!!!!!!!!!!', new RegExp(options.regexp).test(checker.endContainer.data[checker.endOffset + i]));
-                    if (new RegExp(options.regexp).test(checker.endContainer.data[checker.endOffset + i]) ) {
-
-                    } else {
-                        console.log('---!!!!!!!!!!', new RegExp(options.regexp).test(checker.endContainer.data[checker.endOffset + i]));
-                        console.log('для доп if-a', checker.endContainer.data[(checker.endOffset + i)-1]);
-                        if (!(new RegExp(options.regexp).test(checker.endContainer.data[(checker.endOffset + i)-1])) ) {
-                            console.log('in added if');
-                            checker.setEnd(checker.endContainer, checker.endOffset+(i-1));
-                        } else {
-                            checker.setEnd(checker.endContainer, checker.endOffset+i);
-                        }
-                    
-                        console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
-                        //checker.endOffset = checker.endOffset+i;
-                        endDone = true;
-                        break;
-                    }
-                }
-                if (!endDone) {
-                    checker.setEnd(checker.endContainer, checker.endOffset+i);
-                }
-            } else if (checker.endOffset == checker_endContainer_data.length) {
-                for (var i=1; i<checker_endContainer_data.length; i++) {
-                    console.log('checkSelection: корректируем endовый offset. Шаг назад #', i, '; Проверяем символ "', checker.endContainer.data[checker.endOffset - i], '"');
-                    if ( (new RegExp(options.regexp).test(checker.endContainer.data[checker.endContainer.data.length - i])) ) {
-                        checker.setEnd(checker.endContainer, checker.endOffset-(i-1));
-                        console.log('checkSelection: endOffset скорректирован, теперь он ', checker.endOffset);
-                        endDone = true;
-                        break;
-                    }
-                }
-            }
-            
-            
-            /*
-                if (checker.startOffset > 0) {
-                    console.log('checkSelection: startOffset больше 0, т.е. выделение начинается не в начале ноды. Пробуем откорректировать выделение до ближайшего пробела.');
-                    for (var i=0; i<=checker.startOffset; i++) {
-                        console.log('checkSelection: корректируем стартовый offset. Шаг #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset - i], '"');
-                        console.log('!!!!!!!', !(new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset - i])));
-                        if ( !(new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset - i])) ) {
-                            console.log('+!!!!!!!', !(new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset - i])));
-                            //checker.startOffset = checker.startOffset-i+1;
-                            checker.setStart(checker.startContainer, checker.startOffset-i+1);
-                            console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
-                            startDone = true;
-                            break;
-                        }
-                    }
-                    if (!startDone) {
-                        checker.setStart(checker.startContainer, checker.startOffset-i+1);
-                    }
-
-                } else if (checker.startOffset == 0) {
-                    for (var i=0; i<checker.startContainer.data.length; i++) {
-                        console.log('checkSelection: корректируем startовый offset. Шаг вперед #', i, '; Проверяем символ "', checker.startContainer.data[checker.startOffset + i], '"');
-                        if (new RegExp(options.regexp).test(checker.startContainer.data[checker.startOffset + i]) ) {
-                            checker.setStart(checker.startContainer, checker.startOffset+(i));
-                            console.log('checkSelection: startOffset скорректирован, теперь он ', checker.startOffset);
-                            startDone = true;
-                            break;
-                        }
-                    }
-                }
-                */
-            //sel.setRanges(checker);
-
-
         },
         tSelection:function(hash, range) {
         
@@ -588,7 +510,7 @@ jQuery.MaSha = function(options) {
             hash = hash || true;
             if (hash) $.MaSha._sel.updateHash();
 
-            rangy.getSelection().removeAllRanges();
+            //rangy.getSelection().removeAllRanges();
         },
         getFirstRange: function(){
             var sel = rangy.getSelection();
