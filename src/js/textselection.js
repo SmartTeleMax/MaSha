@@ -35,7 +35,7 @@
 jQuery.MaSha = function(options) {
         
     var defaults = {
-        regexp: /[^\s,;:«»–.!?\n]+/ig,
+        regexp: /[^\s,;:«»–.!?<>…\n]+/ig,
         hashStart: 'sel=',
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
@@ -409,31 +409,19 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'end') {
-                    if (offset == 0) {
+                    if (offset == 0 || container.data.substring(0, offset).match(options.regexp) == null) {
                         var newdata = prevNode(container);
                         checker.setEnd(newdata._container, newdata._offset);
                         container = newdata._container;
                         offset = newdata._offset;
+                        console.log('offset', offset);
                     }
                     
                     if (container.data[offset-1].match(options.regexp) == null) {
                         console.log('checkSelection: offset указывает на запрещенный символ ['+container.data[offset-1]+']. пробуем скорректировать шагами назад.');
-                        var _offset = stepBack(offset, '!null');
-                        console.log('_offset', _offset);
-                        if (!_offset) {
-                            console.log('checkSelection: в ноде нет "слов", нашли ноду из предыдущего элемента');
-                            //если нет внутри ноды ниодного слова
-                            var newdata = prevNode(container);
-                            container = newdata._container;
-                            offset = newdata._offset;
-                            checker.setEnd(container, offset);
-                        } else {
-                            offset = _offset;
-                        }
+                        var offset = stepBack(offset, '!null');
                         console.log('checkSelection: скорректированный offset = ', offset);
                     }
-                    
-                    //console.log('offset', offset, 'container.data[offset-1]', container.data[offset-1]);
                     
                     if (container.data[offset-1].match(options.regexp) != null && offset != container.data.length) {
                         console.log('checkSelection: offset указывает на букву ['+container.data[offset-1]+']. пробуем округлить до полного слова шагами вперед.');
