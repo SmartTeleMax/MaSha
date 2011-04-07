@@ -524,11 +524,8 @@ jQuery.MaSha = function(options) {
     
         var marker = $(''+options.selectorMarker);
         var textselect_event = true, dontshow = false;
-    
-        $(document).bind('textselect', function(e) {
-            if (e.text == '' || !options.regexp.test(e.text)) return;
-            if (!textselect_event) return;
 
+        function range_is_selectable(){
             var nodes = $.MaSha._sel.getFirstRange().getNodes();
 
             for (var i=0; i<nodes.length; i++) { 
@@ -536,22 +533,28 @@ jQuery.MaSha = function(options) {
                     || $(nodes[i]).parents('.user_selection_true').length
                     || $(nodes[i]).parents('div.b-multimedia').length
                     || $(nodes[i]).parents('div.inpost').length) { 
-                        return; 
-                        break; 
+                        return false; 
                     } 
                 if (nodes[i].nodeType == 1) {
-                    if ($(nodes[i]).hasClass('user_selection_true')
+                    if ($(nodes[i]).hasClass('user_selection_true') // XXX merge selections?
                      || $(nodes[i]).hasClass('inpost')
                      || $(nodes[i]).hasClass('b-multimedia')
                      || $(nodes[i]).hasClass('photo')) {
                          //alert('отказ');
                          //console.log('отказ! все из-за ', nodes[i]);
-                         return;
-                         break;
+                         return false;
                      }
                 }
             }
-        
+            return true;
+        }
+    
+        $(document).bind('textselect', function(e) {
+            if (e.text == '' || !options.regexp.test(e.text)) return;
+            if (!textselect_event) return;
+            if (!range_is_selectable()) return;
+
+       
             window.setTimeout(function(){
                 if (!dontshow) {
                     $(marker).css({'top':e.pageY-33, 'left': e.pageX+5});
@@ -564,22 +567,22 @@ jQuery.MaSha = function(options) {
                     }
                 }
             }, 1);
-        
-
         });
     
     
     
         $(marker).click(function(e){
-            
             e.preventDefault();
+            if (!range_is_selectable()){
+                $(marker).removeClass('show').css('display', 'none');
+                console.log('Range is not selectable')
+                return;
+            }
             
             dontshow = true;
         
             $.MaSha._sel.tSelection();
             $.MaSha._sel.count++;
-        
-        
         
             if ($.browser.msie) {
                 $(marker).removeClass('show');
