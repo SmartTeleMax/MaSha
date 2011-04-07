@@ -328,7 +328,7 @@ jQuery.MaSha = function(options) {
                             return (offset-step+1)
                         }
                     }
-                    return (offset-step+2); // XXX check this
+                    //return (offset-step+2); // XXX check this
                 }
                 
                 function stepForward(maxStep, statement) {
@@ -343,12 +343,16 @@ jQuery.MaSha = function(options) {
                             return step;
                         }
                     }
-                    return step-1;
+                    //return step-1;
+                }
+
+                function _is_selectable(node){
+                    return $(node).parents(options.selectorSelectable).length;
                 }
 
                 function prevNode(cont){
-                    console.log('getting prev', cont);
-                    while (cont.parentNode && $(cont).parent(options.selectorSelectable).length){
+                    console.log('getting prev', cont, _is_selectable(cont));
+                    while (cont.parentNode && _is_selectable(cont)){
                         while (cont.previousSibling){
                             cont = cont.previousSibling;
                             while (cont.nodeType == 1 && cont.childNodes.length){
@@ -365,13 +369,14 @@ jQuery.MaSha = function(options) {
 
                 function nextNode(cont){
                     console.log('getting next', cont);
-                    while (cont.parentNode && $(cont).parent(options.selectorSelectable).length){
+                    while (cont.parentNode &&  _is_selectable(cont)){
                         while (cont.nextSibling){
                             cont = cont.nextSibling;
                             while (cont.nodeType == 1 && cont.childNodes.length){
-                                cont = cont.lastChild;
+                                cont = cont.firstChild;
                             }
                             if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                                console.log('getting next: _container:', cont.data, '_offset:', 0);
                                 return {_container: cont, _offset: 0};
                             }
                         }
