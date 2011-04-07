@@ -328,6 +328,7 @@ jQuery.MaSha = function(options) {
                             return (offset-step+1)
                         }
                     }
+                    return (offset-step+2); // XXX check this
                 }
                 
                 function stepForward(maxStep, statement) {
@@ -342,42 +343,40 @@ jQuery.MaSha = function(options) {
                             return step;
                         }
                     }
+                    return step-1;
                 }
 
                 function prevNode(cont){
                     console.log('getting prev', cont);
-                    while (cont.previousSibling){
-                        cont = cont.previousSibling;
-                        if (cont.nodeType == 1){
-                            var allnodes = $(cont).textNodes(); // XXX it's slow
-                            if (allnodes.length > 0){
-                                cont = allnodes[allnodes.length - 1];
+                    while (cont.parentNode && $(cont).parent(options.selectorSelectable).length){
+                        while (cont.previousSibling){
+                            cont = cont.previousSibling;
+                            while (cont.nodeType == 1 && cont.childNodes.length){
+                                cont = cont.lastChild;
+                            }
+                            if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                                console.log('getting prev: _container:', cont.data, '_offset:', cont.data.length);
+                                return {_container: cont, _offset: cont.data.length};
                             }
                         }
-                        if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
-                            return {_container: cont, _offset: cont.data.length};
-                        }
+                        cont = cont.parentNode;
                     }
-                    // XXX check if you're out of selectable range
-                    return prevNode(cont.parentNode);
                 }
 
                 function nextNode(cont){
-                    console.log('getting next');
-                    while (cont.nextSibling){
-                        cont = cont.nextSibling;
-                        if (cont.nodeType == 1){
-                            var allnodes = $(cont).textNodes(); // XXX it's slow
-                            if (allnodes.length > 0){
-                                cont = allnodes[0];
+                    console.log('getting next', cont);
+                    while (cont.parentNode && $(cont).parent(options.selectorSelectable).length){
+                        while (cont.nextSibling){
+                            cont = cont.nextSibling;
+                            while (cont.nodeType == 1 && cont.childNodes.length){
+                                cont = cont.lastChild;
+                            }
+                            if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                                return {_container: cont, _offset: 0};
                             }
                         }
-                        if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
-                            return {_container: cont, _offset: 0};
-                        }
+                        cont = cont.parentNode;
                     }
-                    // XXX check if you're out of selectable range
-                    return nextNode(cont.parentNode);
                 }
                 
                 if (position == 'start') {
@@ -431,11 +430,11 @@ jQuery.MaSha = function(options) {
                     
                     //console.log('offset', offset, 'container.data[offset-1]', container.data[offset-1]);
                     
-                    //if (container.data[offset-1].match(options.regexp) != null && offset != container.data.length) {
+                    if (container.data[offset-1].match(options.regexp) != null && offset != container.data.length) {
                         console.log('checkSelection: offset указывает на букву ['+container.data[offset-1]+']. пробуем округлить до полного слова шагами вперед.');
                         offset = stepForward(container.data.length - offset);
                         console.log('checkSelection: скорректированный offset = ', offset);
-                    //}
+                    }
                     
                     if (offset == container.data.length) {
                         console.log('checkSelection: endOffset равен длине ноды, т.е. остается прежним =', offset);
