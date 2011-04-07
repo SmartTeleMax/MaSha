@@ -346,42 +346,29 @@ jQuery.MaSha = function(options) {
                     //return step-1;
                 }
 
-                function _is_selectable(node){
-                    return $(node).parents(options.selectorSelectable).length;
+                function _siblingNode(cont, prevnext, firstlast, offs){
+                    console.log('getting', prevnext, cont);
+                    while (cont.parentNode && $(cont).parents(options.selectorSelectable).length){
+                        while (cont[prevnext + 'Sibling']){
+                            cont = cont[prevnext + 'Sibling'];
+                            while (cont.nodeType == 1 && cont.childNodes.length){
+                                cont = cont[firstlast + 'Child'];
+                            }
+                            if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                                console.log('getting ' + prevnext +  ': _container:', cont.data,
+                                            '_offset:', offs * cont.data.length);
+                                return {_container: cont, _offset: offs * cont.data.length};
+                            }
+                        }
+                        cont = cont.parentNode;
+                    }
                 }
 
                 function prevNode(cont){
-                    console.log('getting prev', cont, _is_selectable(cont));
-                    while (cont.parentNode && _is_selectable(cont)){
-                        while (cont.previousSibling){
-                            cont = cont.previousSibling;
-                            while (cont.nodeType == 1 && cont.childNodes.length){
-                                cont = cont.lastChild;
-                            }
-                            if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
-                                console.log('getting prev: _container:', cont.data, '_offset:', cont.data.length);
-                                return {_container: cont, _offset: cont.data.length};
-                            }
-                        }
-                        cont = cont.parentNode;
-                    }
+                    return _siblingNode(cont, 'previous', 'last', 1);
                 }
-
                 function nextNode(cont){
-                    console.log('getting next', cont);
-                    while (cont.parentNode &&  _is_selectable(cont)){
-                        while (cont.nextSibling){
-                            cont = cont.nextSibling;
-                            while (cont.nodeType == 1 && cont.childNodes.length){
-                                cont = cont.firstChild;
-                            }
-                            if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
-                                console.log('getting next: _container:', cont.data, '_offset:', 0);
-                                return {_container: cont, _offset: 0};
-                            }
-                        }
-                        cont = cont.parentNode;
-                    }
+                    return _siblingNode(cont, 'next', 'first', 0);
                 }
                 
                 if (position == 'start') {
