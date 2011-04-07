@@ -316,34 +316,42 @@ jQuery.MaSha = function(options) {
 
             function kernel(offset, container, position) {
                 
-                function stepBack(maxStep, statement) {
-                    statement = statement || 'null';
-                    // maxStep должен равняться str.length
-                    for (var step=1; step<=maxStep; step++) {
-                        console.log('checkSelection.stepBack: корректируем offset шагом назад. Шаг #', step, '; Проверяем символ "', container.data[offset - step], '"');
+                function is_word(str){
+                    return str.match(options.regexp) != null;
+                }
 
-                        var isnull = container.data[offset - step].match(options.regexp) == null;
-                        if (statement == 'null' ? isnull : !isnull) {
-                            console.log('checkSelection.stepBack: скорректированный offset определен = ', (offset-step+1));
-                            return (offset-step+1)
-                        }
+                function is_not_word(str){
+                    return str.match(options.regexp) == null;
+                }
+
+                function stepBack(container, offset, condition) {
+                    var init_offset = offset;
+                    console.log('checkSelection.stepBack: offset: ', offset);
+                    while (offset > 0 && condition(container.data[offset-1])){
+                        console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
+                                    'Шаг #', init_offset - offset + 1, '; '+
+                                    'Проверяем символ "', container.data[offset - 1], '"');
+                        offset--;
                     }
-                    //return (offset-step+2); // XXX check this
+                    console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
+                                'Шаг #', init_offset - offset + 1, '; '+
+                                'Проверяем символ "', container.data[offset - 1], '"');
+                    return offset;
                 }
                 
-                function stepForward(maxStep, statement) {
-                    statement = statement || 'null';
-                    var _step = 0;
-                    for (var step=offset; step<container.data.length; step++) {
-                        console.log('checkSelection.stepForward: корректируем offset шагом вперед. Шаг #', _step++, '; Проверяем символ ('+step+') "', container.data[step], '"');
-                        var isnull = container.data[step].match(options.regexp) == null;
-
-                        if (statement == 'null'? isnull: !isnull) {
-                            console.log('checkSelection.stepForward: скорректированный offset определен = ', (step));
-                            return step;
-                        }
+                function stepForward(container, offset, condition) {
+                    var init_offset = offset;
+                    console.log('checkSelection.stepForward: offset: ', offset);
+                    while (offset < container.data.length && condition(container.data[offset])){
+                        console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
+                                    'Шаг #', offset - init_offset + 1, '; '+
+                                    'Проверяем символ "', container.data[offset], '"');
+                        offset++;
                     }
-                    //return step-1;
+                    console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
+                                'Шаг #', offset - init_offset + 1, '; '+
+                                'Проверяем символ "', container.data[offset], '"');
+                    return offset;
                 }
 
                 function _siblingNode(cont, prevnext, firstlast, offs){
@@ -372,31 +380,26 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'start') {
-                    if ((container.data.length-1) == offset || container.data.substring(offset, container.data.length).match(options.regexp) == null) {
+                    if (container.data.substring(offset, container.data.length).match(options.regexp) == null) {
                         var newdata = nextNode(container);
                         checker.setStart(newdata._container, newdata._offset);
                         container = newdata._container;
                         offset = newdata._offset;
                         console.log('offset', offset);
                     }
-                    
-                    if (container.data[offset].match(options.regexp) == null) {
-                        console.log('checkSelection: offset указывает на запрещенный символ. пробуем скорректировать шагами вперед.');
-                        offset = stepForward(container.data.length - offset, '!null');
-                        console.log('checkSelection: скорректированный offset = ', offset);
-                    }
-                    
-                    if (container.data[offset].match(options.regexp) != null && offset != 0) {
-                        console.log('checkSelection: offset указывает на букву. пробуем округлить до слова.');
-                        offset = stepBack(offset);
-                        console.log('checkSelection: скорректированный offset = ', offset);
-                    }
+
+                    // Важно! Сначала сокращаем выделение, потом расширяем
+                    offset = stepForward(container, offset, is_not_word);
+                    console.log('checkSelection: скорректированный offset = ', offset);
+                
+                    offset = stepBack(container, offset, is_word);
+                    console.log('checkSelection: скорректированный offset = ', offset);
                     
                     return offset;
                 }
                 
                 if (position == 'end') {
-                    if (offset == 0 || container.data.substring(0, offset).match(options.regexp) == null) {
+                    if (container.data.substring(0, offset).match(options.regexp) == null) {
                         var newdata = prevNode(container);
                         checker.setEnd(newdata._container, newdata._offset);
                         container = newdata._container;
@@ -404,22 +407,13 @@ jQuery.MaSha = function(options) {
                         console.log('offset', offset);
                     }
                     
-                    if (container.data[offset-1].match(options.regexp) == null) {
-                        console.log('checkSelection: offset указывает на запрещенный символ ['+container.data[offset-1]+']. пробуем скорректировать шагами назад.');
-                        var offset = stepBack(offset, '!null');
-                        console.log('checkSelection: скорректированный offset = ', offset);
-                    }
-                    
-                    if (container.data[offset-1].match(options.regexp) != null && offset != container.data.length) {
-                        console.log('checkSelection: offset указывает на букву ['+container.data[offset-1]+']. пробуем округлить до полного слова шагами вперед.');
-                        offset = stepForward(container.data.length - offset);
-                        console.log('checkSelection: скорректированный offset = ', offset);
-                    }
-                    
-                    if (offset == container.data.length) {
-                        console.log('checkSelection: endOffset равен длине ноды, т.е. остается прежним =', offset);
-                    }
-                    
+                    // Важно! Сначала сокращаем выделение, потом расширяем
+                    offset = stepBack(container, offset, is_not_word);
+                    console.log('checkSelection: скорректированный offset = ', offset);
+
+                    offset = stepForward(container, offset, is_word);
+                    console.log('checkSelection: скорректированный offset = ', offset);
+
                     return offset;
                     
                 }
