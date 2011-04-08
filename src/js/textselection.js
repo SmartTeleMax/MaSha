@@ -185,12 +185,22 @@ jQuery.MaSha = function(options) {
         childs: [],
         updateHash: function(){
             var hash = '';
+            var nowhash = location.hash;
             for (key in $.MaSha._sel.ranges) { 
-                hash += $.MaSha._sel.ranges[key] + ';';
+                if (nowhash.indexOf($.MaSha._sel.ranges[key]) == -1) {
+                    hash += $.MaSha._sel.ranges[key] + ';';
                 }
-            hash = hash.substring(hash.length-1, 0);
+            }
+            if (hash!='') {
+                //hash = hash.substring(hash.length-1, 0);
+                if (nowhash.indexOf('sel=') == -1) {
+                    nowhash = options.hashStart;
+                }
+                nowhash = nowhash+hash;
+                location.hash = nowhash;
+            }
         
-            location.hash = options.hashStart+hash;
+            
         
             console.log('updateHash: ––––––––––––––––––––––––––––––');
             console.log('updateHash: обновляем хэш: ', hash);
@@ -213,7 +223,7 @@ jQuery.MaSha = function(options) {
             console.log('readHash: из хэша получен массив меток выделений: ', hashAr);
             // восстанавливаем первое выделение + скроллим до него.
         
-            for (var i=0; i < hashAr.length; i++) {
+            for (var i=0; i < hashAr.length-1; i++) {
                 console.log('readHash: восстанавливаем метку [запускаем $.MaSha._sel.restoreStamp('+hashAr[i]+');]');
                 $.MaSha._sel.restoreStamp(hashAr[i]);
             }
