@@ -183,22 +183,31 @@ jQuery.MaSha = function(options) {
             $('#logger').append('<p style="font-size:12px;text-align: left;">#'+logger_count+' | '+str+'</p>');
         },
         childs: [],
-        updateHash: function(){
+        updateHash: function(_delete){
+            _delete = _delete || false;
             var hash = '';
             var nowhash = location.hash;
-            for (key in $.MaSha._sel.ranges) { 
-                if (nowhash.indexOf($.MaSha._sel.ranges[key]) == -1) {
-                    hash += $.MaSha._sel.ranges[key] + ';';
+            
+            
+            if (_delete) {
+                nowhash = nowhash.replace(_delete+';', '');
+                location.hash = nowhash;
+            } else {
+                for (key in $.MaSha._sel.ranges) { 
+                    if (nowhash.indexOf($.MaSha._sel.ranges[key]) == -1) {
+                        hash += $.MaSha._sel.ranges[key] + ';';
+                    }
                 }
-            }
-            if (hash!='') {
-                //hash = hash.substring(hash.length-1, 0);
                 if (nowhash.indexOf('sel=') == -1) {
                     nowhash = options.hashStart;
+                    nowhash = nowhash+hash;
+                } else {
+                    nowhash = nowhash+hash;
                 }
-                nowhash = nowhash+hash;
                 location.hash = nowhash;
             }
+            
+
         
             
         
@@ -304,9 +313,9 @@ jQuery.MaSha = function(options) {
              */
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
             console.log('checkSelection: получен аргумент range = ', range);
-            range = range || rangy.getSelection();
-            console.log('checkSelection: range = ', range._ranges[0].endOffset, range._ranges[0].endContainer);
-            var checker = range._ranges[0],
+            range = range || window.getSelection();
+            console.log('checkSelection: range = ', range.getRangeAt(0).endOffset, range.getRangeAt(0).endContainer);
+            var checker = range.getRangeAt(0),
                 startDone = false, endDone = false;
             
         
@@ -622,9 +631,8 @@ jQuery.MaSha = function(options) {
                     $.MaSha._sel.onlytSelection(removeSelection2);
                     $.MaSha._sel.onlytSelection(removeSelection1);
                     $.MaSha._sel.count = $.MaSha._sel.count - 1;
+                    $.MaSha._sel.updateHash($.MaSha._sel.ranges[numclass]);
                     delete $.MaSha._sel.ranges[numclass];
-                    $.MaSha._sel.updateHash();
-
                     rangy.getSelection().removeAllRanges();
                 }
             });
