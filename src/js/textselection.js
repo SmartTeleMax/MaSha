@@ -399,7 +399,8 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'start') {
-                    if (container.data.substring(offset, container.data.length).match(options.regexp) == null) {
+                    if (container.nodeType != 3 ||
+                        container.data.substring(offset).match(options.regexp) == null) {
                         var newdata = nextNode(container);
                         checker.setStart(newdata._container, newdata._offset);
                         container = newdata._container;
@@ -418,7 +419,8 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'end') {
-                    if (container.data.substring(0, offset).match(options.regexp) == null) {
+                    if (container.nodeType != 3 ||
+                        container.data.substring(0, offset).match(options.regexp) == null) {
                         var newdata = prevNode(container);
                         checker.setEnd(newdata._container, newdata._offset);
                         container = newdata._container;
@@ -647,11 +649,11 @@ jQuery.MaSha = function(options) {
 
 
         var cssClassApplierModule = rangy.modules.CssClassApplier;
-        if (rangy.supported && cssClassApplierModule && cssClassApplierModule.supported) {
-            addSelection = rangy.createCssClassApplier("user_selection", true);
-            removeSelection1 = rangy.createCssClassApplier("user_selection_true", true);
-            removeSelection2 = rangy.createCssClassApplier("num", true);
-        }
+        //if (rangy.supported && cssClassApplierModule && cssClassApplierModule.supported) {
+            addSelection = new CssClassApplier("user_selection");
+            removeSelection1 = new CssClassApplier("user_selection_true");
+            removeSelection2 = new CssClassApplier("num");
+        //}
     
         $(document).click(function(e){
             tar = $(e.target);
