@@ -67,7 +67,7 @@ Range.prototype.addSelection = function(className){
     }
 }
 
-Range.removeTextSelection = function(className){
+removeTextSelection = function(className){
     var spans = $(className);
     for (var i=spans.length; i--;){
         var span = spans[i];

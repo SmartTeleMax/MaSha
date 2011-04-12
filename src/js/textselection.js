@@ -176,14 +176,9 @@ jQuery.MaSha = function(options) {
     $.MaSha._sel = {
         count: 0,
         savedSel: [],
-        savedSelActiveElement: [],
         ranges: {},
         rootNode: 'selectable-content',
         aftercheck: [],
-        logger: function(str){
-            logger_count++;
-            $('#logger').append('<p style="font-size:12px;text-align: left;">#'+logger_count+' | '+str+'</p>');
-        },
         childs: [],
         updateHash: function(_delete){
             _delete = _delete || false;
@@ -261,12 +256,6 @@ jQuery.MaSha = function(options) {
             
             rootNode = document.getElementById($.MaSha._sel.rootNode);
             //console.log('deserializeSelection', rootNode);
-            if (rootNode) {
-                win = win || window;
-            } else {
-                win = win || window;
-                rootNode = win.document.documentElement;
-            }
 
             var serializedRanges = serialized.split("|");
             var sel = window.getSelection();
@@ -572,13 +561,7 @@ jQuery.MaSha = function(options) {
             }
 
 
-            /* ВМЕСТО ЭТОГО ДОЛЖНА БЫТЬ ФУНКЦИЯ ОБОРАЧИВАНИЯ
-            addSelection.toggleSelection();
-            $('.user_selection')
-                    .addClass('user_selection_true')
-                    .addClass('num'+$.MaSha._sel.count)
-                    .removeClass('user_selection');
-            */
+            range.addSelection('num'+$.MaSha._sel.count+' '+'user_selection_true');
 
             var timeout_hover, timeout_hover_b = false;
             var _this;
@@ -650,26 +633,26 @@ jQuery.MaSha = function(options) {
 
         function range_is_selectable(){
             // getNodes() это от rangy вроде.
-            var nodes = $($.MaSha._sel.getFirstRange()).contents();
-
-            for (var i=0; i<nodes.length; i++) { 
-                if (!$(nodes[i]).parents(''+options.selectorSelectable).length
-                    || $(nodes[i]).parents('.user_selection_true').length
-                    || $(nodes[i]).parents('div.b-multimedia').length
-                    || $(nodes[i]).parents('div.inpost').length) { 
-                        return false; 
-                    } 
-                if (nodes[i].nodeType == 1) {
-                    if ($(nodes[i]).hasClass('user_selection_true') // XXX merge selections?
-                     || $(nodes[i]).hasClass('inpost')
-                     || $(nodes[i]).hasClass('b-multimedia')
-                     || $(nodes[i]).hasClass('photo')) {
-                         //alert('отказ');
-                         //console.log('отказ! все из-за ', nodes[i]);
-                         return false;
-                     }
-                }
-            }
+            var node;
+            var iterator = $.MaSha._sel.getFirstRange().getElementIterator();
+              while (node = iterator()){
+                  if (!$(node).parents(''+options.selectorSelectable).length
+                      || $(node).parents('.user_selection_true').length
+                      || $(node).parents('div.b-multimedia').length
+                      || $(node).parents('div.inpost').length) { 
+                          return false; 
+                      } 
+                  if (node.nodeType == 1) {
+                      if ($(node).hasClass('user_selection_true') // XXX merge selections?
+                       || $(node).hasClass('inpost')
+                       || $(node).hasClass('b-multimedia')
+                       || $(node).hasClass('photo')) {
+                           //alert('отказ');
+                           //console.log('отказ! все из-за ', nodes[i]);
+                           return false;
+                       }
+                  }
+              }
             return true;
         }
     
@@ -724,14 +707,13 @@ jQuery.MaSha = function(options) {
     
         $('.closewrap a.txtsel_close').live('click', function(){
             var parent = this.parentNode.parentNode;
-            var numclass = parent.className.split(' ')[1];
+            var numclass = parent.className.split(' ')[0];
             $('.'+numclass).removeClass('hover');
             $(this).fadeOut('slow', function(){
                 $(this).parent('span.closewrap').remove();
-                
-                // ЗДЕСЬ ДОЛЖНА БЫТЬ ФУНКЦИЯ УДАЛЕНИЯ ВЫДЕЛЕНИЯ
-                // И ОБНОВЛЕНИЕ ХЭША
-                
+                removeTextSelection('.'+numclass+'.user_selection_true');
+                $.MaSha._sel.updateHash($.MaSha._sel.ranges[numclass]);
+                delete $.MaSha._sel.ranges[numclass];
             });
 
             return false;
