@@ -99,7 +99,9 @@ jQuery.MaSha = function(options) {
         words: function(_container, _offset, pos){
             console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
             console.log('countingWord: подсчет слов. аргументы: _container =', _container, '; _offset = ', _offset);
-
+            
+            
+            
             function wordCount(node) {
                 var _wcount = 0;
                 //console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
@@ -249,12 +251,129 @@ jQuery.MaSha = function(options) {
         restoreStamp: function(stamp){
             console.log('$.MaSha._sel.restoreStamp: ––––––––––––––––––––––––––––––');
             console.log('$.MaSha._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
-            var range = rangy.deserializeSelection(stamp);
+            var range = $.MaSha._sel.deserializeSelection(stamp);
             console.log('$.MaSha._sel.restoreStamp: запускаем $.MaSha._sel.tSelection(false)');
             $.MaSha._sel.tSelection(false, range);
             $.MaSha._sel.count++;
             console.log('$.MaSha._sel.restoreStamp: ––––––––––––––––––––––––––––––');
         },
+        deserializeSelection: function(stamp) {
+            
+            rootNode = document.getElementById($.MaSha._sel.rootNode);
+            //console.log('deserializeSelection', rootNode);
+            if (rootNode) {
+                win = win || window;
+            } else {
+                win = win || window;
+                rootNode = win.document.documentElement;
+            }
+
+            var serializedRanges = serialized.split("|");
+            var sel = window.getSelection();
+            console.log('deserializeSelection: sel=', sel)
+            var ranges = [];
+            if(sel.rangeCount > 0) sel.removeAllRanges();
+
+            for (var i = 0, len = serializedRanges.length; i < len; ++i) {
+                sel.addRange(deserializeRange(serializedRanges[i], rootNode, win.document));
+            }
+            
+            function deserializePosition(serialized, rootNode, doc, pos){
+                 var bits = serialized.split(":");
+                 var node = rootNode;
+                 var el = $('.nodeNum_'+bits[0]);
+
+                 var pos_text;
+
+                 console.log('deserializePosition: Осуществляем подсчет '+pos+'-овой позиции');
+                 console.log('deserializePosition: выбран элемент = ', el);
+                 console.log('deserializePosition: в выбранном элементе '+$(el).contents().length+' childNodes');
+
+                 var re = new RegExp ('[^\\s,;:«»–.!?]+', 'ig');
+
+                 var offset, stepCount = 0, exit = false;
+                 console.log('deserializePosition: ищем по счету '+bits[1]+' слово. Запускаем цикл перебора всех слов родительского элемента.');
+                 var _allnodes = $(el).textNodes();
+                 for (i=0; i<_allnodes.length; i++) {
+                     while ((myArray = re.exec( _allnodes[i].data )) != null) {
+                         stepCount++;
+                         console.log('deserializePosition: слово №'+stepCount+' = "', myArray[0], '"; (startoffset =', myArray.index, ', endoffset =', re.lastIndex, ')');
+                         if (stepCount == bits[1]) {
+                             if (pos=='start') offset = myArray.index;
+                             if (pos=='end') offset = re.lastIndex;
+
+                             console.log('deserializePosition: '+pos+'овое слово найдено = ', myArray[0], '. Целевая нода = ', _allnodes[i], '. Символьный offset = ', offset);
+                             node = _allnodes[i];
+                             break;
+                         } else {
+                             //console.log('пустой проход.', stepCount, '|', bits[1]);
+                         }
+
+                     }
+                 }
+                 return {node: node, offset: parseInt(offset, 10)};
+            }
+            function deserializeRange(serialized, rootNode, doc){
+                rootNode = rootNode || document.getElementById($.MaSha._sel.rootNode);
+                if (rootNode) {
+                    doc = doc || document;
+                } else {
+                    doc = doc || document;
+                    rootNode = doc.documentElement;
+                }
+                var result = /^([^,]+),([^,]+)({([^}]+)})?$/.exec(serialized);
+
+                var start = deserializePosition(result[1], rootNode, doc, 'start'), end = deserializePosition(result[2], rootNode, doc, 'end');
+                var range = document.createRange();
+                range.setStart(start.node, start.offset);
+                range.setEnd(end.node, end.offset);
+                return range;
+            }
+
+            return sel;
+        },
+        serializeSelection: function(selection, rootNode) {
+            rootNode = document.getElementById($.MaSha._sel.rootNode);
+            console.log('serializeSelection: selection = ', selection);
+
+            selection = selection || window.getSelection();
+
+            var ranges = $.MaSha._sel.aftercheck, serializedRanges = [];
+            //var ranges = selection.getAllRanges(), serializedRanges = [];
+
+            for (var i = 0, len = ranges.length; i < len; ++i) {
+                serializedRanges[i] = serializeRange(ranges[i], rootNode);
+            }
+            
+            
+            function serializeRange(range, rootNode) {
+                var serialized = serializeWord(range.startContainer, range, 'start', rootNode) + "," +
+                    serializeWord(range.endContainer, range, 'end', rootNode);
+                return serialized;
+            }
+            function serializeWord(node, range, piu, rootNode) {
+
+                offset = 0;
+                var pathBits = [], n = node;
+                var nodeNum;
+
+                if ($(node).hasAttr('nodeNum')) {
+                    nodeNum = $(node).attr('nodeNum');
+                } else if ($(node.parentNode).hasAttr('nodeNum')){
+                    nodeNum = $(node.parentNode).attr('nodeNum');
+                }
+
+                if (piu=='start'){
+                    offset = $.MaSha._len.words(range.startContainer, range.startOffset, piu);
+                } else {
+                    offset = $.MaSha._len.words(range.endContainer, range.endOffset, piu);
+                }
+                return nodeNum + ':' + offset;
+            }
+            
+            return serializedRanges.join("|");
+        },
+
         upmsg: function(){
             $msg = $('#upmsg-selectable');
         
@@ -313,9 +432,9 @@ jQuery.MaSha = function(options) {
              */
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
             console.log('checkSelection: получен аргумент range = ', range);
-            range = range || window.getSelection();
-            console.log('checkSelection: range = ', range.getRangeAt(0).endOffset, range.getRangeAt(0).endContainer);
-            var checker = range.getRangeAt(0),
+            range = range || $.MaSha._sel.getFirstRange();
+            console.log('checkSelection: range = ', range.endOffset, range.endContainer);
+            var checker = range,
                 startDone = false, endDone = false;
             
         
@@ -441,28 +560,25 @@ jQuery.MaSha = function(options) {
                 
             }
         },
-        tSelection:function(hash, range) {
+        addSelection:function(hash, range) {
         
             range = range || false;
         
             range = $.MaSha._sel.checkSelection(range);
         
             if (!hash){
-            // генерируем и сохраняем якоря для выделенного
-            $.MaSha._sel.ranges['num'+$.MaSha._sel.count] = rangy.serializeSelection();
+                // генерируем и сохраняем якоря для выделенного
+                $.MaSha._sel.ranges['num'+$.MaSha._sel.count] = $.MaSha._sel.serializeSelection();
             }
 
+
+            /* ВМЕСТО ЭТОГО ДОЛЖНА БЫТЬ ФУНКЦИЯ ОБОРАЧИВАНИЯ
             addSelection.toggleSelection();
             $('.user_selection')
                     .addClass('user_selection_true')
                     .addClass('num'+$.MaSha._sel.count)
                     .removeClass('user_selection');
-
-            // сохраняем выделенное
-            //console.log('сохраняем выделенное');
-            $.MaSha._sel.savedSel['num'+$.MaSha._sel.count] = rangy.saveSelection();
-            $.MaSha._sel.savedSelActiveElement['num'+$.MaSha._sel.count] = document.activeElement;
-            //console.log($.MaSha._sel.savedSel['num'+selection.count], $.MaSha._sel.savedSelActiveElement['num'+selection.count]);
+            */
 
             var timeout_hover, timeout_hover_b = false;
             var _this;
@@ -489,28 +605,16 @@ jQuery.MaSha = function(options) {
             hash = hash || true;
             if (hash) $.MaSha._sel.updateHash();
 
-            rangy.getSelection().removeAllRanges();
+            window.getSelection().removeAllRanges();
         },
         getFirstRange: function(){
-            var sel = rangy.getSelection();
+            var sel = window.getSelection();
             return sel.rangeCount ? sel.getRangeAt(0) : null;
         },
-        restoreSelection: function(selector) {
-            if ($.MaSha._sel.savedSel[selector]) {
-                rangy.restoreSelection($.MaSha._sel.savedSel[selector], true);
-                //savedSel = null;
-                window.setTimeout(function() {
-                    if ($.MaSha._sel.savedSelActiveElement[selector] && typeof $.MaSha._sel.savedSelActiveElement[selector].focus != "undefined") {
-                        $.MaSha._sel.savedSelActiveElement[selector].focus();
-                    }
-                }, 1);
-                return true;
-            } else {
-                return false;
-            }
-        },
         onlytSelection: function(obj){
+            /* Здесь вызов функции оборачивалки (удаление выделения)
             obj.toggleSelection();
+            */
         },
         elNum: function(){
             var counter = 0;
@@ -537,9 +641,7 @@ jQuery.MaSha = function(options) {
         $(''+options.selectorSelectable).cleanWhitespace();
         $(options.selectorSelectable+' *').cleanWhitespace();
     
-        rangy.init();
         
-        var range = rangy.createRangyRange();
     
         $.MaSha._sel.elNum();
     
@@ -547,7 +649,8 @@ jQuery.MaSha = function(options) {
         var textselect_event = true, dontshow = false;
 
         function range_is_selectable(){
-            var nodes = $.MaSha._sel.getFirstRange().getNodes();
+            // getNodes() это от rangy вроде.
+            var nodes = $($.MaSha._sel.getFirstRange()).contents();
 
             for (var i=0; i<nodes.length; i++) { 
                 if (!$(nodes[i]).parents(''+options.selectorSelectable).length
@@ -602,7 +705,7 @@ jQuery.MaSha = function(options) {
             
             dontshow = true;
         
-            $.MaSha._sel.tSelection();
+            $.MaSha._sel.addSelection();
             $.MaSha._sel.count++;
         
             if ($.browser.msie) {
@@ -625,18 +728,10 @@ jQuery.MaSha = function(options) {
             $('.'+numclass).removeClass('hover');
             $(this).fadeOut('slow', function(){
                 $(this).parent('span.closewrap').remove();
-                var res = $.MaSha._sel.restoreSelection(numclass);
-            
-                if (res == true) {
-                    ////console.log('res', res);
-                    removeSelection2.cssClass = numclass;
-                    $.MaSha._sel.onlytSelection(removeSelection2);
-                    $.MaSha._sel.onlytSelection(removeSelection1);
-                    $.MaSha._sel.count = $.MaSha._sel.count - 1;
-                    $.MaSha._sel.updateHash($.MaSha._sel.ranges[numclass]);
-                    delete $.MaSha._sel.ranges[numclass];
-                    rangy.getSelection().removeAllRanges();
-                }
+                
+                // ЗДЕСЬ ДОЛЖНА БЫТЬ ФУНКЦИЯ УДАЛЕНИЯ ВЫДЕЛЕНИЯ
+                // И ОБНОВЛЕНИЕ ХЭША
+                
             });
 
             return false;
@@ -648,13 +743,7 @@ jQuery.MaSha = function(options) {
 
 
 
-        var cssClassApplierModule = rangy.modules.CssClassApplier;
-        //if (rangy.supported && cssClassApplierModule && cssClassApplierModule.supported) {
-            addSelection = new CssClassApplier("user_selection");
-            removeSelection1 = new CssClassApplier("user_selection_true");
-            removeSelection2 = new CssClassApplier("num");
-        //}
-    
+
         $(document).click(function(e){
             tar = $(e.target);
             if (tar.attr('id') != 'txtselect_marker') {
