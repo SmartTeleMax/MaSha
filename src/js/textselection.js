@@ -248,11 +248,11 @@ jQuery.MaSha = function(options) {
             console.log('$.MaSha._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
             var range = $.MaSha._sel.deserializeSelection(stamp);
             console.log('$.MaSha._sel.restoreStamp: запускаем $.MaSha._sel.tSelection(false)');
-            $.MaSha._sel.tSelection(false, range);
+            $.MaSha._sel.addSelection(false, range);
             $.MaSha._sel.count++;
             console.log('$.MaSha._sel.restoreStamp: ––––––––––––––––––––––––––––––');
         },
-        deserializeSelection: function(stamp) {
+        deserializeSelection: function(serialized) {
             
             rootNode = document.getElementById($.MaSha._sel.rootNode);
             //console.log('deserializeSelection', rootNode);
@@ -264,7 +264,7 @@ jQuery.MaSha = function(options) {
             if(sel.rangeCount > 0) sel.removeAllRanges();
 
             for (var i = 0, len = serializedRanges.length; i < len; ++i) {
-                sel.addRange(deserializeRange(serializedRanges[i], rootNode, win.document));
+                sel.addRange(deserializeRange(serializedRanges[i], rootNode, document));
             }
             
             function deserializePosition(serialized, rootNode, doc, pos){
@@ -421,7 +421,7 @@ jQuery.MaSha = function(options) {
              */
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
             console.log('checkSelection: получен аргумент range = ', range);
-            range = range || $.MaSha._sel.getFirstRange();
+            range = $.MaSha._sel.getFirstRange();
             console.log('checkSelection: range = ', range.endOffset, range.endContainer);
             var checker = range,
                 startDone = false, endDone = false;
