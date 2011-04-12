@@ -55,6 +55,8 @@ Range.prototype.getElementIterator = function(){
 }
 
 Range.prototype.addSelection = function(className){
+    this.splitBoundaries();
+
     var textNodes = this.getTextNodes();
     console.log('textNodes', textNodes)
     for (var i=textNodes.length; i--;){
