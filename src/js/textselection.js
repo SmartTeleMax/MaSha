@@ -129,6 +129,8 @@ jQuery.MaSha = function(options) {
             // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
             testu2 = $(_container).clone();
             var wcount = _container.data.substring(0, _offset).match(options.regexp);
+
+            
             
             console.log('wcount', wcount);
             if (wcount != null) { 
@@ -323,11 +325,14 @@ jQuery.MaSha = function(options) {
         },
         serializeSelection: function(selection, rootNode) {
             rootNode = document.getElementById($.MaSha._sel.rootNode);
+            
+            
             console.log('serializeSelection: selection = ', selection);
 
             selection = selection || window.getSelection();
-
+            
             var ranges = $.MaSha._sel.aftercheck, serializedRanges = [];
+            console.log('serializeSelection: ranges=', ranges);
             //var ranges = selection.getAllRanges(), serializedRanges = [];
 
             for (var i = 0, len = ranges.length; i < len; ++i) {
@@ -348,8 +353,8 @@ jQuery.MaSha = function(options) {
 
                 if ($(node).hasAttr('nodeNum')) {
                     nodeNum = $(node).attr('nodeNum');
-                } else if ($(node.parentNode).hasAttr('nodeNum')){
-                    nodeNum = $(node.parentNode).attr('nodeNum');
+                } else if ($(node).parents('.nodeNum:first').hasAttr('nodeNum')){
+                    nodeNum = $(node).parents('.nodeNum:first').attr('nodeNum');
                 }
 
                 if (piu=='start'){
@@ -507,8 +512,17 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'start') {
+                    
+                    if (container.nodeType == 1 && $.trim($(container).text()) != '') {
+                        console.log('в if-е.');
+                        container = $(container).textNodes()[0];
+                        checker.setStart(container, 0);
+                        console.log('новый container', container);
+                    }
+
                     if (container.nodeType != 3 ||
                         container.data.substring(offset).match(options.regexp) == null) {
+                        console.log('in if nodeType=', container.nodeType);
                         var newdata = nextNode(container);
                         checker.setStart(newdata._container, newdata._offset);
                         container = newdata._container;
@@ -527,6 +541,16 @@ jQuery.MaSha = function(options) {
                 }
                 
                 if (position == 'end') {
+                    
+                    if (container.nodeType == 1 && $.trim($(container).text()) != '' && offset != 0) {
+                        console.log('в end if-е.');
+                        container_txtnodes = $(container).textNodes();
+                        container = container_txtnodes[container_txtnodes.length-1];
+                        offset = container.data.length;
+                        checker.setEnd(container, container.data.length);
+                        console.log('новый container', container, offset);
+                    }
+                    
                     if (container.nodeType != 3 ||
                         container.data.substring(0, offset).match(options.regexp) == null) {
                         var newdata = prevNode(container);
@@ -552,9 +576,11 @@ jQuery.MaSha = function(options) {
         addSelection:function(hash, range) {
         
             range = range || false;
+            
+            console.log('addSelection func: hash',hash, 'range', range );
         
             range = $.MaSha._sel.checkSelection(range);
-        
+            console.log('after checkSelection range = ', range);
             if (!hash){
                 // генерируем и сохраняем якоря для выделенного
                 $.MaSha._sel.ranges['num'+$.MaSha._sel.count] = $.MaSha._sel.serializeSelection();
@@ -567,13 +593,13 @@ jQuery.MaSha = function(options) {
             var _this;
 
             function unhover() { 
-                if (timeout_hover_b) $("."+_this.className.split(' ')[1]).removeClass("hover"); 
+                if (timeout_hover_b) $("."+_this.className.split(' ')[0]).removeClass("hover"); 
             }
 
             $(".num"+$.MaSha._sel.count).mouseover(function(){
                 _this = this;
                 //console.log($(this), this.classList[1], $("."+this.classList[1]));
-                $("."+this.className.split(' ')[1]).addClass('hover');
+                $("."+this.className.split(' ')[0]).addClass('hover');
                 timeout_hover_b = false;
                 clearTimeout(timeout_hover);
             });
@@ -592,7 +618,9 @@ jQuery.MaSha = function(options) {
         },
         getFirstRange: function(){
             var sel = window.getSelection();
-            return sel.rangeCount ? sel.getRangeAt(0) : null;
+            var res = sel.rangeCount ? sel.getRangeAt(0) : null;
+            console.log('getFirstRange func:', res);
+            return res;
         },
         onlytSelection: function(obj){
             /* Здесь вызов функции оборачивалки (удаление выделения)
@@ -600,19 +628,31 @@ jQuery.MaSha = function(options) {
             */
         },
         elNum: function(){
-            var counter = 0;
-            $(options.selectorSelectable+' *').each(function(){
-                if (!$(this).is('img') ||
-                    !$(this).is('script')) {
-                        $(this).attr('nodeNum', counter);
-                        $(this).addClass('nodeNum_'+counter);
-                        counter ++;
-                }
-            });
-            var tt = counter - 100;
-            //alert($('.nodeNum_'+tt).text());
         
-            return counter;
+            // Returns child nodes (including text nodes, if not empty) of 'node',
+            var node = document.getElementById(options.selectorSelectable.split('#')[1]);
+            var result = [];
+            var children = node.childNodes;
+            var child, nodeType, captureCount=0;
+            // Loop over children...
+            for (var idx=0, len=children.length; idx<len; ++idx) {
+                child = children.item(idx);
+                nodeType = child.nodeType;
+                // If it is an element or a textnode...
+                if (nodeType===1 || nodeType===3) {
+                    if (nodeType===3 && !child.nodeValue.replace(/^\s+/, '').replace(/\s+$/, '')) {
+                        // ..if it is a textnode that is logically empty, ignore it
+                        continue;
+                    }
+                    
+                    $(child).attr('nodeNum', captureCount);
+                    $(child).addClass('nodeNum_'+captureCount).addClass('nodeNum');
+                    // ..otherwise add it to the harvest
+                    result.push(child);
+                    captureCount++;
+                }
+            }
+            return result;
         }
     }
 
@@ -625,7 +665,7 @@ jQuery.MaSha = function(options) {
         $(options.selectorSelectable+' *').cleanWhitespace();
     
         
-    
+        // нумерация блочных элементов, которые содержат текст
         $.MaSha._sel.elNum();
     
         var marker = $(''+options.selectorMarker);
