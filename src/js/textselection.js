@@ -587,7 +587,7 @@ jQuery.MaSha = function(options) {
             }
 
 
-            range.addSelection('num'+$.MaSha._sel.count+' '+'user_selection_true');
+            _range.addSelection('num'+$.MaSha._sel.count+' '+'user_selection_true', range);
 
             var timeout_hover, timeout_hover_b = false;
             var _this;
@@ -674,7 +674,7 @@ jQuery.MaSha = function(options) {
         function range_is_selectable(){
             // getNodes() это от rangy вроде.
             var node;
-            var iterator = $.MaSha._sel.getFirstRange().getElementIterator();
+            var iterator = _range.getElementIterator($.MaSha._sel.getFirstRange());
               while (node = iterator()){
                   if (!$(node).parents(''+options.selectorSelectable).length
                       || $(node).parents('.user_selection_true').length

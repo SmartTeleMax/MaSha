@@ -1,5 +1,6 @@
-Range.prototype.splitBoundaries = function() {
-    var sc = this.startContainer, so = this.startOffset, ec = this.endContainer, eo = this.endOffset;
+var _range = {};
+_range.splitBoundaries = function(range) {
+    var sc = range.startContainer, so = range.startOffset, ec = range.endContainer, eo = range.endOffset;
     var startEndSame = (sc === ec);
 
     if (ec.nodeType == 3 && eo < ec.length) {
@@ -14,12 +15,12 @@ Range.prototype.splitBoundaries = function() {
         }
         so = 0;
     }
-    this.setStart(sc, so);
-    this.setEnd(ec, eo);
+    range.setStart(sc, so);
+    range.setEnd(ec, eo);
 }
 
-Range.prototype.getTextNodes = function() {
-    var iterator = this.getElementIterator();
+_range.getTextNodes = function(range) {
+    var iterator = _range.getElementIterator(range);
     var textNodes = [], node;
     while (node = iterator()){
         if (node.nodeType == 3 && !node.data.match(/^\s*$/)){
@@ -29,9 +30,9 @@ Range.prototype.getTextNodes = function() {
     return textNodes
 }
 
-Range.prototype.getElementIterator = function(){
-    var cont = this.startContainer;
-    var end = this.endContainer;
+_range.getElementIterator = function(range){
+    var cont = range.startContainer;
+    var end = range.endContainer;
     var finished = false;
     var up = false;
 
@@ -54,10 +55,10 @@ Range.prototype.getElementIterator = function(){
     return next;
 }
 
-Range.prototype.addSelection = function(className){
-    this.splitBoundaries();
+_range.addSelection = function(className, range){
+    _range.splitBoundaries(range);
 
-    var textNodes = this.getTextNodes();
+    var textNodes = _range.getTextNodes(range);
     console.log('textNodes', textNodes)
     for (var i=textNodes.length; i--;){
         var span = document.createElement('span');
