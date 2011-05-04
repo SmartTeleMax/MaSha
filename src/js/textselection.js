@@ -141,8 +141,23 @@ jQuery.MaSha = function(options) {
             }
             console.log('countingWord: в '+pos+'Container ноде до начала выделения слов:', wcount);
 
-            n = _container.previousSibling;
 
+            var _parent = $(_container).parents('.nodeNum:first');
+            ___n = _container;
+            var _parentAllNodes = _parent.textNodes();
+            var targetNodeIndex = _parentAllNodes.index(_container);
+            
+            console.log('_parent', _parent, '_parentAllNodes', _parentAllNodes, 'targetNodeIndex', targetNodeIndex, '_container', _container);
+            
+            for (var i=0; i < targetNodeIndex; i++) {
+                var onei_ = wordCount(_parentAllNodes[i]);
+                wcount += onei_;
+                console.log('countingWord: подсчитываем слова в ноде ', _parentAllNodes[i], '. Слов ', onei_);
+            }
+            
+            /*
+            n = _container.previousSibling;
+            // FIXME! Требуется подсчет кол-ва слов и за пределами внутренних <b></b>
             while (n) {
                 if (pos=='end') {
                     console.log('countingWord: подсчитываем слова в одной из предыдущих от '+pos+'Container ноде[n] = ', n);
@@ -154,7 +169,7 @@ jQuery.MaSha = function(options) {
                 console.log('countingWord: в ноде ', n, ' подсчитано ', onei, 'слов. Теперь в общей копилке ', wcount, 'слов');
                 n = n.previousSibling;
             }
-
+            */
             console.log('countingWord: итог работы (кол-во слов до первого/последнего слова)', wcount);
             console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
 
