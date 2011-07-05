@@ -56,6 +56,31 @@ jQuery.TextSelector = function(options) {
         return this.attr(name) !== undefined;
     };
 
+    function _siblingNode(cont, prevnext, firstlast, offs){
+        console.log('getting', prevnext, cont);
+        while (cont.parentNode && $(cont).parents(options.selectorSelectable).length){
+            while (cont[prevnext + 'Sibling']){
+                cont = cont[prevnext + 'Sibling'];
+                while (cont.nodeType == 1 && cont.childNodes.length){
+                    cont = cont[firstlast + 'Child'];
+                }
+                if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
+                    console.log('getting ' + prevnext +  ': _container:', cont.data,
+                                '_offset:', offs * cont.data.length);
+                    return {_container: cont, _offset: offs * cont.data.length};
+                }
+            }
+            cont = cont.parentNode;
+        }
+    }
+
+    function prevNode(cont){
+        return _siblingNode(cont, 'previous', 'last', 1);
+    }
+    function nextNode(cont){
+        return _siblingNode(cont, 'next', 'first', 0);
+    }
+
     // init base var
     var addSelection, removeSelection1, removeSelection2, logger_count = 0;
 
@@ -187,16 +212,9 @@ jQuery.TextSelector = function(options) {
                 }
                 location.hash = nowhash;
             }
-            
-
-        
-            
-        
-            console.log('updateHash: ––––––––––––––––––––––––––––––');
             console.log('updateHash: обновляем хэш: ', hash);
-            console.log('updateHash: ––––––––––––––––––––––––––––––');
-        
         },
+
         readHash: function(){
             console.log('readHash: ––––––––––––––––––––––––––––––');
 
@@ -227,6 +245,7 @@ jQuery.TextSelector = function(options) {
             console.log('readHash: ––––––––––––––––––––––––––––––');
 
         },
+
         restoreStamp: function(stamp){
             console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
             console.log('$.TextSelector._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
@@ -305,29 +324,19 @@ jQuery.TextSelector = function(options) {
 
             return sel;
         },
+
         serializeSelection: function(selection, rootNode) {
             rootNode = document.getElementById($.TextSelector._sel.rootNode);
-            
             
             console.log('serializeSelection: selection = ', selection);
 
             selection = selection || window.getSelection();
             
-            var ranges = $.TextSelector._sel.aftercheck, serializedRanges = [];
-            console.log('serializeSelection: ranges=', ranges);
-            //var ranges = selection.getAllRanges(), serializedRanges = [];
+            var range = $.TextSelector._sel.aftercheck;
+            
+            return serializeWord(range.startContainer, range, 'start', rootNode) + "," +
+                   serializeWord(range.endContainer, range, 'end', rootNode);
 
-            // XXX Only one range is supported?
-            for (var i = 0, len = ranges.length; i < len; ++i) {
-                serializedRanges[i] = serializeRange(ranges[i], rootNode);
-            }
-            
-            
-            function serializeRange(range, rootNode) {
-                var serialized = serializeWord(range.startContainer, range, 'start', rootNode) + "," +
-                    serializeWord(range.endContainer, range, 'end', rootNode);
-                return serialized;
-            }
             function serializeWord(node, range, piu, rootNode) {
 
                 offset = 0;
@@ -347,10 +356,7 @@ jQuery.TextSelector = function(options) {
                 }
                 return nodeNum + ':' + offset;
             }
-            
-            return serializedRanges.join("|");
         },
-
 
         checkSelection: function(range) {
             /*
@@ -375,7 +381,7 @@ jQuery.TextSelector = function(options) {
         
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
         
-            $.TextSelector._sel.aftercheck = []; $.TextSelector._sel.aftercheck.push(checker);
+            $.TextSelector._sel.aftercheck = checker;
         
             return checker;
 
@@ -391,58 +397,35 @@ jQuery.TextSelector = function(options) {
 
                 function stepBack(container, offset, condition) {
                     var init_offset = offset;
-                    console.log('checkSelection.stepBack: offset: ', offset);
+                    //console.log('checkSelection.stepBack: offset: ', offset);
                     while (offset > 0 && condition(container.data[offset-1])){
-                        console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
-                                    'Шаг #', init_offset - offset + 1, '; '+
-                                    'Проверяем символ "', container.data[offset - 1], '"');
+                        //console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
+                        //            'Шаг #', init_offset - offset + 1, '; '+
+                        //            'Проверяем символ "', container.data[offset - 1], '"');
                         offset--;
                     }
-                    console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
-                                'Шаг #', init_offset - offset + 1, '; '+
-                                'Проверяем символ "', container.data[offset - 1], '"');
+                    //console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
+                    //            'Шаг #', init_offset - offset + 1, '; '+
+                    //            'Проверяем символ "', container.data[offset - 1], '"');
                     return offset;
                 }
                 
                 function stepForward(container, offset, condition) {
                     var init_offset = offset;
-                    console.log('checkSelection.stepForward: offset: ', offset);
+                    //console.log('checkSelection.stepForward: offset: ', offset);
                     while (offset < container.data.length && condition(container.data[offset])){
-                        console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
-                                    'Шаг #', offset - init_offset + 1, '; '+
-                                    'Проверяем символ "', container.data[offset], '"');
+                        //console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
+                        //            'Шаг #', offset - init_offset + 1, '; '+
+                        //            'Проверяем символ "', container.data[offset], '"');
                         offset++;
                     }
-                    console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
-                                'Шаг #', offset - init_offset + 1, '; '+
-                                'Проверяем символ "', container.data[offset], '"');
+                    //console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
+                    //            'Шаг #', offset - init_offset + 1, '; '+
+                    //            'Проверяем символ "', container.data[offset], '"');
                     return offset;
                 }
 
-                function _siblingNode(cont, prevnext, firstlast, offs){
-                    console.log('getting', prevnext, cont);
-                    while (cont.parentNode && $(cont).parents(options.selectorSelectable).length){
-                        while (cont[prevnext + 'Sibling']){
-                            cont = cont[prevnext + 'Sibling'];
-                            while (cont.nodeType == 1 && cont.childNodes.length){
-                                cont = cont[firstlast + 'Child'];
-                            }
-                            if (cont.nodeType == 3 && cont.data.match(options.regexp) != null){
-                                console.log('getting ' + prevnext +  ': _container:', cont.data,
-                                            '_offset:', offs * cont.data.length);
-                                return {_container: cont, _offset: offs * cont.data.length};
-                            }
-                        }
-                        cont = cont.parentNode;
-                    }
-                }
 
-                function prevNode(cont){
-                    return _siblingNode(cont, 'previous', 'last', 1);
-                }
-                function nextNode(cont){
-                    return _siblingNode(cont, 'next', 'first', 0);
-                }
                 
                 if (position == 'start') {
                     
@@ -501,11 +484,10 @@ jQuery.TextSelector = function(options) {
                     console.log('checkSelection: скорректированный offset = ', offset);
 
                     return offset;
-                    
                 }
-                
             }
         },
+
         addSelection:function(hash, range) {
         
             range = range || false;
@@ -518,7 +500,6 @@ jQuery.TextSelector = function(options) {
                 // генерируем и сохраняем якоря для выделенного
                 $.TextSelector._sel.ranges['num'+$.TextSelector._sel.count] = $.TextSelector._sel.serializeSelection();
             }
-
 
             _range.addSelection('num'+$.TextSelector._sel.count+' user_selection_true', range);
 
