@@ -350,6 +350,7 @@ jQuery.MaSha = function(options) {
             console.log('serializeSelection: ranges=', ranges);
             //var ranges = selection.getAllRanges(), serializedRanges = [];
 
+            // XXX Only one range is supported?
             for (var i = 0, len = ranges.length; i < len; ++i) {
                 serializedRanges[i] = serializeRange(ranges[i], rootNode);
             }
