@@ -1,38 +1,5 @@
-// Event text-selection handler
-(function($) {
-	$.event.special.textselect = {
-		setup: function(data, namespaces) {
-			$(this).data("textselected",false);
-			$(this).bind('mouseup', $.event.special.textselect.handler);
-		},
-		teardown: function(data) {
-			$(this).unbind('mouseup', $.event.special.textselect.handler);
-		},
-		handler: function(event) { 
-			var text = $.event.special.textselect.getSelectedText().toString(); 
-			if (text != '') {
-				$(this).data("textselected",true);
-				event.type = "textselect";
-				event.text = text;
-				$.event.handle.apply(this, arguments);
-			}
-		},
-		getSelectedText: function() {
-			var text = '';
-				if (window.getSelection) {
-				 text = window.getSelection();
-				} else if (document.getSelection) {
-					text = document.getSelection();
-					} else if (document.selection) {
-					text = document.selection.createRange().text;
-				}
-			return text;
-		}
-	};
-})(jQuery);
 
-
-jQuery.MaSha = function(options) {
+jQuery.TextSelector = function(options) {
         
     var defaults = {
         regexp: /[^\s,;:«»–.!?<>…\n]+/ig,
@@ -44,7 +11,7 @@ jQuery.MaSha = function(options) {
     
     var options = $.extend(defaults, options);
     
-    jQuery.MaSha.options = options;
+    jQuery.TextSelector.options = options;
     
     //get text nodes in element function (old)
     var getTextNodesIn = (function() {
@@ -58,8 +25,7 @@ jQuery.MaSha = function(options) {
                 .contents()
                 .filter(textNodeFilter)
                 .add(
-                    $el
-                       .find("*")
+                    $el.find("*")
                        .contents()
                        .filter(textNodeFilter)
                 );
@@ -95,7 +61,7 @@ jQuery.MaSha = function(options) {
 
 
     // init counting symbols/word functions
-    $.MaSha._len = {
+    $.TextSelector._len = {
         words: function(_container, _offset, pos){
             console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
             console.log('countingWord: подсчет слов. аргументы: _container =', _container, '; _offset = ', _offset);
@@ -190,7 +156,7 @@ jQuery.MaSha = function(options) {
     }
 
     // init main object
-    $.MaSha._sel = {
+    $.TextSelector._sel = {
         count: 0,
         savedSel: [],
         ranges: {},
@@ -207,9 +173,9 @@ jQuery.MaSha = function(options) {
                 nowhash = nowhash.replace(_delete+';', '');
                 location.hash = nowhash;
             } else {
-                for (key in $.MaSha._sel.ranges) { 
-                    if (nowhash.indexOf($.MaSha._sel.ranges[key]) == -1) {
-                        hash += $.MaSha._sel.ranges[key] + ';';
+                for (key in $.TextSelector._sel.ranges) { 
+                    if (nowhash.indexOf($.TextSelector._sel.ranges[key]) == -1) {
+                        hash += $.TextSelector._sel.ranges[key] + ';';
                     }
                 }
                 if (nowhash.indexOf('sel=') == -1) {
@@ -247,8 +213,8 @@ jQuery.MaSha = function(options) {
             // восстанавливаем первое выделение + скроллим до него.
         
             for (var i=0; i < hashAr.length-1; i++) {
-                console.log('readHash: восстанавливаем метку [запускаем $.MaSha._sel.restoreStamp('+hashAr[i]+');]');
-                $.MaSha._sel.restoreStamp(hashAr[i]);
+                console.log('readHash: восстанавливаем метку [запускаем $.TextSelector._sel.restoreStamp('+hashAr[i]+');]');
+                $.TextSelector._sel.restoreStamp(hashAr[i]);
             }
 
             // Вычисляем кол-во px от верха до первого выделенного участка текста, далее - скроллим до этого места.
@@ -261,17 +227,17 @@ jQuery.MaSha = function(options) {
 
         },
         restoreStamp: function(stamp){
-            console.log('$.MaSha._sel.restoreStamp: ––––––––––––––––––––––––––––––');
-            console.log('$.MaSha._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
-            var range = $.MaSha._sel.deserializeSelection(stamp);
-            console.log('$.MaSha._sel.restoreStamp: запускаем $.MaSha._sel.tSelection(false)');
-            $.MaSha._sel.addSelection(false, range);
-            $.MaSha._sel.count++;
-            console.log('$.MaSha._sel.restoreStamp: ––––––––––––––––––––––––––––––');
+            console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
+            console.log('$.TextSelector._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
+            var range = $.TextSelector._sel.deserializeSelection(stamp);
+            console.log('$.TextSelector._sel.restoreStamp: запускаем $.TextSelector._sel.tSelection(false)');
+            $.TextSelector._sel.addSelection(false, range);
+            $.TextSelector._sel.count++;
+            console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
         },
         deserializeSelection: function(serialized) {
             
-            rootNode = document.getElementById($.MaSha._sel.rootNode);
+            rootNode = document.getElementById($.TextSelector._sel.rootNode);
             //console.log('deserializeSelection', rootNode);
 
             var serializedRanges = serialized.split("|");
@@ -320,7 +286,7 @@ jQuery.MaSha = function(options) {
                  return {node: node, offset: parseInt(offset, 10)};
             }
             function deserializeRange(serialized, rootNode, doc){
-                rootNode = rootNode || document.getElementById($.MaSha._sel.rootNode);
+                rootNode = rootNode || document.getElementById($.TextSelector._sel.rootNode);
                 if (rootNode) {
                     doc = doc || document;
                 } else {
@@ -339,14 +305,14 @@ jQuery.MaSha = function(options) {
             return sel;
         },
         serializeSelection: function(selection, rootNode) {
-            rootNode = document.getElementById($.MaSha._sel.rootNode);
+            rootNode = document.getElementById($.TextSelector._sel.rootNode);
             
             
             console.log('serializeSelection: selection = ', selection);
 
             selection = selection || window.getSelection();
             
-            var ranges = $.MaSha._sel.aftercheck, serializedRanges = [];
+            var ranges = $.TextSelector._sel.aftercheck, serializedRanges = [];
             console.log('serializeSelection: ranges=', ranges);
             //var ranges = selection.getAllRanges(), serializedRanges = [];
 
@@ -374,9 +340,9 @@ jQuery.MaSha = function(options) {
                 }
 
                 if (piu=='start'){
-                    offset = $.MaSha._len.words(range.startContainer, range.startOffset, piu);
+                    offset = $.TextSelector._len.words(range.startContainer, range.startOffset, piu);
                 } else {
-                    offset = $.MaSha._len.words(range.endContainer, range.endOffset, piu);
+                    offset = $.TextSelector._len.words(range.endContainer, range.endOffset, piu);
                 }
                 return nodeNum + ':' + offset;
             }
@@ -384,57 +350,7 @@ jQuery.MaSha = function(options) {
             return serializedRanges.join("|");
         },
 
-        upmsg: function(){
-            $msg = $('#upmsg-selectable');
-        
-            if ($.cookie('selectable-warning') == 'notshow') return;
-            if ($msg.hasClass('show')) return;
-        
-            $msg.addClass('show');
-        
-            clearTimeout(autoclose);
-        
-            var opacity_start = 0;
-        
-            if ($.browser.msie) {
-                $msg.animate({
-                    'top': '0px'
-                }, { duration: 1000, easing: 'easeOutQuint' });
-            } else {
-                $msg.animate({
-                    'top': '0px',
-                    'opacity': '1'
-                }, { duration: 1000, easing: 'easeOutQuint' });
-            }
-        
-        
-            function closemsg(){
-                if ($.browser.msie) {
-                    $msg.animate({
-                        'top': '-57px'
-                    }, 500,  "easeInQuint", function(){ 
-                        $msg.removeClass('show');
-                    });
-                } else {
-                    $msg.animate({
-                        'top': '-57px',
-                        'opacity': opacity_start
-                    }, 500,  "easeInQuint", function(){ 
-                        $msg.removeClass('show');
-                    });
-                }
-                clearTimeout(autoclose);
-                return false;
-            }
-        
-            var autoclose = setTimeout(closemsg, 10000);
-            $('.upmsg_closebtn', $msg).click(function(){
-                $.cookie("selectable-warning", 'notshow');
-                closemsg();
-                return false;
-            });
-        
-        },
+
         checkSelection: function(range) {
             /*
              * Corrects selection.
@@ -442,7 +358,7 @@ jQuery.MaSha = function(options) {
              */
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
             console.log('checkSelection: получен аргумент range = ', range);
-            range = $.MaSha._sel.getFirstRange();
+            range = $.TextSelector._sel.getFirstRange();
             console.log('checkSelection: range = ', range.endOffset, range.endContainer);
             var checker = range,
                 startDone = false, endDone = false;
@@ -458,7 +374,7 @@ jQuery.MaSha = function(options) {
         
             console.log('checkSelection: ––––––––––––––––––––––––––––––');
         
-            $.MaSha._sel.aftercheck = []; $.MaSha._sel.aftercheck.push(checker);
+            $.TextSelector._sel.aftercheck = []; $.TextSelector._sel.aftercheck.push(checker);
         
             return checker;
 
@@ -595,15 +511,15 @@ jQuery.MaSha = function(options) {
             
             console.log('addSelection func: hash',hash, 'range', range );
         
-            range = $.MaSha._sel.checkSelection(range);
+            range = $.TextSelector._sel.checkSelection(range);
             console.log('after checkSelection range = ', range);
             if (!hash){
                 // генерируем и сохраняем якоря для выделенного
-                $.MaSha._sel.ranges['num'+$.MaSha._sel.count] = $.MaSha._sel.serializeSelection();
+                $.TextSelector._sel.ranges['num'+$.TextSelector._sel.count] = $.TextSelector._sel.serializeSelection();
             }
 
 
-            _range.addSelection('num'+$.MaSha._sel.count+' '+'user_selection_true', range);
+            _range.addSelection('num'+$.TextSelector._sel.count+' '+'user_selection_true', range);
 
             var timeout_hover, timeout_hover_b = false;
             var _this;
@@ -612,7 +528,7 @@ jQuery.MaSha = function(options) {
                 if (timeout_hover_b) $("."+_this.className.split(' ')[0]).removeClass("hover"); 
             }
 
-            $(".num"+$.MaSha._sel.count).mouseover(function(){
+            $(".num"+$.TextSelector._sel.count).mouseover(function(){
                 _this = this;
                 //console.log($(this), this.classList[1], $("."+this.classList[1]));
                 $("."+this.className.split(' ')[0]).addClass('hover');
@@ -620,15 +536,15 @@ jQuery.MaSha = function(options) {
                 clearTimeout(timeout_hover);
             });
 
-            $(".num"+$.MaSha._sel.count).mouseleave(function(){
+            $(".num"+$.TextSelector._sel.count).mouseleave(function(){
                 timeout_hover_b = true;
                 var timeout_hover = setTimeout(unhover, 2000);
             });
 
-            $('.num'+$.MaSha._sel.count+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
+            $('.num'+$.TextSelector._sel.count+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
         
             hash = hash || true;
-            if (hash) $.MaSha._sel.updateHash();
+            if (hash) $.TextSelector._sel.updateHash();
 
             window.getSelection().removeAllRanges();
         },
@@ -643,11 +559,10 @@ jQuery.MaSha = function(options) {
             obj.toggleSelection();
             */
         },
-        elNum: function(){
-        
+        enumerateElements: function(){
             // Returns child nodes (including text nodes, if not empty) of 'node',
-            var node = document.getElementById(options.selectorSelectable.split('#')[1]);
-            var result = [];
+            var node = $(options.selectorSelectable)[0];
+
             var children = node.childNodes;
             var child, nodeType, captureCount=0;
             // Loop over children...
@@ -664,68 +579,71 @@ jQuery.MaSha = function(options) {
                     $(child).attr('nodeNum', captureCount);
                     $(child).addClass('nodeNum_'+captureCount).addClass('nodeNum');
                     // ..otherwise add it to the harvest
-                    result.push(child);
                     captureCount++;
                 }
             }
-            return result;
         }
     }
 
-    
-    $(function(){
 
-        if (!$(''+options.selectorSelectable).length) return;
+    function range_is_selectable(){
+        // getNodes() это от rangy вроде.
+        var node;
+        var iterator = _range.getElementIterator($.TextSelector._sel.getFirstRange());
+        while (node = iterator()){
+            if (!$(node).parents(options.selectorSelectable).length
+                || $(node).parents('.user_selection_true').length
+                || $(node).parents('div.b-multimedia').length
+                || $(node).parents('div.inpost').length) { 
+                    return false; 
+                } 
+            if (node.nodeType == 1) {
+                if ($(node).hasClass('user_selection_true') // XXX merge selections?
+                 || $(node).hasClass('inpost')
+                 || $(node).hasClass('b-multimedia')
+                 || $(node).hasClass('photo')) {
+                     //alert('отказ');
+                     //console.log('отказ! все из-за ', nodes[i]);
+                     return false;
+                 }
+            }
+        }
+        return true;
+    }
+
+
+
+    $(function(){ // domready
+        var selectable = $(options.selectorSelectable)
+        var selectableMessage = new SelectableMessage();
+
+        if (!selectable.length) return;
     
-        $(''+options.selectorSelectable).cleanWhitespace();
-        $(options.selectorSelectable+' *').cleanWhitespace();
+        selectable.cleanWhitespace();
+        selectable.find('*').cleanWhitespace();
     
         
         // нумерация блочных элементов, которые содержат текст
-        $.MaSha._sel.elNum();
+        $.TextSelector._sel.enumerateElements();
     
-        var marker = $(''+options.selectorMarker);
-        var textselect_event = true, dontshow = false;
+        var marker = $(options.selectorMarker);
+        var dontshow = false;
 
-        function range_is_selectable(){
-            // getNodes() это от rangy вроде.
-            var node;
-            var iterator = _range.getElementIterator($.MaSha._sel.getFirstRange());
-              while (node = iterator()){
-                  if (!$(node).parents(''+options.selectorSelectable).length
-                      || $(node).parents('.user_selection_true').length
-                      || $(node).parents('div.b-multimedia').length
-                      || $(node).parents('div.inpost').length) { 
-                          return false; 
-                      } 
-                  if (node.nodeType == 1) {
-                      if ($(node).hasClass('user_selection_true') // XXX merge selections?
-                       || $(node).hasClass('inpost')
-                       || $(node).hasClass('b-multimedia')
-                       || $(node).hasClass('photo')) {
-                           //alert('отказ');
-                           //console.log('отказ! все из-за ', nodes[i]);
-                           return false;
-                       }
-                  }
-              }
-            return true;
-        }
-    
         $(document).bind('textselect', function(e) {
+            /*
+             * Show the marker if any text selected
+             */
             if (e.text == '' || !options.regexp.test(e.text)) return;
-            if (!textselect_event) return;
             if (!range_is_selectable()) return;
-
        
             window.setTimeout(function(){
                 if (!dontshow) {
-                    $(marker).css({'top':e.pageY-33, 'left': e.pageX+5});
+                    marker.css({'top':e.pageY-33, 'left': e.pageX+5});
                     if ($.browser.msie) {
-                        $(marker).addClass('show');
+                        marker.addClass('show');
                     } else {
-                        $(marker).fadeIn('fast', function(){
-                            $(marker).addClass('show');
+                        marker.fadeIn('fast', function(){
+                            marker.addClass('show');
                         });
                     }
                 }
@@ -734,31 +652,29 @@ jQuery.MaSha = function(options) {
     
     
     
-        $(marker).click(function(e){
+        marker.click(function(e){
             e.preventDefault();
             if (!range_is_selectable()){
-                $(marker).removeClass('show').css('display', 'none');
+                marker.removeClass('show').css('display', 'none');
                 console.log('Range is not selectable')
                 return;
             }
             
             dontshow = true;
         
-            $.MaSha._sel.addSelection();
-            $.MaSha._sel.count++;
-        
+            $.TextSelector._sel.addSelection();
+            $.TextSelector._sel.count++;
+
             if ($.browser.msie) {
-                $(marker).removeClass('show');
-                $.MaSha._sel.upmsg();
-                dontshow = false;
+                onHideMarker()
             } else {
-                $(marker).fadeOut('fast', function(){
-                    $(this).removeClass('show');
-                    $.MaSha._sel.upmsg();
-                    dontshow = false;
-                });
+                marker.fadeOut('fast', onHideMarker);
             }
-        
+            function onHideMarker(){
+                marker.removeClass('show');
+                selectableMessage.show();
+                dontshow = false;
+            }
         });
     
         $('.closewrap a.txtsel_close').live('click', function(){
@@ -768,19 +684,12 @@ jQuery.MaSha = function(options) {
             $(this).fadeOut('slow', function(){
                 $(this).parent('span.closewrap').remove();
                 removeTextSelection('.'+numclass+'.user_selection_true');
-                $.MaSha._sel.updateHash($.MaSha._sel.ranges[numclass]);
-                delete $.MaSha._sel.ranges[numclass];
+                $.TextSelector._sel.updateHash($.TextSelector._sel.ranges[numclass]);
+                delete $.TextSelector._sel.ranges[numclass];
             });
 
             return false;
         });
-
-
-
-    
-
-
-
 
         $(document).click(function(e){
             tar = $(e.target);
@@ -798,10 +707,77 @@ jQuery.MaSha = function(options) {
             }
         });
     
-        $('body').append('<div id="logger" style="position:fixed; bottom:0; left:0; width: 100%; height: auto; background: white; max-height: 150px; overflow: auto;"></div>');
-        $.MaSha._sel.readHash();
+        $.TextSelector._sel.readHash();
     });
 
-  
+
+    function SelectableMessage() {
+        var $msg = $('#upmsg-selectable');
+        var autoclose;
+
+        this.show = function(){
+            if (get_closed()) return;
+            //if ($msg.hasClass('show')) return;
+        
+            $msg.addClass('show');
+        
+            if ($.browser.msie) {
+                $msg.animate({
+                    'top': '0px'
+                }, { duration: 1000, easing: 'easeOutQuint' });
+            } else {
+                $msg.animate({
+                    'top': '0px',
+                    'opacity': '1'
+                }, { duration: 1000, easing: 'easeOutQuint' });
+            }
+
+            clearTimeout(autoclose);
+            autoclose = setTimeout(closemsg, 10000);
+        }
+    
+    
+        $msg.find('.upmsg_closebtn').click(function(){
+            closemsg();
+            save_closed();
+            clearTimeout(autoclose);
+            return false;
+        });
+
+        function closemsg(){
+            if ($.browser.msie) {
+                $msg.animate({
+                    'top': '-57px'
+                }, 500,  "easeInQuint", function(){ 
+                    $msg.removeClass('show');
+                });
+            } else {
+                $msg.animate({
+                    'top': '-57px',
+                    'opacity': 0
+                }, 500,  "easeInQuint", function(){ 
+                    $msg.removeClass('show');
+                });
+            }
+            return false;
+        }
+    
+        function save_closed(){
+            if (window.localStorage){
+                localStorage.selectable_warning = 'true';
+            } else {
+                $.cookie('selectable-warning', 'true');
+            }
+        }
+        function get_closed(){
+            if (window.localStorage){
+                return !!localStorage.selectable_warning;
+            } else {
+                return !!$.cookie('selectable-warning');
+            }
+        }
+    }
 
 };
+
+

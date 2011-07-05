@@ -77,5 +77,40 @@ removeTextSelection = function(className){
         }
         span.parentNode.removeChild(span);
     }
-}
+}; // don't remove this semicolon
+
+
+// Event text-selection handler
+(function($) {
+	$.event.special.textselect = {
+		setup: function(data, namespaces) {
+			$(this).data("textselected",false);
+			$(this).bind('mouseup', $.event.special.textselect.handler);
+		},
+		teardown: function(data) {
+			$(this).unbind('mouseup', $.event.special.textselect.handler);
+		},
+		handler: function(event) { 
+			var text = $.event.special.textselect.getSelectedText().toString(); 
+			if (text != '') {
+				$(this).data("textselected",true);
+				event.type = "textselect";
+				event.text = text;
+				$.event.handle.apply(this, arguments);
+			}
+		},
+		getSelectedText: function() {
+			var text = '';
+				if (window.getSelection) {
+				 text = window.getSelection();
+				} else if (document.getSelection) {
+					text = document.getSelection();
+					} else if (document.selection) {
+					text = document.selection.createRange().text;
+				}
+			return text;
+		}
+	};
+})(jQuery);
+
 
