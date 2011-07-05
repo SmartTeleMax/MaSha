@@ -72,7 +72,8 @@ jQuery.TextSelector = function(options) {
                 var _wcount = 0;
                 //console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
                 if (node.nodeType == 3) { // Text only
-                    _wcount += node.nodeValue.match(options.regexp).length;
+                    var match = node.nodeValue.match(options.regexp);
+                    if (match) { _wcount += match.length; }
                     //console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
                 } else if (node.childNodes && node.childNodes.length){ // Child element
                     var alltxtNodes = getTextNodesIn(node);
@@ -519,7 +520,7 @@ jQuery.TextSelector = function(options) {
             }
 
 
-            _range.addSelection('num'+$.TextSelector._sel.count+' '+'user_selection_true', range);
+            _range.addSelection('num'+$.TextSelector._sel.count+' user_selection_true', range);
 
             var timeout_hover, timeout_hover_b = false;
             var _this;
