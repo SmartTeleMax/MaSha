@@ -119,10 +119,7 @@ jQuery.TextSelector = function(options) {
                 _container = getTextNodesIn(_container)[0];
             }
             // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
-            testu2 = $(_container).clone();
             var wcount = _container.data.substring(0, _offset).match(options.regexp);
-
-            
             
             console.log('wcount', wcount);
             if (wcount != null) { 
@@ -133,18 +130,19 @@ jQuery.TextSelector = function(options) {
             }
             console.log('countingWord: в '+pos+'Container ноде до начала выделения слов:', wcount);
 
+            var node = _container;
+            var all_nodes = [];
+            while(node && !node.selection_index){
+                node = prevNode(node)._container;
+                all_nodes.push(node);
+                //node = node? node._container: null;
+            }
+            var selection_index = node.selection_index;
 
-            var _parent = $(_container).parents('.nodeNum:first');
-            ___n = _container;
-            var _parentAllNodes = _parent.textNodes();
-            var targetNodeIndex = _parentAllNodes.index(_container);
-            
-            console.log('_parent', _parent, '_parentAllNodes', _parentAllNodes, 'targetNodeIndex', targetNodeIndex, '_container', _container);
-            
-            for (var i=0; i < targetNodeIndex; i++) {
-                var onei_ = wordCount(_parentAllNodes[i]);
+            for (var i=all_nodes.length; i--;) {
+                var onei_ = wordCount(all_nodes[i]);
                 wcount += onei_;
-                console.log('countingWord: подсчитываем слова в ноде ', _parentAllNodes[i], '. Слов ', onei_);
+                console.log('countingWord: подсчитываем слова в ноде ', all_nodes[i], '. Слов ', onei_);
             }
             
             /*
@@ -162,10 +160,9 @@ jQuery.TextSelector = function(options) {
                 n = n.previousSibling;
             }
             */
-            console.log('countingWord: итог работы (кол-во слов до первого/последнего слова)', wcount);
-            console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
-
-            return wcount;
+            //console.log('countingWord: итог работы (кол-во слов до первого/последнего слова)', wcount);
+            //console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
+            return selection_index + ':' + wcount;
         },
         symbols: function(_node){
             var _count = 0;
@@ -247,63 +244,72 @@ jQuery.TextSelector = function(options) {
         },
 
         restoreStamp: function(stamp){
-            console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
-            console.log('$.TextSelector._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
+            //console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
+            //console.log('$.TextSelector._sel.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
             var range = $.TextSelector._sel.deserializeSelection(stamp);
-            console.log('$.TextSelector._sel.restoreStamp: запускаем $.TextSelector._sel.tSelection(false)');
-            $.TextSelector._sel.addSelection(false, range);
-            $.TextSelector._sel.count++;
-            console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
+            //console.log('$.TextSelector._sel.restoreStamp: запускаем $.TextSelector._sel.tSelection(false)');
+            if(range){
+                $.TextSelector._sel.addSelection(false, range);
+                $.TextSelector._sel.count++;
+            }
+            //console.log('$.TextSelector._sel.restoreStamp: ––––––––––––––––––––––––––––––');
         },
         deserializeSelection: function(serialized) {
             
-            rootNode = document.getElementById($.TextSelector._sel.rootNode);
+            var rootNode = document.getElementById($.TextSelector._sel.rootNode);
             //console.log('deserializeSelection', rootNode);
 
-            var serializedRanges = serialized.split("|");
             var sel = window.getSelection();
             console.log('deserializeSelection: sel=', sel)
             var ranges = [];
             if(sel.rangeCount > 0) sel.removeAllRanges();
 
-            for (var i = 0, len = serializedRanges.length; i < len; ++i) {
-                sel.addRange(deserializeRange(serializedRanges[i], rootNode, document));
+            var range = deserializeRange(serialized, rootNode, document)
+            if (range) {
+                sel.addRange(range);
+                return sel;
+            } else {
+                return null;
             }
             
             function deserializePosition(serialized, rootNode, doc, pos){
                  var bits = serialized.split(":");
-                 var node = rootNode;
-                 var el = $('.nodeNum_'+bits[0]);
+                 var node = $.TextSelector._sel.blocks[parseInt(bits[0])];
 
                  var pos_text;
 
-                 console.log('deserializePosition: Осуществляем подсчет '+pos+'-овой позиции');
-                 console.log('deserializePosition: выбран элемент = ', el);
-                 console.log('deserializePosition: в выбранном элементе '+$(el).contents().length+' childNodes');
+                 //console.log('deserializePosition: Осуществляем подсчет '+pos+'-овой позиции');
+                 console.log('deserializePosition: выбран элемент = ', node, bits[0]);
+                 //console.log('deserializePosition: в выбранном элементе '+$(el).contents().length+' childNodes');
 
-                 var re = new RegExp ('[^\\s,;:«»–.!?]+', 'ig');
 
                  var offset, stepCount = 0, exit = false;
-                 console.log('deserializePosition: ищем по счету '+bits[1]+' слово. Запускаем цикл перебора всех слов родительского элемента.');
-                 var _allnodes = $(el).textNodes();
-                 for (i=0; i<_allnodes.length; i++) {
-                     while ((myArray = re.exec( _allnodes[i].data )) != null) {
+                 //console.log('deserializePosition: ищем по счету '+bits[1]+' слово. Запускаем цикл перебора всех слов родительского элемента.');
+                 while (node) {
+                     var re = new RegExp ('[^\\s,;:«»–.!?]+', 'ig');
+                     while ((myArray = re.exec(node.data )) != null) {
                          stepCount++;
-                         console.log('deserializePosition: слово №'+stepCount+' = "', myArray[0], '"; (startoffset =', myArray.index, ', endoffset =', re.lastIndex, ')');
+                         //console.log('deserializePosition: слово №'+stepCount+' = "', myArray[0], '"; (startoffset =', myArray.index, ', endoffset =', re.lastIndex, ')');
                          if (stepCount == bits[1]) {
                              if (pos=='start') offset = myArray.index;
                              if (pos=='end') offset = re.lastIndex;
 
-                             console.log('deserializePosition: '+pos+'овое слово найдено = ', myArray[0], '. Целевая нода = ', _allnodes[i], '. Символьный offset = ', offset);
-                             node = _allnodes[i];
+                             return {node: node, offset: parseInt(offset, 10)};
+                             //console.log('deserializePosition: '+pos+'овое слово найдено = ', myArray[0], '. Целевая нода = ', _allnodes[i], '. Символьный offset = ', offset);
+                             //node = _allnodes[i];
                              break;
                          } else {
                              //console.log('пустой проход.', stepCount, '|', bits[1]);
                          }
 
                      }
+                     node = nextNode(node)
+                     node = node? node._container: null;
+                     if (node.selection_index){
+                         node = null;
+                     }
                  }
-                 return {node: node, offset: parseInt(offset, 10)};
+                 return {node: null, offset: 0};
             }
             function deserializeRange(serialized, rootNode, doc){
                 rootNode = rootNode || document.getElementById($.TextSelector._sel.rootNode);
@@ -316,17 +322,22 @@ jQuery.TextSelector = function(options) {
                 var result = /^([^,]+),([^,]+)({([^}]+)})?$/.exec(serialized);
 
                 var start = deserializePosition(result[1], rootNode, doc, 'start'), end = deserializePosition(result[2], rootNode, doc, 'end');
-                var range = document.createRange();
-                range.setStart(start.node, start.offset);
-                range.setEnd(end.node, end.offset);
-                return range;
+
+                if (start.node && end.node){
+                    var range = document.createRange();
+                    range.setStart(start.node, start.offset);
+                    range.setEnd(end.node, end.offset);
+                    return range;
+                } else {
+                    if (window.console){console.warn('Cannot deserialize range', serialized);}
+                    return null;  
+                }
             }
 
-            return sel;
         },
 
         serializeSelection: function(selection, rootNode) {
-            rootNode = document.getElementById($.TextSelector._sel.rootNode);
+            var rootNode = document.getElementById($.TextSelector._sel.rootNode);
             
             console.log('serializeSelection: selection = ', selection);
 
@@ -350,11 +361,11 @@ jQuery.TextSelector = function(options) {
                 }
 
                 if (piu=='start'){
-                    offset = $.TextSelector._len.words(range.startContainer, range.startOffset, piu);
+                    return $.TextSelector._len.words(range.startContainer, range.startOffset, piu);
                 } else {
-                    offset = $.TextSelector._len.words(range.endContainer, range.endOffset, piu);
+                    return $.TextSelector._len.words(range.endContainer, range.endOffset, piu);
                 }
-                return nodeNum + ':' + offset;
+                return ;
             }
         },
 
@@ -542,27 +553,48 @@ jQuery.TextSelector = function(options) {
             */
         },
         enumerateElements: function(){
-            // Returns child nodes (including text nodes, if not empty) of 'node',
+            // Returns first text node in each visual block element
             var node = $(options.selectorSelectable)[0];
+            var captureCount=0;
+            jQuery.TextSelector._sel.blocks={};
 
-            var children = node.childNodes;
-            var child, nodeType, captureCount=0;
-            // Loop over children...
-            for (var idx=0, len=children.length; idx<len; ++idx) {
-                child = children.item(idx);
-                nodeType = child.nodeType;
-                // If it is an element or a textnode...
-                if (nodeType===1 || nodeType===3) {
-                    if (nodeType===3 && !child.nodeValue.replace(/^\s+/, '').replace(/\s+$/, '')) {
+            enumerate(node);
+
+            function enumerate(node){
+                var children = node.childNodes;
+                var has_blocks = false;
+                var block_started = false;
+
+                for (var idx=0, len=children.length; idx<len; ++idx) {
+                    var child = children.item(idx);
+                    var nodeType = child.nodeType;
+
+                    if (nodeType==3 && !child.nodeValue.replace(/^\s+/, '').replace(/\s+$/, '')) {
                         // ..if it is a textnode that is logically empty, ignore it
                         continue;
+                    } else if (nodeType==3) {
+                        if (!block_started){
+                            // remember the block
+                            captureCount++;
+                            $(child).attr('selection_index', captureCount);
+                            child.selection_index = captureCount;
+                            jQuery.TextSelector._sel.blocks[captureCount] = child;
+                            has_blocks = block_started = true;
+                        }
+                    } else if (nodeType==1) {
+                        // XXX check if this is correct
+                        var is_block = getStyle(child, 'display') != 'inline';
+                        if (is_block){
+                            var child_has_blocks = enumerate(child);
+                            has_blocks = has_blocks && child_has_blocks;
+                            block_started = false
+                        } else if (!block_started) {
+                            block_started = enumerate(child);
+                            has_blocks = has_blocks && block_started;
+                        }
                     }
-                    
-                    $(child).attr('nodeNum', captureCount);
-                    $(child).addClass('nodeNum_'+captureCount).addClass('nodeNum');
-                    // ..otherwise add it to the harvest
-                    captureCount++;
                 }
+                return has_blocks;
             }
         }
     }
@@ -763,3 +795,19 @@ jQuery.TextSelector = function(options) {
 };
 
 
+function getStyle(oElm, strCssRule){
+    // XXX check if it works in IE
+    // Check if it is not implemented in jQuery
+    // XXX move out from here
+	var strValue = "";
+	if(document.defaultView && document.defaultView.getComputedStyle){
+		strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+	}
+	else if(oElm.currentStyle){
+		strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
+			return p1.toUpperCase();
+		});
+		strValue = oElm.currentStyle[strCssRule];
+	}
+	return strValue;
+}
