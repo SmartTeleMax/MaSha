@@ -619,7 +619,7 @@ jQuery.TextSelector = function(options) {
                     return false; 
                 } 
             if (node.nodeType == 1) {
-                if (node.hasClass('user_selection_true') // XXX merge selections?
+                if ($(node).hasClass('user_selection_true') // XXX merge selections?
                     || is_ignored(node)) {
                      //alert('отказ');
                      //console.log('отказ! все из-за ', nodes[i]);
