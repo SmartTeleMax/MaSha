@@ -1,4 +1,3 @@
-
 jQuery.TextSelector = function(options) {
         
     var defaults = {
@@ -585,9 +584,11 @@ jQuery.TextSelector = function(options) {
                         // XXX check if this is correct
                         var is_block = getStyle(child, 'display') != 'inline';
                         if (is_block){
-                            var child_has_blocks = enumerate(child);
-                            has_blocks = has_blocks && child_has_blocks;
-                            block_started = false
+                            if (!is_ignored(child)){
+                                var child_has_blocks = enumerate(child);
+                                has_blocks = has_blocks && child_has_blocks;
+                                block_started = false
+                            }
                         } else if (!block_started) {
                             block_started = enumerate(child);
                             has_blocks = has_blocks && block_started;
@@ -599,6 +600,12 @@ jQuery.TextSelector = function(options) {
         }
     }
 
+    function is_ignored(node){
+        node = $(node);
+        return (node.hasClass('inpost')
+                || node.hasClass('b-multimedia')
+                || node.hasClass('photo'));
+    }
 
     function range_is_selectable(){
         // getNodes() это от rangy вроде.
@@ -612,10 +619,8 @@ jQuery.TextSelector = function(options) {
                     return false; 
                 } 
             if (node.nodeType == 1) {
-                if ($(node).hasClass('user_selection_true') // XXX merge selections?
-                 || $(node).hasClass('inpost')
-                 || $(node).hasClass('b-multimedia')
-                 || $(node).hasClass('photo')) {
+                if (node.hasClass('user_selection_true') // XXX merge selections?
+                    || is_ignored(node)) {
                      //alert('отказ');
                      //console.log('отказ! все из-за ', nodes[i]);
                      return false;
@@ -629,7 +634,7 @@ jQuery.TextSelector = function(options) {
 
     $(function(){ // domready
         var selectable = $(options.selectorSelectable)
-        var selectableMessage = new SelectableMessage();
+        var selectableMessage = new SelectMessage();
 
         if (!selectable.length) return;
     
@@ -725,7 +730,7 @@ jQuery.TextSelector = function(options) {
     });
 
 
-    function SelectableMessage() {
+    function SelectMessage() {
         var $msg = $('#upmsg-selectable');
         var autoclose;
 
