@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>ТЕСТирование выделялки текста.</title>
+	<meta name="title" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+    
+    <!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script-->
+    <script type="text/javascript" src="../../js/jquery-1.3.2.js"></script>
+    <script type="text/javascript" src="jquery.json-2.2.min.js"></script>
+    <script type="text/javascript" src="../../js/range.js"></script>
+    <script type="text/javascript" src="../../js/textselection.js"></script>
+
+    
+   
+    <style>
+    
+    html, body {
+        height: 100%;
+        padding:0;
+        margin:0;
+    }
+    
+    #gonext {
+        position: absolute;
+        left: 10px;
+        top: 0;
+    }
+    #jsonGen {
+        position: absolute;
+        left: 80px;
+        top:0;
+    }
+    
+    #rdata {
+        position: absolute;
+        left: 172px;
+        top:0;
+    }
+    
+    .info {
+        width: 98%;
+        padding: 10px;
+        color: black;
+        position: fixed;
+        top:0;
+        left:0;
+        background: white;
+        border-bottom: 2px solid black;
+    }
+    
+    .logger {
+        color: black;
+          padding: 10px;
+          width: 97%;
+          margin-top: 100px;
+    }
+    
+    .logger div {
+        padding-bottom: 3px;
+        border-bottom: 1px dotted black;
+        margin-bottom: 3px;
+        font-size: 10px;
+    }
+    
+    </style>
+
+    <script>
+    function createRange(nodeNum1, pos1, nodeNum2, pos2){
+        var range = document.createRange();
+        var allnodes = $('#selectable-content').textNodes();
+        console.log(allnodes)
+        range.setStart(allnodes[nodeNum1], pos1);
+        range.setEnd(allnodes[nodeNum2], pos2);
+
+        $.TextSelector._sel.addSelection(false, range);
+        $.TextSelector._sel.count++;
+        return range;
+    }
+    function new_selection(html){
+        $('#selectable-content, #txtselect_marker').remove();
+        $(document.body).append('<div id="selectable-content">' + html + '</div>');
+        $(document.body).append('<div id="txtselect_marker"></div>');
+        var sel = new $.TextSelector();
+    }
+
+    function testSimple(){
+        // Testing a simple case with limits exactly equal with selection
+        var html = '<p>Here is a selection!</p>';
+        var sel = new_selection(html);
+        createRange(0, 6, 0, 9);
+        $('#txtselect_marker').click();
+    }
+    
+    $(function(){
+        testSimple();
+        //top.frames[0].rangy
+        //alert('onload');
+        //document.getElementById('h1').innerHTML = iTunesDetected();
+    })
+    
+    </script>
+    
+</head>
+<body>
+</body>
+</html>

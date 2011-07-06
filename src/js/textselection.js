@@ -2,10 +2,8 @@ jQuery.TextSelector = function(options) {
         
     var defaults = {
         regexp: /[^\s,;:«»–.!?<>…\n]+/ig,
-        hashStart: 'sel=',
         selectorSelectable: '#selectable-content',
-        selectorMarker: '#txtselect_marker',
-        ellipsisText: "..."
+        selectorMarker: '#txtselect_marker'
     };
     
     var options = $.extend(defaults, options);
@@ -201,7 +199,7 @@ jQuery.TextSelector = function(options) {
                     }
                 }
                 if (nowhash.indexOf('sel=') == -1) {
-                    nowhash = options.hashStart;
+                    nowhash = 'sel=';
                     nowhash = nowhash+hash;
                 } else {
                     nowhash = nowhash+hash;
@@ -259,7 +257,7 @@ jQuery.TextSelector = function(options) {
             //console.log('deserializeSelection', rootNode);
 
             var sel = window.getSelection();
-            console.log('deserializeSelection: sel=', sel)
+            //console.log('deserializeSelection: sel=', sel)
             var ranges = [];
             if(sel.rangeCount > 0) sel.removeAllRanges();
 
@@ -633,6 +631,7 @@ jQuery.TextSelector = function(options) {
 
 
     $(function(){ // domready
+        console.log('domready');
         var selectable = $(options.selectorSelectable)
         var selectableMessage = new SelectMessage();
 
@@ -672,6 +671,7 @@ jQuery.TextSelector = function(options) {
     
     
         marker.click(function(e){
+            console.log('marker click')
             e.preventDefault();
             if (!range_is_selectable()){
                 marker.removeClass('show').css('display', 'none');
