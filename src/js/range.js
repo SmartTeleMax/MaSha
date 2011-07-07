@@ -59,7 +59,7 @@ _range.addSelection = function(className, range){
     _range.splitBoundaries(range);
 
     var textNodes = _range.getTextNodes(range);
-    console.log('textNodes', textNodes)
+    //console.log('textNodes', textNodes)
     for (var i=textNodes.length; i--;){
         var span = document.createElement('span');
         span.className = className;

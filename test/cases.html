@@ -74,18 +74,18 @@
     <script>
     function createRange(nodeNum1, pos1, nodeNum2, pos2){
         var allnodes = $('#selectable-content').textNodes();
-        console.log(allnodes)
+        //console.log(allnodes)
 
         var range = document.createRange();
         range.setStart(allnodes[nodeNum1], pos1);
         range.setEnd(allnodes[nodeNum2], pos2);
 
-        console.log(range)
+        //console.log(range)
 
         var selection = window.getSelection();
         selection.addRange(range);
 
-        return range;
+        return selection;
     }
     function new_selection(html){
         $('#selectable-content, #txtselect_marker').remove();
@@ -93,28 +93,94 @@
         $(document.body).append('<div id="txtselect_marker"></div>');
         var sel = new $.TextSelector({'location': {'hash': ''}});
     }
+    function assertHTMLEqual(aim){
+        $('.closewrap').remove();
+        var output_html = document.getElementById('selectable-content').innerHTML;
+        var test = arguments.callee.caller.name_;//toString();
+        if(aim == output_html) {
+            console.log(test + ' ok')
+        } else {
+            console.error(test + 'failure. Got:\n', output_html, '\n instead of:\n', aim);
+        }
+    }
+    function assertSelectionEqual(aim){
+        $('.closewrap').remove();
+        var output_html = $('#selectable-content .num0')[0].innerHTML;
+        var test = arguments.callee.caller.name_;//toString();
+        if(aim == output_html) {
+            console.log(test + ' ok')
+        } else {
+            console.error(test + 'failure. Got:\n', output_html, '\n instead of:\n', aim);
+        }
+    }
 
-    function testSimple(){
-        // Testing a simple case with limits exactly equal with selection
-        var html = '<p>Here is a selection!</p>';
-        var sel = new_selection(html);
-        createRange(0, 6, 0, 9);
-        $('#txtselect_marker').click();
+    var TestSuite = {
+        testSimple: function(){
+            // Testing a simple case with limits exactly equal with selection
+            var html = '<p>Here is a selection!</p>';
+            var sel = new_selection(html);
+            createRange(0, 5, 0, 9);
+            $('#txtselect_marker').click();
+
+            var aim = '<p>Here <span class="num0 user_selection_true">is a</span> selection!</p>'
+            assertHTMLEqual(aim);
+        },
+        extendWordsOnly: function(){
+            var html = '<p>Here is another selection!</p>';
+            var sel = new_selection(html);
+            createRange(0, 6, 0, 9);
+            $('#txtselect_marker').click();
+
+            var aim = 'is another'
+            assertSelectionEqual(aim);
+        },
+        extendWordsDashed: function(){
+            var html = '<p>Here\'s a selection-sister selection!</p>';
+            var sel = new_selection(html);
+            createRange(0, 5, 0, 11);
+            $('#txtselect_marker').click();
+
+            var aim = 'Here\'s a selection-sister';
+            assertSelectionEqual(aim);
+        },
+        extendWordsComma: function(){
+            var html = '<p>Here is a selection, yes, selection!</p>'; //XXX use colons, semicolons, etc
+            var sel = new_selection(html);
+            createRange(0, 5, 0, 13);
+            $('#txtselect_marker').click();
+
+            var aim = 'is a selection';
+            assertSelectionEqual(aim);
+        },
+
+        shortenWordsSpace: function(){
+            var html = '<p>Here is a selection!</p>';
+            var sel = new_selection(html);
+            createRange(0, 4, 0, 10);
+            $('#txtselect_marker').click();
+
+            var aim = 'is a';
+            assertSelectionEqual(aim);
+        },
+        shortenWordsComma: function(){
+            var html = '<p>Here is a, selection!</p>'; //XXX use colons, semicolons, etc
+            var sel = new_selection(html);
+            createRange(0, 4, 0, 11);
+            $('#txtselect_marker').click();
+
+            var aim = 'is a';
+            assertSelectionEqual(aim);
+        },
+        shortenWordsBrackets: function(){},
+        shortenWordsCrossDivs: function(){}
     }
-    function testSimple2(){
-        // Testing a simple case with limits exactly equal with selection
-        var html = '<p>Here is another selection!</p>';
-        var sel = new_selection(html);
-        createRange(0, 6, 0, 9);
-        $('#txtselect_marker').click();
-    }
-    
     $(function(){
-        window.setTimeout(testSimple, 2000);
-        window.setTimeout(testSimple2, 4000);
-        //top.frames[0].rangy
-        //alert('onload');
-        //document.getElementById('h1').innerHTML = iTunesDetected();
+        var timeout = 10;
+        for (key in TestSuite){
+            TestSuite[key].name_ = key;
+            window.setTimeout(TestSuite[key], timeout);
+            timeout += 5
+        }
     })
     
     var loremipsum = '\
