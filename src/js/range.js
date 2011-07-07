@@ -23,7 +23,10 @@ _range.getTextNodes = function(range) {
     var iterator = _range.getElementIterator(range);
     var textNodes = [], node;
     while (node = iterator()){
-        if (node.nodeType == 3 && !node.data.match(/^\s*$/)){
+        // XXX was there a reason to check for empty string?
+        // with this check selecting two sibling words separately
+        // and then selecting them both in one range doesn't work properly
+        if (node.nodeType == 3){// && !node.data.match(/^\s*$/)){
             textNodes.push(node);
         }
     }
@@ -55,8 +58,9 @@ _range.getElementIterator = function(range){
     return next;
 }
 
-_range.addSelection = function(className, range){
+_range.wrapSelection = function(className, range){
     _range.splitBoundaries(range);
+            console.log(range.startContainer)
 
     var textNodes = _range.getTextNodes(range);
     //console.log('textNodes', textNodes)

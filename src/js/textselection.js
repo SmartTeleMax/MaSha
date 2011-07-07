@@ -14,7 +14,6 @@ $.TextSelector = function(options) {
         savedSel: [],
         ranges: {},
         rootNode: 'selectable-content', // XXX what is this??
-        aftercheck: [],
         childs: [],
         blocks: {}
     });
@@ -95,10 +94,7 @@ $.TextSelector.prototype = {
             var numclass = parent.className.split(' ')[0];
             $('.'+numclass).removeClass('hover');
             $(this).fadeOut('slow', function(){
-                $(this).parent('span.closewrap').remove();
-                removeTextSelection('.'+numclass+'.user_selection_true');
-                this_.updateHash(this_.ranges[numclass]);
-                delete this_.ranges[numclass];
+                this_.delete_selections([numclass]);
             });
 
             return false;
@@ -121,6 +117,18 @@ $.TextSelector.prototype = {
         });
     
         this.readHash();
+    },
+
+    delete_selections: function(numclasses){
+        var ranges = [];
+        for(var i=numclasses.length; i--;){
+            var numclass = numclasses[i];
+            $('.'+numclass+' span.closewrap').remove();
+            removeTextSelection('.'+numclass+'.user_selection_true');
+            ranges.push(this.ranges[numclass]);
+            delete this.ranges[numclass];
+        }
+        this.updateHash(ranges);
     },
 
     _siblingNode: function(cont, prevnext, firstlast, offs){
@@ -244,11 +252,14 @@ $.TextSelector.prototype = {
         
         
         if (_delete) {
-            nowhash = nowhash.replace(_delete+';', '');
+            for (var i=_delete.length;i--;){
+                nowhash = nowhash.replace(_delete[i]+';', '');
+                console.log('updateHash: обновляем хэш: ', _delete[i]);
+            }
             this.options.location.hash = nowhash;
         } else {
             for (key in this.ranges) { 
-                if (nowhash.indexOf(this.ranges[key]) == -1) {
+                if (nowhash.indexOf(this.ranges[key]) == -1) { // XXX 
                     hash += this.ranges[key] + ';';
                 }
             }
@@ -300,7 +311,7 @@ $.TextSelector.prototype = {
         var range = this.deserializeSelection(stamp);
         //console.log('this.restoreStamp: запускаем this.tSelection(false)');
         if(range){
-            this.addSelection(false, range);
+            this.addSelection(range);
             this.count++;
         }
         //console.log('this.restoreStamp: ––––––––––––––––––––––––––––––');
@@ -388,14 +399,8 @@ $.TextSelector.prototype = {
         }
     },
 
-    serializeSelection: function(selection, rootNode) {
+    serializeRange: function(range) {
         var rootNode = document.getElementById(this.rootNode);
-        
-        //console.log('serializeSelection: selection = ', selection);
-
-        selection = selection || window.getSelection();
-        
-        var range = this.aftercheck;
         
         return this.serializeWord(range.startContainer, range, 'start', rootNode) + "," +
                this.serializeWord(range.endContainer, range, 'end', rootNode);
@@ -423,32 +428,25 @@ $.TextSelector.prototype = {
     checkSelection: function(range) {
         /*
          * Corrects selection.
-         * Returns checker object
+         * Returns range object
          */
         //console.log('checkSelection: ––––––––––––––––––––––––––––––');
         //console.log('checkSelection: получен аргумент range = ', range);
-        range = this.getFirstRange();
         //console.log('checkSelection: range = ', range.endOffset, range.endContainer);
-        var checker = range,
-            startDone = false, endDone = false;
+    
+        var newStartOffset = this.checkPosition(range, range.startOffset, range.startContainer, 'start');
+        var newEndOffset = this.checkPosition(range, range.endOffset, range.endContainer, 'end');
         
     
-        var newStartOffset = this.checkPosition(checker.startOffset, checker.startContainer, 'start');
-        var newEndOffset = this.checkPosition(checker.endOffset, checker.endContainer, 'end');
-        
-    
-        checker.setStart(checker.startContainer, newStartOffset);
-        checker.setEnd(checker.endContainer, newEndOffset);
-        //console.log('checkSelection: checker = ', checker);
+        range.setStart(range.startContainer, newStartOffset);
+        range.setEnd(range.endContainer, newEndOffset);
+        //console.log('checkSelection: range = ', range);
     
         //console.log('checkSelection: ––––––––––––––––––––––––––––––');
-    
-        this.aftercheck = checker;
-    
-        return checker;
+        return range;
     },
 
-    checkPosition: function(offset, container, position) {
+    checkPosition: function(range, offset, container, position) {
         var options = this.options;
         
         function is_word(str){
@@ -494,7 +492,7 @@ $.TextSelector.prototype = {
             if (container.nodeType == 1 && $.trim($(container).text()) != '') {
                 //console.log('в if-е.');
                 container = $(container).textNodes()[0];
-                checker.setStart(container, 0);
+                range.setStart(container, 0);
                 //console.log('новый container', container);
             }
 
@@ -502,7 +500,7 @@ $.TextSelector.prototype = {
                 container.data.substring(offset).match(this.options.regexp) == null) {
                 //console.log('in if nodeType=', container.nodeType);
                 var newdata = this.nextNode(container);
-                checker.setStart(newdata._container, newdata._offset);
+                range.setStart(newdata._container, newdata._offset);
                 container = newdata._container;
                 offset = newdata._offset;
                 //console.log('offset', offset);
@@ -513,7 +511,7 @@ $.TextSelector.prototype = {
             //console.log('checkSelection: скорректированный offset = ', offset);
         
             offset = stepBack(container, offset, is_word);
-            //console.log('checkSelection: скорректированный offset = ', offset);
+            console.log('checkSelection: скорректированный offset = ', offset);
             
             return offset;
         }
@@ -525,14 +523,14 @@ $.TextSelector.prototype = {
                 container_txtnodes = $(container).textNodes();
                 container = container_txtnodes[container_txtnodes.length-1];
                 offset = container.data.length;
-                checker.setEnd(container, container.data.length);
+                range.setEnd(container, container.data.length);
                 //console.log('новый container', container, offset);
             }
             
             if (container.nodeType != 3 ||
                 container.data.substring(0, offset).match(this.options.regexp) == null) {
                 var newdata = this.prevNode(container);
-                checker.setEnd(newdata._container, newdata._offset);
+                range.setEnd(newdata._container, newdata._offset);
                 container = newdata._container;
                 offset = newdata._offset;
                 //console.log('offset', offset);
@@ -543,26 +541,70 @@ $.TextSelector.prototype = {
             //console.log('checkSelection: скорректированный offset = ', offset);
 
             offset = stepForward(container, offset, is_word);
-            //console.log('checkSelection: скорректированный offset = ', offset);
+            console.log('checkSelection: скорректированный offset = ', offset);
 
             return offset;
         }
     },
 
-    addSelection: function(hash, range) {
+    mergeSelections: function(range){
+        var merges = []
+        var iterator = _range.getElementIterator(range);
+        var node = iterator();
+        var last = node;
+        var parent_ = $(node).parents('.user_selection_true')[0];
+        if (parent_){
+            parent_ = /(num\d+)(?:$| )/.exec(parent_.className)[1];
+            console.log(range, 'parent', parent_, $('.' + parent_ + ':first').textNodes())
+            range.setStart($('.' + parent_ + ':first').textNodes()[0], 0) // XXX
+            console.log(range.startContainer)
+            //sd.fsd.fsd.fs.d
+            merges.push(parent_);
+        }
+        while (node){
+            if (node.nodeType == 1 && $(node).hasClass('user_selection_true')){
+               var cls = /(num\d+)(?:$|)/.exec(node.className)[0];
+               if ($.inArray(cls, merges) == -1){
+                   merges.push(cls);
+               }
+            }
+            last = node;
+            node = iterator();
+        }
+        var last = $(last).parents('.user_selection_true')[0];
+        if (last){
+            console.log('last')
+            var last = /(num\d+)(?:$| )/.exec(last.className)[1];
+            var tnodes = $('.' + last + ':last').textNodes() // XXX
+            var last_node = tnodes[tnodes.length-1];
+            range.setEnd(last_node, last_node.length)
+        }
+        if (merges.length){
+            // this breaks selection, so we need to dump a range and restore it after DOM changes
+            var sc = range.startContainer, so=range.startOffset,
+                ec = range.endContainer, eo = range.endOffset;
+            this.delete_selections(merges);
+            range.setStart(sc, so);
+            range.setEnd(ec, eo);
+        }
+        console.log(range.startContainer)
+        return range;
+    },
+
+    addSelection: function(range) {
+        range = range || this.getFirstRange();
     
-        range = range || false;
-        
         //console.log('addSelection func: hash',hash, 'range', range );
     
         range = this.checkSelection(range);
-        //console.log('after checkSelection range = ', range);
-        if (!hash){
-            // генерируем и сохраняем якоря для выделенного
-            this.ranges['num'+this.count] = this.serializeSelection();
-        }
+        range = this.mergeSelections(range);
 
-        _range.addSelection('num'+this.count+' user_selection_true', range);
+
+        //console.log('after checkSelection range = ', range);
+        // генерируем и сохраняем якоря для выделенного
+        this.ranges['num'+this.count] = this.serializeRange(range);
+
+        _range.wrapSelection('num'+this.count+' user_selection_true', range);
 
         var timeout_hover, timeout_hover_b = false;
         var _this;
@@ -586,11 +628,11 @@ $.TextSelector.prototype = {
 
         $('.num'+this.count+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
     
-        hash = hash || true;
-        if (hash) this.updateHash();
+        this.updateHash();
 
         window.getSelection().removeAllRanges();
     },
+
     getFirstRange: function(){
         var sel = window.getSelection();
         var res = sel.rangeCount ? sel.getRangeAt(0) : null;
@@ -659,14 +701,15 @@ $.TextSelector.prototype = {
         var iterator = _range.getElementIterator(this.getFirstRange());
         while (node = iterator()){
             if (!$(node).parents(this.options.selectorSelectable).length
-                || $(node).parents('.user_selection_true').length
+                //|| $(node).parents('.user_selection_true').length
                 || $(node).parents('div.b-multimedia').length
                 || $(node).parents('div.inpost').length) { 
                     return false; 
                 } 
             if (node.nodeType == 1) {
-                if ($(node).hasClass('user_selection_true') // XXX merge selections?
-                    || this.is_ignored(node)) {
+                if (//$(node).hasClass('user_selection_true') // XXX support only correct merges?
+                    //|| 
+                    this.is_ignored(node)) {
                      //alert('отказ');
                      //console.log('отказ! все из-за ', nodes[i]);
                      return false;
