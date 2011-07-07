@@ -101,9 +101,17 @@
         createRange(0, 6, 0, 9);
         $('#txtselect_marker').click();
     }
+    function testSimple2(){
+        // Testing a simple case with limits exactly equal with selection
+        var html = '<p>Here is another selection!</p>';
+        var sel = new_selection(html);
+        createRange(0, 6, 0, 9);
+        $('#txtselect_marker').click();
+    }
     
     $(function(){
         window.setTimeout(testSimple, 2000);
+        window.setTimeout(testSimple2, 4000);
         //top.frames[0].rangy
         //alert('onload');
         //document.getElementById('h1').innerHTML = iTunesDetected();
