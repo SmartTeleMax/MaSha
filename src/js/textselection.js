@@ -3,7 +3,8 @@ jQuery.TextSelector = function(options) {
     var defaults = {
         regexp: /[^\s,;:«»–.!?<>…\n]+/ig,
         selectorSelectable: '#selectable-content',
-        selectorMarker: '#txtselect_marker'
+        selectorMarker: '#txtselect_marker',
+        'location': window.location
     };
     
     var options = $.extend(defaults, options);
@@ -186,12 +187,12 @@ jQuery.TextSelector = function(options) {
         updateHash: function(_delete){
             _delete = _delete || false;
             var hash = '';
-            var nowhash = location.hash;
+            var nowhash = options.location.hash;
             
             
             if (_delete) {
                 nowhash = nowhash.replace(_delete+';', '');
-                location.hash = nowhash;
+                options.location.hash = nowhash;
             } else {
                 for (key in $.TextSelector._sel.ranges) { 
                     if (nowhash.indexOf($.TextSelector._sel.ranges[key]) == -1) {
@@ -204,7 +205,7 @@ jQuery.TextSelector = function(options) {
                 } else {
                     nowhash = nowhash+hash;
                 }
-                location.hash = nowhash;
+                options.location.hash = nowhash;
             }
             console.log('updateHash: обновляем хэш: ', hash);
         },
@@ -212,7 +213,7 @@ jQuery.TextSelector = function(options) {
         readHash: function(){
             console.log('readHash: ––––––––––––––––––––––––––––––');
 
-            var hash = location.hash;
+            var hash = options.location.hash;
             if (!hash) return;
         
             hash = hash.split('#')[1];
