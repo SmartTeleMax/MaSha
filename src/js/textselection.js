@@ -662,10 +662,7 @@ $.TextSelector.prototype = {
                     if (!block_started){
                         // remember the block
                         captureCount++;
-                        $('<span class="selection_index" id="selection_index' + captureCount +'">')
-                         .insertBefore(child);
-                        //$(child).attr('selection_index', captureCount);
-                        //child.selection_index = captureCount;
+                        $(child).before('<span class="selection_index" id="selection_index' + captureCount +'"></span>')
                         this_.blocks[captureCount] = child;
                         has_blocks = block_started = true;
                     }
@@ -699,7 +696,6 @@ $.TextSelector.prototype = {
     getFirstTextNode: function(numclass){
         if(!numclass) { return; }
         var tnode = document.getElementById('selection_index'+numclass);
-        console.log('tnode', tnode, numclass, 'selection_index'+numclass)
         if (tnode) {
             if (tnode.nextSibling.nodeType == 1){
                 return tnode.nextSibling.childNodes[0];
