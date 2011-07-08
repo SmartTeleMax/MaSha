@@ -453,12 +453,15 @@ $.TextSelector.prototype = {
         }
 
         function is_not_word(str){
+            alert(str)
+            alert(options.regexp)
             return str.match(options.regexp) == null;
         }
 
         function stepBack(container, offset, condition) {
             var init_offset = offset;
             //console.log('checkSelection.stepBack: offset: ', offset);
+            alert(container)
             while (offset > 0 && condition(container.data[offset-1])){
                 //console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
                 //            'Шаг #', init_offset - offset + 1, '; '+
