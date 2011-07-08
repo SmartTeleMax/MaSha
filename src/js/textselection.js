@@ -453,16 +453,13 @@ $.TextSelector.prototype = {
         }
 
         function is_not_word(str){
-            alert(str)
-            alert(options.regexp)
             return str.match(options.regexp) == null;
         }
 
         function stepBack(container, offset, condition) {
             var init_offset = offset;
             //console.log('checkSelection.stepBack: offset: ', offset);
-            alert(container)
-            while (offset > 0 && condition(container.data[offset-1])){
+            while (offset > 0 && condition(container.data.charAt(offset-1))){
                 //console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
                 //            'Шаг #', init_offset - offset + 1, '; '+
                 //            'Проверяем символ "', container.data[offset - 1], '"');
@@ -477,7 +474,7 @@ $.TextSelector.prototype = {
         function stepForward(container, offset, condition) {
             var init_offset = offset;
             //console.log('checkSelection.stepForward: offset: ', offset);
-            while (offset < container.data.length && condition(container.data[offset])){
+            while (offset < container.data.length && condition(container.data.charAt(offset))){
                 //console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
                 //            'Шаг #', offset - init_offset + 1, '; '+
                 //            'Проверяем символ "', container.data[offset], '"');
