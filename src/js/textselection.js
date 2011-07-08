@@ -132,7 +132,8 @@ $.TextSelector.prototype = {
         this.updateHash(ranges);
     },
 
-    _siblingNode: function(cont, prevnext, firstlast, offs){
+    _siblingNode: function(cont, prevnext, firstlast, offs, all){
+        all = all || false;
         //console.log('getting', prevnext, cont);
         while (cont.parentNode && $(cont).parents(this.options.selectorSelectable).length){
             while (cont[prevnext + 'Sibling']){
@@ -140,7 +141,8 @@ $.TextSelector.prototype = {
                 while (cont.nodeType == 1 && cont.childNodes.length){
                     cont = cont[firstlast + 'Child'];
                 }
-                if (cont.nodeType == 3 && cont.data.match(this.options.regexp) != null){
+                if(cont.nodeType == 3 && 
+                   (all||cont.data.match(this.options.regexp) != null)){
                     //console.log('getting ' + prevnext +  ': _container:', cont.data,
                     //            '_offset:', offs * cont.data.length);
                     return {_container: cont, _offset: offs * cont.data.length};
@@ -150,11 +152,11 @@ $.TextSelector.prototype = {
         }
     },
 
-    prevNode: function(cont){
-        return this._siblingNode(cont, 'previous', 'last', 1);
+    prevNode: function(cont, all){
+        return this._siblingNode(cont, 'previous', 'last', 1, all);
     },
-    nextNode: function (cont){
-        return this._siblingNode(cont, 'next', 'first', 0);
+    nextNode: function (cont, all){
+        return this._siblingNode(cont, 'next', 'first', 0, all);
     },
 
     wordCount: function wordCount(node) {
@@ -179,15 +181,15 @@ $.TextSelector.prototype = {
     },
 
     // counting symbols/word functions
-    words: function(_container, _offset, pos){
+    words: function(container, _offset, pos){
         //console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
         //console.log('countingWord: подсчет слов. аргументы: _container =', _container, '; _offset = ', _offset);
     
-        if (_container.nodeType == 1) {
-            _container = $(_container).textNodes()[0];
+        if (container.nodeType == 1) {
+            container = $(container).textNodes()[0];
         }
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
-        var wcount = _container.data.substring(0, _offset).match(this.options.regexp);
+        var wcount = container.data.substring(0, _offset).match(this.options.regexp);
         
         //console.log('wcount', wcount);
         if (wcount != null) { 
@@ -198,23 +200,19 @@ $.TextSelector.prototype = {
         }
         //console.log('countingWord: в '+pos+'Container ноде до начала выделения слов:', wcount);
 
-        var node = _container;
-        var all_nodes = [];
-        while(node && !node.selection_index){
-            node = this.prevNode(node)._container;
-            all_nodes.push(node);
-            //node = node? node._container: null;
-        }
-        var selection_index = node.selection_index;
-
-        for (var i=all_nodes.length; i--;) {
-            var onei_ = this.wordCount(all_nodes[i]);
+        var node = container;
+        var selection_index = this.getNum(container);
+        var first_node = this.getFirstTextNode(selection_index);
+        console.log(first_node, node, selection_index)
+        while(node && node != first_node){
+            node = this.prevNode(node, true)._container;
+            var onei_ = this.wordCount(node);
             wcount += onei_;
-            //console.log('countingWord: подсчитываем слова в ноде ', all_nodes[i], '. Слов ', onei_);
+            //node = node? node.container: null;
         }
-        
+
         /*
-        n = _container.previousSibling;
+        n = container.previousSibling;
         // FIXME! Требуется подсчет кол-ва слов и за пределами внутренних <b></b>
         while (n) {
             if (pos=='end') {
@@ -361,15 +359,15 @@ $.TextSelector.prototype = {
                      return {node: node, offset: parseInt(offset, 10)};
                      //console.log('deserializePosition: '+pos+'овое слово найдено = ', myArray[0], '. Целевая нода = ', _allnodes[i], '. Символьный offset = ', offset);
                      //node = _allnodes[i];
-                     break;
-                 } else {
+                     //break;
+                 }// else {
                      //console.log('пустой проход.', stepCount, '|', bits[1]);
-                 }
+                 //}
 
              }
-             node = this.nextNode(node)
+             node = this.nextNode(node, true)
              node = node? node._container: null;
-             if (node.selection_index){
+             if (this.isFirstTextNode(node)){
                  node = null;
              }
          }
@@ -664,8 +662,10 @@ $.TextSelector.prototype = {
                     if (!block_started){
                         // remember the block
                         captureCount++;
-                        $(child).attr('selection_index', captureCount);
-                        child.selection_index = captureCount;
+                        $('<span class="selection_index" id="selection_index' + captureCount +'">')
+                         .insertBefore(child);
+                        //$(child).attr('selection_index', captureCount);
+                        //child.selection_index = captureCount;
                         this_.blocks[captureCount] = child;
                         has_blocks = block_started = true;
                     }
@@ -685,6 +685,41 @@ $.TextSelector.prototype = {
                 }
             }
             return has_blocks;
+        }
+    },
+    isFirstTextNode: function(text_node){
+        var prevs = [text_node.previousSibling, text_node.parentNode.previousSibling];
+        for (var i=prevs.length;i--;){
+            if (prevs[i] && prevs[i].nodeType == 1 && prevs[i].className == 'selection_index'){
+                return true
+            }
+        }
+        return false;
+    },
+    getFirstTextNode: function(numclass){
+        if(!numclass) { return; }
+        var tnode = document.getElementById('selection_index'+numclass);
+        console.log('tnode', tnode, numclass, 'selection_index'+numclass)
+        if (tnode) {
+            if (tnode.nextSibling.nodeType == 1){
+                return tnode.nextSibling.childNodes[0];
+            } else {
+                return tnode.nextSibling;
+            }
+        }
+    },
+    getNum: function(cont){
+        while (cont.parentNode){// && $(cont).parents(this.options.selectorSelectable).length){
+            while (cont.previousSibling){
+                cont = cont.previousSibling;
+                while (cont.nodeType == 1 && cont.childNodes.length){
+                    cont = cont.lastChild;
+                }
+                if (cont.nodeType == 1 && cont.className == 'selection_index'){
+                    return cont.id.replace('selection_index', '')
+                }
+            }
+            cont = cont.parentNode;
         }
     },
 
