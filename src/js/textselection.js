@@ -120,6 +120,7 @@ $.TextSelector.prototype = {
     },
 
     delete_selections: function(numclasses){
+        console.log('delete: ', numclasses)
         var ranges = [];
         for(var i=numclasses.length; i--;){
             var numclass = numclasses[i];
@@ -328,8 +329,8 @@ $.TextSelector.prototype = {
 
         var range = this.deserializeRange(serialized, rootNode, document)
         if (range) {
-            sel.addRange(range);
-            return sel;
+        //    sel.addRange(range);
+            return range;
         } else {
             return null;
         }
@@ -434,13 +435,13 @@ $.TextSelector.prototype = {
         //console.log('checkSelection: получен аргумент range = ', range);
         //console.log('checkSelection: range = ', range.endOffset, range.endContainer);
     
+        console.log('checkSelection: range = ', range);
         var newStartOffset = this.checkPosition(range, range.startOffset, range.startContainer, 'start');
         var newEndOffset = this.checkPosition(range, range.endOffset, range.endContainer, 'end');
         
     
         range.setStart(range.startContainer, newStartOffset);
         range.setEnd(range.endContainer, newEndOffset);
-        //console.log('checkSelection: range = ', range);
     
         //console.log('checkSelection: ––––––––––––––––––––––––––––––');
         return range;
@@ -594,7 +595,7 @@ $.TextSelector.prototype = {
     addSelection: function(range) {
         range = range || this.getFirstRange();
     
-        //console.log('addSelection func: hash',hash, 'range', range );
+        console.log('addSelection func: range', range );
     
         range = this.checkSelection(range);
         range = this.mergeSelections(range);
@@ -697,15 +698,18 @@ $.TextSelector.prototype = {
 
     range_is_selectable: function(){
         // getNodes() это от rangy вроде.
-        var node;
+        var node, first_node, last_node;
         var iterator = _range.getElementIterator(this.getFirstRange());
         while (node = iterator()){
             if (!$(node).parents(this.options.selectorSelectable).length
-                //|| $(node).parents('.user_selection_true').length
                 || $(node).parents('div.b-multimedia').length
                 || $(node).parents('div.inpost').length) { 
                     return false; 
-                } 
+                }
+            if (node.nodeType == 3 && node.data.match(this.options.regexp) != null){
+                first_node = first_node || node;
+                last_node = node;
+            }
             if (node.nodeType == 1) {
                 if (//$(node).hasClass('user_selection_true') // XXX support only correct merges?
                     //|| 
@@ -715,6 +719,13 @@ $.TextSelector.prototype = {
                      return false;
                  }
             }
+        }
+        var first_selection = $(first_node).parents('.user_selection_true')[0];
+        var last_selection = $(last_node).parents('.user_selection_true')[0];
+        if (first_selection && last_selection){
+            var reg = /(num\d+)(?:$| )/;
+            return (reg.exec(first_selection.className)[1] != 
+                    reg.exec(last_selection.className)[1]);
         }
         return true;
     }
