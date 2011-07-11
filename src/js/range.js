@@ -60,7 +60,6 @@ _range.getElementIterator = function(range){
 
 _range.wrapSelection = function(className, range){
     _range.splitBoundaries(range);
-            console.log(range.startContainer)
 
     var textNodes = _range.getTextNodes(range);
     //console.log('textNodes', textNodes)
