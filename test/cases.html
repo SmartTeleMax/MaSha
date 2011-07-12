@@ -15,11 +15,6 @@
     <script type="text/javascript" src="../../js/range.js"></script>
     <script type="text/javascript" src="../../js/textselection.js"></script>
 
-<!--[if IE]>
-<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
-<![endif]-->
-    
-   
     <style>
     
     html, body {
@@ -76,6 +71,7 @@
     </style>
 
     <script>
+
     function createRange(nodeNum1, pos1, nodeNum2, pos2){
         var allnodes = $('#selectable-content').textNodes();
         //console.log(allnodes)
@@ -420,6 +416,28 @@
         }
     }
     $(function(){
+        if (!window.console){
+            var cons = $('<div></div>');
+            window.console = {
+                log: function(){
+                  var str = $('<div></div>').appendTo(cons);
+                  var html = '';
+                  for (var i=0, i<arguments.length;i++){
+                    html += arguments[i].replace(/\n/g, '<br/>')
+                  }
+                  str.html(html)
+                },
+                error: function(){
+                  var str = $('<div class="color:red"></div>').appendTo(cons);
+                  var html = '';
+                  for (var i=0, i<arguments.length;i++){
+                    html += arguments[i].replace(/\n/g, '<br/>')
+                  }
+                  str.html(html)
+                }
+            }
+        }
+
         var timeout = 10;
         for (key in TestSuite){
             TestSuite[key].name_ = key;
