@@ -818,7 +818,9 @@ $.TextSelector.prototype = {
     range_is_selectable: function(){
         // getNodes() это от rangy вроде.
         var node, first_node, last_node;
-        var iterator = _range.getElementIterator(this.getFirstRange());
+        var range = this.getFirstRange();
+        if (!range) { return false; }
+        var iterator = _range.getElementIterator(range);
         while (node = iterator()){
             if (!$(node).parents(this.options.selectorSelectable).length
                 || $(node).parents('div.b-multimedia').length
