@@ -824,6 +824,7 @@ $.TextSelector.prototype = {
         while (node = iterator()){
             if (!$(node).parents(this.options.selectorSelectable).length
                 || $(node).parents('div.b-multimedia').length
+                || $(node).parents('div.photo').length
                 || $(node).parents('div.inpost').length) { 
                     return false; 
                 }
