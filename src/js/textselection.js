@@ -3,7 +3,7 @@ $.TextSelector = function(options) {
     var this_ = this;
         
     this.options = $.extend({
-        regexp: /[^\s,;:–.!?<>…\n]+/ig,
+        regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0]+', 'ig'),
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
         'location': window.location
@@ -348,7 +348,8 @@ $.TextSelector.prototype = {
          var offset, stepCount = 0, exit = false;
          //console.log('deserializePosition: ищем по счету '+bits[1]+' слово. Запускаем цикл перебора всех слов родительского элемента.');
          while (node) {
-             var re = new RegExp ('[^\\s,;:«»–.!?]+', 'ig');
+             // XXX duplicating regexp!!!
+             var re = new RegExp ('[^\\s,;:–.!?\xA0]+', 'ig');
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
                  //console.log('deserializePosition: слово №'+stepCount+' = "', myArray[0], '"; (startoffset =', myArray.index, ', endoffset =', re.lastIndex, ')');

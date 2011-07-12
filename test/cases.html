@@ -414,24 +414,25 @@
 
             assertHashEqual(sel, '2:3,3:2;1:1,2:1;');
         }
+        // XXX add tests for nbsp for IE
     }
     $(function(){
         if (!window.console){
-            var cons = $('<div></div>');
+            var cons = $('<div></div>').appendTo(document.body);
             window.console = {
                 log: function(){
                   var str = $('<div></div>').appendTo(cons);
                   var html = '';
-                  for (var i=0, i<arguments.length;i++){
-                    html += arguments[i].replace(/\n/g, '<br/>')
+                  for (var i=0; i<arguments.length;i++){
+                    html += (''+arguments[i]).replace(/\n/g, '<br/>') + ' ';
                   }
                   str.html(html)
                 },
                 error: function(){
-                  var str = $('<div class="color:red"></div>').appendTo(cons);
+                  var str = $('<div style="color:red"></div>').appendTo(cons);
                   var html = '';
-                  for (var i=0, i<arguments.length;i++){
-                    html += arguments[i].replace(/\n/g, '<br/>')
+                  for (var i=0; i<arguments.length;i++){
+                    html += (''+arguments[i]).replace(/\n/g, '<br/>') + ' ';
                   }
                   str.html(html)
                 }
