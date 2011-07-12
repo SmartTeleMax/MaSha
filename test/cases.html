@@ -234,7 +234,24 @@
             var aim = 'else';
             assertSelectionEqual(aim);
         },
+        sentence7: function(){
+            var html = '<p>The sentence.</p><p>Second sentence. And third one.</p>';
+            var sel = new_selection(html);
+            createRange(0, 5, 1, 9);
+            $('#txtselect_marker').click();
 
+            var aim = 'sentence.Second sentence.';
+            assertSelectionEqual(aim);
+        },
+        sentenceCrossTags: function(){
+            var html = '<p>The sentence. <b>Second sentence</b>.</p>';
+            var sel = new_selection(html);
+            createRange(0, 4, 1, 8);
+            $('#txtselect_marker').click();
+
+            var aim = 'sentence. Second sentence.';
+            assertSelectionEqual(aim);
+        },
 
         brackets1: function(){
             var html = '<p>Something (in brackets) is here.</p>';
@@ -263,13 +280,22 @@
             var aim = 'Something (long in brackets)';
             assertSelectionEqual(aim);
         },
+        bracketsCrossTags: function(){
+            var html = '<p>Something (<b>long in brackets</b>) is here.</p>';
+            var sel = new_selection(html);
+            createRange(1, 1, 1, 10);
+            $('#txtselect_marker').click();
+
+            var aim = '(long in brackets)';
+            assertSelectionEqual(aim);
+        },
         bracketsSentence: function(){
             var html = '<p>Something (long in brackets). Yes, it is here</p>';
             var sel = new_selection(html);
-            createRange(0, 10, 0, 25);
+            createRange(0, 1, 0, 25);
             $('#txtselect_marker').click();
 
-            var aim = '(long in brackets).';
+            var aim = 'Something (long in brackets).';
             assertSelectionEqual(aim);
         },
 

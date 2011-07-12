@@ -132,8 +132,8 @@ $.TextSelector.prototype = {
         this.updateHash(ranges);
     },
 
-    _siblingNode: function(cont, prevnext, firstlast, offs, all){
-        all = all || false;
+    _siblingNode: function(cont, prevnext, firstlast, offs, regexp){
+        var regexp = regexp || this.options.regexp;
         //console.log('getting', prevnext, cont);
         while (cont.parentNode && $(cont).parents(this.options.selectorSelectable).length){
             while (cont[prevnext + 'Sibling']){
@@ -142,7 +142,7 @@ $.TextSelector.prototype = {
                     cont = cont[firstlast + 'Child'];
                 }
                 if(cont.nodeType == 3 && 
-                   (all||cont.data.match(this.options.regexp) != null)){
+                   (cont.data.match(regexp) != null)){
                     //console.log('getting ' + prevnext +  ': _container:', cont.data,
                     //            '_offset:', offs * cont.data.length);
                     return {_container: cont, _offset: offs * cont.data.length};
@@ -152,11 +152,11 @@ $.TextSelector.prototype = {
         }
     },
 
-    prevNode: function(cont, all){
-        return this._siblingNode(cont, 'previous', 'last', 1, all);
+    prevNode: function(cont, regexp){
+        return this._siblingNode(cont, 'previous', 'last', 1, regexp);
     },
-    nextNode: function (cont, all){
-        return this._siblingNode(cont, 'next', 'first', 0, all);
+    nextNode: function (cont, regexp){
+        return this._siblingNode(cont, 'next', 'first', 0, regexp);
     },
 
     wordCount: function wordCount(node) {
@@ -205,7 +205,7 @@ $.TextSelector.prototype = {
         var first_node = this.getFirstTextNode(selection_index);
         //console.log(first_node, node, selection_index)
         while(node && node != first_node){
-            node = this.prevNode(node, true)._container;
+            node = this.prevNode(node, /.*/)._container;
             var onei_ = this.wordCount(node);
             wcount += onei_;
             //node = node? node.container: null;
@@ -365,7 +365,7 @@ $.TextSelector.prototype = {
                  //}
 
              }
-             node = this.nextNode(node, true)
+             node = this.nextNode(node, /.*/)
              node = node? node._container: null;
              if (this.isFirstTextNode(node)){
                  node = null;
@@ -434,16 +434,16 @@ $.TextSelector.prototype = {
         //console.log('checkSelection: range = ', range.endOffset, range.endContainer);
     
         //console.log('checkSelection: range = ', range);
-        var newStartOffset = this.checkPosition(range, range.startOffset, range.startContainer, 'start');
-        var newEndOffset = this.checkPosition(range, range.endOffset, range.endContainer, 'end');
+        this.checkPosition(range, range.startOffset, range.startContainer, 'start');
+        this.checkPosition(range, range.endOffset, range.endContainer, 'end');
         
-    
-        range.setStart(range.startContainer, newStartOffset);
-        range.setEnd(range.endContainer, newEndOffset);
-    
+        this.checkBrackets(range);
+        this.checkSentence(range);
+
         //console.log('checkSelection: ––––––––––––––––––––––––––––––');
         return range;
     },
+
 
     checkPosition: function(range, offset, container, position) {
         var options = this.options;
@@ -491,7 +491,7 @@ $.TextSelector.prototype = {
             if (container.nodeType == 1 && $.trim($(container).text()) != '') {
                 //console.log('в if-е.');
                 container = $(container).textNodes()[0];
-                range.setStart(container, 0);
+                offset = 0;
                 //console.log('новый container', container);
             }
 
@@ -499,7 +499,7 @@ $.TextSelector.prototype = {
                 container.data.substring(offset).match(this.options.regexp) == null) {
                 //console.log('in if nodeType=', container.nodeType);
                 var newdata = this.nextNode(container);
-                range.setStart(newdata._container, newdata._offset);
+                //range.setStart(newdata._container, newdata._offset);
                 container = newdata._container;
                 offset = newdata._offset;
                 //console.log('offset', offset);
@@ -512,7 +512,7 @@ $.TextSelector.prototype = {
             offset = stepBack(container, offset, is_word);
             //console.log('checkSelection: скорректированный offset = ', offset);
             
-            return offset;
+            range.setStart(container, offset);
         }
         
         if (position == 'end') {
@@ -522,14 +522,12 @@ $.TextSelector.prototype = {
                 container_txtnodes = $(container).textNodes();
                 container = container_txtnodes[container_txtnodes.length-1];
                 offset = container.data.length;
-                range.setEnd(container, container.data.length);
                 //console.log('новый container', container, offset);
             }
             
             if (container.nodeType != 3 ||
                 container.data.substring(0, offset).match(this.options.regexp) == null) {
                 var newdata = this.prevNode(container);
-                range.setEnd(newdata._container, newdata._offset);
                 container = newdata._container;
                 offset = newdata._offset;
                 //console.log('offset', offset);
@@ -541,8 +539,91 @@ $.TextSelector.prototype = {
 
             offset = stepForward(container, offset, is_word);
             //console.log('checkSelection: скорректированный offset = ', offset);
+            range.setEnd(container, offset);
+        }
+    },
 
-            return offset;
+    checkBrackets: function(range){
+        // XXX Needs cleanup!
+        var text = range.toString();//getTextNodes(range).map(function(x){return x.data;}).join('');
+        var brackets = text.match(/\(|\)/g);
+        if (brackets){
+            brackets = brackets.join('');
+            var l = brackets.length +1;
+            while(brackets.length < l){
+                l = brackets.length;
+                brackets = brackets.replace(/\(x*\)/g, 'x');
+            }
+            if (brackets.charAt(brackets.length-1) == ')' &&
+                    text.charAt(text.length-1) == ')'){
+                if(range.endOffset == 1) {
+                    var new_data = this.prevNode(range.endContainer);
+                    range.setEnd(new_data.container, new_data.offset);
+                } else {
+                    range.setEnd(range.endContainer, range.endOffset-1);
+                }
+            }
+            if (brackets.charAt(0) == '(' &&
+                    text.charAt(0) == '('){
+                if(range.startOffset == range.startContainer.data.length) {
+                    var new_data = this.nextNode(range.endContainer);
+                    range.setStart(new_data.container, new_data.offset);
+                } else {
+                    range.setStart(range.startContainer, range.startOffset+1);
+                }
+            }
+        }
+
+    },
+
+    checkSentence: function(range){
+        if(range.endOffset == range.endContainer.data.length) {
+            var data = this.nextNode(range.endContainer, /.*/);
+            var nextAfterRange = data._container.data.charAt(0);
+        } else {
+            var data = {_container: range.endContainer, _offset: range.endOffset};
+            var nextAfterRange = range.endContainer.data.charAt(range.endOffset);
+        }
+
+
+        if (nextAfterRange.match(/\.|\?|\!/)){
+            //console.log('Sentence end detected: ', nextAfterRange);
+
+            // XXX rewrite
+            var text = range.toString();
+            if (text.match(/(\.|\?|\!)\s+[A-ZА-ЯЁ]/)){
+                return apply();
+            }
+
+            if (range.startOffset == 0 &&
+                range.startContainer.previousSibling &&
+                range.startContainer.previousSibling.nodeType == 1 &&
+                range.startContainer.previousSibling.className == 'selection_index'){
+                return apply();
+            }
+
+            var node, iterator = _range.getElementIterator(range)
+            while (node=iterator()){
+                if (node.nodeType == 1 && node.className == 'selection_index'){
+                    return apply();
+                }
+            }
+
+            if (text.charAt(0).match(/[A-ZА-ЯЁ]/)){
+                var pre = range.startContainer.data.substring(0, range.startOffset)
+                if(!pre.match(/\S/)) {
+                    var pre_data = this.prevNode(range.startContainer, /\W*/);
+                    pre = pre_data._container.data;
+                }
+                pre = $.trim(pre);
+                if (pre.charAt(pre.length-1).match(/(\.|\?|\!)/)){
+                    return apply();
+                }
+            }
+        }
+        
+        function apply(){
+            range.setEnd(data._container, data._offset+1)
         }
     },
 
