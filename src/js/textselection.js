@@ -3,7 +3,7 @@ $.TextSelector = function(options) {
     var this_ = this;
         
     this.options = $.extend({
-        regexp: /[^\s,;:«»–.!?<>…\n]+/ig,
+        regexp: /[^\s,;:–.!?<>…\n]+/ig,
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
         'location': window.location
@@ -544,18 +544,23 @@ $.TextSelector.prototype = {
     },
 
     checkBrackets: function(range){
+        this._checkBrackets(range, '(', ')', /\(|\)/g, /\(x*\)/g);
+        this._checkBrackets(range, '«', '»', /\«|\»/g, /«x*»/g);
+        // XXX Double brackets?
+    },
+    _checkBrackets: function(range, ob, cb, match_reg, repl_reg){
         // XXX Needs cleanup!
         var text = range.toString();//getTextNodes(range).map(function(x){return x.data;}).join('');
-        var brackets = text.match(/\(|\)/g);
+        var brackets = text.match(match_reg);
         if (brackets){
             brackets = brackets.join('');
             var l = brackets.length +1;
             while(brackets.length < l){
                 l = brackets.length;
-                brackets = brackets.replace(/\(x*\)/g, 'x');
+                brackets = brackets.replace(repl_reg, 'x');
             }
-            if (brackets.charAt(brackets.length-1) == ')' &&
-                    text.charAt(text.length-1) == ')'){
+            if (brackets.charAt(brackets.length-1) == cb &&
+                    text.charAt(text.length-1) == cb){
                 if(range.endOffset == 1) {
                     var new_data = this.prevNode(range.endContainer);
                     range.setEnd(new_data.container, new_data.offset);
@@ -563,8 +568,8 @@ $.TextSelector.prototype = {
                     range.setEnd(range.endContainer, range.endOffset-1);
                 }
             }
-            if (brackets.charAt(0) == '(' &&
-                    text.charAt(0) == '('){
+            if (brackets.charAt(0) == ob &&
+                    text.charAt(0) == ob){
                 if(range.startOffset == range.startContainer.data.length) {
                     var new_data = this.nextNode(range.endContainer);
                     range.setStart(new_data.container, new_data.offset);

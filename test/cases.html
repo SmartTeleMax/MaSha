@@ -298,6 +298,15 @@
             var aim = 'Something (long in brackets).';
             assertSelectionEqual(aim);
         },
+        cornerQuotes: function(){
+            var html = '<p>Something «long in quotes» is here.</p>';
+            var sel = new_selection(html);
+            createRange(0, 10, 0, 25);
+            $('#txtselect_marker').click();
+
+            var aim = '«long in quotes»';
+            assertSelectionEqual(aim);
+        },
 
         shortenWordsSpace: function(){
             var html = '<p>Here is a selection!</p>';
