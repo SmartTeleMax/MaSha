@@ -215,14 +215,8 @@ $.TextSelector.prototype = {
         n = container.previousSibling;
         // FIXME! Требуется подсчет кол-ва слов и за пределами внутренних <b></b>
         while (n) {
-            if (pos=='end') {
-                console.log('countingWord: подсчитываем слова в одной из предыдущих от '+pos+'Container ноде[n] = ', n);
-            } else {
-                console.log('countingWord: подсчитываем слова в '+pos+'Container ноде[n] = ', n);
-            }
             var onei = wordCount(n);
             wcount += onei;
-            console.log('countingWord: в ноде ', n, ' подсчитано ', onei, 'слов. Теперь в общей копилке ', wcount, 'слов');
             n = n.previousSibling;
         }
         */
@@ -394,7 +388,7 @@ $.TextSelector.prototype = {
             range.setEnd(end.node, end.offset);
             return range;
         } else {
-            if (window.console){console.warn('Cannot deserialize range', serialized);}
+            //if (window.console && console.warn){console.warn('Cannot deserialize range', serialized);}
             return null;  
         }
     },
