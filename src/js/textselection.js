@@ -6,6 +6,7 @@ $.TextSelector = function(options) {
         regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
+        extraIgnored: '',
         'location': window.location
     }, options)
     
@@ -563,6 +564,7 @@ $.TextSelector.prototype = {
     checkSentence: function(range){
         if(range.endOffset == range.endContainer.data.length) {
             var data = this.nextNode(range.endContainer, /.*/);
+            if(!data) {return;}
             var nextAfterRange = data._container.data.charAt(0);
         } else {
             var data = {_container: range.endContainer, _offset: range.endOffset};
@@ -794,7 +796,8 @@ $.TextSelector.prototype = {
         return (node.hasClass('inpost')
                 || node.hasClass('b-multimedia')
                 || node.hasClass('photo')
-                || node.is('script'));
+                || node.is('script')
+                || (this.options.extraIgnored && node.is(this.options.extraIgnored)));
     },
 
     range_is_selectable: function(){
