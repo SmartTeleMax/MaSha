@@ -736,7 +736,7 @@ $.TextSelector.prototype = {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
 
-                if (nodeType==3 && !child.nodeValue.replace(/^\s+/, '').replace(/\s+$/, '')) {
+                if (nodeType==3 && !child.nodeValue.match(this_.options.regexp)) {
                     // ..if it is a textnode that is logically empty, ignore it
                     continue;
                 } else if (nodeType==3) {
