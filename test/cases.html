@@ -361,7 +361,7 @@
             $('#txtselect_marker').click();
             assertSelectionEqual('text of few', 1, 'silent');
             assertSelectionEqual('', 0, 'silent');
-            assertHashEqual(sel, '1:2,1:4;');
+            assertHashEqual(sel, '1:2,1:4');
         },
         mergeReversed: function(){
             var html = '<p>Some text of few short words.</p>';
@@ -390,13 +390,13 @@
             assertSelectionEqual('Some text of few short', 2, 'silent');
             assertSelectionEqual('', 0, 'silent');
             assertSelectionEqual('', 1, 'silent');
-            assertHashEqual(sel, '1:1,1:5;');
+            assertHashEqual(sel, '1:1,1:5');
         },
 
 
         restoreSelections: function(){
             var html = '<p>Some text of few short words.</p><p>And one more.</p>';
-            var sel = new_selection(html, '1:1,1:3;1:6,2:2;');
+            var sel = new_selection(html, '1:1,1:3;1:6,2:2');
             assertSelectionEqual('Some text of', 0, 'silent');
             assertSelectionEqual('words.And one', 1);
         },
@@ -412,9 +412,20 @@
             $('#txtselect_marker').click();
             assertSelectionEqual('Word. Some', 1, 'silent');
 
-            assertHashEqual(sel, '2:3,3:2;1:1,2:1;');
+            assertHashEqual(sel, '2:3,3:2;1:1,2:1');
+        },
+        nestedElementsHash: function(){
+            var html = '<div><a><b>Word.<em></em></b></a> Some strange text.</div>';
+            var sel = new_selection(html);
+
+            createRange(0, 2, 1, 3);
+            $('#txtselect_marker').click();
+            assertSelectionEqual('Word. Some', 0, 'silent');
+
+            assertHashEqual(sel, '1:1,1:2');
         }
         // XXX add tests for nbsp for IE
+        // XXX selection removing!
     }
     $(function(){
         if (!window.console){

@@ -3,7 +3,7 @@ $.TextSelector = function(options) {
     var this_ = this;
         
     this.options = $.extend({
-        regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0]+', 'ig'),
+        regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
         selectorSelectable: '#selectable-content',
         selectorMarker: '#txtselect_marker',
         'location': window.location
@@ -75,6 +75,7 @@ $.TextSelector.prototype = {
             dontshow = true;
         
             this_.addSelection();
+            this_.updateHash();
             this_.count++;
 
             if ($.browser.msie) {
@@ -95,6 +96,7 @@ $.TextSelector.prototype = {
             $('.'+numclass).removeClass('hover');
             $(this).fadeOut('slow', function(){
                 this_.delete_selections([numclass]);
+                this_.updateHash();
             });
 
             return false;
@@ -129,7 +131,7 @@ $.TextSelector.prototype = {
             ranges.push(this.ranges[numclass]);
             delete this.ranges[numclass];
         }
-        this.updateHash(ranges);
+        //this.updateHash(ranges);
     },
 
     _siblingNode: function(cont, prevnext, firstlast, offs, regexp){
@@ -238,53 +240,22 @@ $.TextSelector.prototype = {
         return _count;
     }, 
 
-    updateHash: function(_delete){
-        _delete = _delete || false;
-        var hash = '';
-        var nowhash = this.options.location.hash;
+    updateHash: function(){
+        var hashAr = [];
         
-        
-        if (_delete) {
-            for (var i=_delete.length;i--;){
-                nowhash = nowhash.replace(_delete[i]+';', '');
-                //console.log('updateHash: обновляем хэш: ', _delete[i]);
-            }
-            this.options.location.hash = nowhash;
-        } else {
-            for (key in this.ranges) { 
-                if (nowhash.indexOf(this.ranges[key]) == -1) { // XXX 
-                    hash += this.ranges[key] + ';';
-                }
-            }
-            if (nowhash.indexOf('sel=') == -1) {
-                nowhash = 'sel=';
-                nowhash = nowhash+hash;
-            } else {
-                nowhash = nowhash+hash;
-            }
-            this.options.location.hash = nowhash;
+        for (key in this.ranges) { 
+            hashAr.push(this.ranges[key]);
         }
+        this.options.location.hash = 'sel='+hashAr.join(';');
         //console.log('updateHash: обновляем хэш: ', hash);
     },
 
     readHash: function(){
-        //console.log('readHash: ––––––––––––––––––––––––––––––');
-
-        var hash = this.options.location.hash;
-        if (!hash) return;
-    
-        hash = hash.split('#')[1];
-
-        if(! /sel\=(?:\d+\:\d+\,\d+\:\d+;)*\d+\:\d+\,\d+\:\d+/.test(hash)) return;
-
-        hash = hash.substring(4, hash.length);
-    
-        hashAr = hash.split(';');
+        var hashAr = this.splittedHash();
+        if (!hashAr){ return; }
         //console.log('readHash: из хэша получен массив меток выделений: ', hashAr);
-        // восстанавливаем первое выделение + скроллим до него.
     
-        for (var i=0; i < hashAr.length-1; i++) {
-            //console.log('readHash: восстанавливаем метку [запускаем this.restoreStamp('+hashAr[i]+');]');
+        for (var i=0; i < hashAr.length; i++) {
             this.restoreStamp(hashAr[i]);
         }
 
@@ -294,8 +265,21 @@ $.TextSelector.prototype = {
             scrollTop:scrollTo
             }, 1500,  "easeInOutQuint");
 
+        this.updateHash();
         //console.log('readHash: ––––––––––––––––––––––––––––––');
 
+    },
+
+    splittedHash: function(){
+        var hash = this.options.location.hash;
+        if (!hash) return;
+    
+        hash = hash.replace(/^#/, '').replace(/;+$/, '');
+
+        if(! /^sel\=(?:\d+\:\d+\,\d+\:\d+;)*\d+\:\d+\,\d+\:\d+$/.test(hash)) return;
+
+        hash = hash.substring(4, hash.length);
+        return hash.split(';');
     },
 
     restoreStamp: function(stamp){
@@ -330,7 +314,7 @@ $.TextSelector.prototype = {
         
     deserializePosition: function(serialized, rootNode, doc, pos){
          var bits = serialized.split(":");
-         var node = this.blocks[parseInt(bits[0])];
+         var node = this.blocks[parseInt(bits[0], 10)];
 
          var pos_text;
 
@@ -343,7 +327,7 @@ $.TextSelector.prototype = {
          //console.log('deserializePosition: ищем по счету '+bits[1]+' слово. Запускаем цикл перебора всех слов родительского элемента.');
          while (node) {
              // XXX duplicating regexp!!!
-             var re = new RegExp ('[^\\s,;:–.!?\xA0]+', 'ig');
+             var re = new RegExp ('[^\\s,;:–.!?\xA0\\*]+', 'ig');
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
                  //console.log('deserializePosition: слово №'+stepCount+' = "', myArray[0], '"; (startoffset =', myArray.index, ', endoffset =', re.lastIndex, ')');
@@ -707,7 +691,7 @@ $.TextSelector.prototype = {
 
         $('.num'+this.count+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
     
-        this.updateHash();
+        //this.updateHash();
 
         window.getSelection().removeAllRanges();
     },
@@ -731,16 +715,17 @@ $.TextSelector.prototype = {
             var has_blocks = false;
             var block_started = false;
             
+
             var len;
             for (var idx=0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
-
                 if (nodeType==3 && !child.nodeValue.match(this_.options.regexp)) {
                     // ..if it is a textnode that is logically empty, ignore it
                     continue;
                 } else if (nodeType==3) {
                     if (!block_started){
+                        //console.log('block start',child)
                         // remember the block
                         captureCount++;
                         //console.log('enumerating', child, captureCount)
@@ -751,16 +736,18 @@ $.TextSelector.prototype = {
                     }
                 } else if (nodeType==1) {
                     // XXX check if this is correct
-                    var is_block = $(child).getCompiledStyle('display') != 'inline';
-                    if (is_block){
-                        if (!this_.is_ignored(child)){
+                    if (!this_.is_ignored(child)){
+                        var is_block = $.inArray($(child).getCompiledStyle('display'),
+                                                 ['inline', 'none']) == -1;
+
+                        if (is_block){
                             var child_has_blocks = enumerate(child);
                             has_blocks = has_blocks || child_has_blocks;
                             block_started = false;
+                        } else if (!block_started) {
+                            block_started = enumerate(child);
+                            has_blocks = has_blocks || block_started;
                         }
-                    } else if (!block_started) {
-                        block_started = enumerate(child);
-                        has_blocks = has_blocks && block_started;
                     }
                 }
             }
