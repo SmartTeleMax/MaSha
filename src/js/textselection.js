@@ -6,7 +6,7 @@ $.TextSelector = function(options) {
         regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
         selectable: 'selectable-content',
         selectorMarker: '#txtselect_marker',
-        extraIgnored: '',
+        ignored: default_selection_ignored,
         'location': window.location
     }, options)
     
@@ -40,26 +40,16 @@ $.TextSelector.prototype = {
         this.enumerateElements();
     
         var marker = $(this.options.selectorMarker);
-        var dontshow = false;
 
         $(document).bind('textselect', function(e) {
             /*
              * Show the marker if any text selected
              */
-            if (e.text == '' || !this_.options.regexp.test(e.text)) return;
-            if (!this_.range_is_selectable()) return;
-       
             window.setTimeout(function(){
-                if (!dontshow) {
-                    marker.css({'top':e.pageY-33, 'left': e.pageX+5});
-                    if ($.browser.msie) {
-                        marker.addClass('show');
-                    } else {
-                        marker.fadeIn('fast', function(){
-                            marker.addClass('show');
-                        });
-                    }
-                }
+                if (e.text == '' || !this_.options.regexp.test(e.text)) return;
+                if (!this_.range_is_selectable()) return;
+                marker.css({'top':e.pageY-33, 'left': e.pageX+5});
+                marker.addClass('show');
             }, 1);
         });
     
@@ -69,27 +59,16 @@ $.TextSelector.prototype = {
             //console.log('marker click')
             e.preventDefault();
             if (!this_.range_is_selectable()){
-                marker.removeClass('show').css('display', 'none');
-                //console.log('Range is not selectable')
+                marker.removeClass('show');
                 return;
             }
             
-            dontshow = true;
-        
             this_.addSelection();
             this_.updateHash();
             this_.count++;
 
-            if ($.browser.msie) {
-                onHideMarker()
-            } else {
-                marker.fadeOut('fast', onHideMarker);
-            }
-            function onHideMarker(){
-                marker.removeClass('show');
-                selectableMessage.show();
-                dontshow = false;
-            }
+            marker.removeClass('show');
+            selectableMessage.show();
         });
     
         $('.closewrap a.txtsel_close').live('click', function(){
@@ -109,13 +88,8 @@ $.TextSelector.prototype = {
             if (tar.attr('id') != 'txtselect_marker') {
                 dontrun = false;
                 if($('#txtselect_marker').hasClass('show')){
-                    if ($.browser.msie) {
-                        $('#txtselect_marker').removeClass('show');
-                    } else {
-                        $('#txtselect_marker').fadeOut('fast', function(){
-                            $(this).removeClass('show');
-                        });
-                    }
+                    // fade in/out is imlemented 
+                    $('#txtselect_marker').removeClass('show');
                 }
             }
         });
@@ -754,43 +728,43 @@ $.TextSelector.prototype = {
     },
 
     is_ignored: function(node){
-        node = $(node);
-        return (node.hasClass('inpost')
-                || node.hasClass('b-multimedia')
-                || node.hasClass('photo')
-                || node.is('script')
-                || (this.options.extraIgnored && node.is(this.options.extraIgnored)));
+        return this.options.ignored(node);
     },
 
     range_is_selectable: function(){
         // getNodes() это от rangy вроде.
-        var node, first_node, last_node;
+        var node, first_node, last_node, first=true;
         var range = this.getFirstRange();
         if (!range) { return false; }
         var iterator = _range.getElementIterator(range);
         while (node = iterator()){
-            if (!this.is_internal(node)
-                || $(node).parents('div.b-multimedia').length
-                || $(node).parents('div.photo').length
-                || $(node).parents('div.inpost').length) { 
-                    return false; 
-                }
             if (node.nodeType == 3 && node.data.match(this.options.regexp) != null){
+                // first and last TEXT nodes
                 first_node = first_node || node;
                 last_node = node;
             }
-            if (node.nodeType == 1) {
-                if (this.is_ignored(node)) {
-                     //alert('отказ');
-                     //console.log('отказ! все из-за ', nodes[i]);
-                     return false;
-                 }
+            // We need to check first element. Text nodes are not checked, so we replace
+            // it for it's parent.
+            node = (first && node.nodeType == 3)? node.parentNode : node;
+            first = false;
+            
+            if (node.nodeType == 1){
+                // Checking element nodes. Check if the element node and all it's parents
+                // till selectable are not ignored
+                var iter_node = node;
+                while (iter_node != this.selectable && iter_node.parentNode){
+                    if (this.is_ignored(iter_node)){
+                        return false;
+                    }
+                    iter_node = iter_node.parentNode
+                }
+                if (iter_node != this.selectable){ return false; }
             }
         }
         var first_selection = $(first_node).parents('.user_selection_true')[0];
         var last_selection = $(last_node).parents('.user_selection_true')[0];
         if (first_selection && last_selection){
-            var reg = /(num\d+)(?:$| )/;
+            var reg = /(?:^| )(num\d+)(?:$| )/;
             return (reg.exec(first_selection.className)[1] != 
                     reg.exec(last_selection.className)[1]);
         }
@@ -798,6 +772,14 @@ $.TextSelector.prototype = {
     }
 }
 
+function default_selection_ignored(node){
+    // Attention! Called from templates! (dossier_item, eng/dossier_item)
+    node = $(node);
+    return (node.hasClass('inpost')
+            || node.hasClass('b-multimedia')
+            || node.hasClass('photo')
+            || node.is('script'));
+}
 
 
 $.TextSelectorMessage = function() {
