@@ -4,7 +4,7 @@ $.TextSelector = function(options) {
         
     this.options = $.extend({
         regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
-        selectorSelectable: '#selectable-content',
+        selectable: 'selectable-content',
         selectorMarker: '#txtselect_marker',
         extraIgnored: '',
         'location': window.location
@@ -25,14 +25,15 @@ $.TextSelector = function(options) {
 $.TextSelector.prototype = {
     init: function(){ // domready
         //console.log('domready');
-        var selectable = $(this.options.selectorSelectable)
+        this.selectable = (typeof this.options.selectable == 'string'?
+                             document.getElementById(this.options.selectable):
+                             this.options.selectable);
         var selectableMessage = new $.TextSelectorMessage();
         var this_ = this;
 
-        if (!selectable.length) return;
+        if (!this.selectable) return;
     
-        selectable.cleanWhitespace();
-        selectable.find('*').cleanWhitespace();
+        $(this.selectable).cleanWhitespace().find('*').cleanWhitespace();
     
         
         // нумерация блочных элементов, которые содержат текст
@@ -135,10 +136,20 @@ $.TextSelector.prototype = {
         //this.updateHash(ranges);
     },
 
+    is_internal: function(node){
+        while (node.parentNode){
+            if (node == this.selectable){
+                return true
+            }
+            node = node.parentNode
+        }
+        return false;
+    },
+
     _siblingNode: function(cont, prevnext, firstlast, offs, regexp){
         var regexp = regexp || this.options.regexp;
         //console.log('getting', prevnext, cont);
-        while (cont.parentNode && $(cont).parents(this.options.selectorSelectable).length){
+        while (cont.parentNode && this.is_internal(cont)){
             while (cont[prevnext + 'Sibling']){
                 cont = cont[prevnext + 'Sibling'];
                 while (cont.nodeType == 1 && cont.childNodes.length){
@@ -257,7 +268,7 @@ $.TextSelector.prototype = {
         //console.log('readHash: из хэша получен массив меток выделений: ', hashAr);
     
         for (var i=0; i < hashAr.length; i++) {
-            this.restoreStamp(hashAr[i]);
+            this.deserializeSelection(hashAr[i]);
         }
 
         // Вычисляем кол-во px от верха до первого выделенного участка текста, далее - скроллим до этого места.
@@ -283,37 +294,36 @@ $.TextSelector.prototype = {
         return hash.split(';');
     },
 
-    restoreStamp: function(stamp){
-        //console.log('this.restoreStamp: ––––––––––––––––––––––––––––––');
-        //console.log('this.restoreStamp: запускаем rangy.deserializeSelection('+stamp+')');
-        var range = this.deserializeSelection(stamp);
-        //console.log('this.restoreStamp: запускаем this.tSelection(false)');
+    deserializeSelection: function(serialized) {
+        var sel = window.getSelection();
+        if(sel.rangeCount > 0){ sel.removeAllRanges(); }
+
+        range = this.deserializeRange(serialized);
         if(range){
+        //    sel.addRange(range);
             this.addSelection(range);
             this.count++;
         }
-        //console.log('this.restoreStamp: ––––––––––––––––––––––––––––––');
     },
-    deserializeSelection: function(serialized) {
-        
-        var rootNode = document.getElementById(this.rootNode);
-        //console.log('deserializeSelection', rootNode);
 
-        var sel = window.getSelection();
-        //console.log('deserializeSelection: sel=', sel)
-        var ranges = [];
-        if(sel.rangeCount > 0) sel.removeAllRanges();
+    deserializeRange: function(serialized){
+        var result = /^([^,]+),([^,]+)({([^}]+)})?$/.exec(serialized);
 
-        var range = this.deserializeRange(serialized, rootNode, document)
-        if (range) {
-        //    sel.addRange(range);
+        var start = this.deserializePosition(result[1], 'start'),
+            end = this.deserializePosition(result[2], 'end');
+
+        if (start.node && end.node){
+            var range = document.createRange();
+            range.setStart(start.node, start.offset);
+            range.setEnd(end.node, end.offset);
             return range;
-        } else {
-            return null;
         }
-    },
-        
-    deserializePosition: function(serialized, rootNode, doc, pos){
+        if (window.console && (typeof console['warn'] == 'function')){
+            console['warn']('Cannot deserialize range: ' + serialized);
+        }
+    }, 
+
+    deserializePosition: function(serialized, pos){
          var bits = serialized.split(":");
          var node = this.blocks[parseInt(bits[0], 10)];
 
@@ -338,11 +348,7 @@ $.TextSelector.prototype = {
 
                      return {node: node, offset: parseInt(offset, 10)};
                      //console.log('deserializePosition: '+pos+'овое слово найдено = ', myArray[0], '. Целевая нода = ', _allnodes[i], '. Символьный offset = ', offset);
-                     //node = _allnodes[i];
-                     //break;
-                 }// else {
-                     //console.log('пустой проход.', stepCount, '|', bits[1]);
-                 //}
+                 }
 
              }
              node = this.nextNode(node, /.*/)
@@ -354,54 +360,10 @@ $.TextSelector.prototype = {
          return {node: null, offset: 0};
     },
 
-    deserializeRange: function(serialized, rootNode, doc){
-        rootNode = rootNode || document.getElementById(this.rootNode);
-        if (rootNode) {
-            doc = doc || document;
-        } else {
-            doc = doc || document;
-            rootNode = doc.documentElement;
-        }
-        var result = /^([^,]+),([^,]+)({([^}]+)})?$/.exec(serialized);
-
-        var start = this.deserializePosition(result[1], rootNode, doc, 'start'),
-            end = this.deserializePosition(result[2], rootNode, doc, 'end');
-
-        if (start.node && end.node){
-            var range = document.createRange();
-            range.setStart(start.node, start.offset);
-            range.setEnd(end.node, end.offset);
-            return range;
-        } else {
-            //if (window.console && console.warn){console.warn('Cannot deserialize range', serialized);}
-            return null;  
-        }
-    },
-
     serializeRange: function(range) {
-        var rootNode = document.getElementById(this.rootNode);
-        
-        return this.serializeWord(range.startContainer, range, 'start', rootNode) + "," +
-               this.serializeWord(range.endContainer, range, 'end', rootNode);
-    },
-
-    serializeWord: function(node, range, piu, rootNode) {
-
-        offset = 0;
-        var pathBits = [], n = node;
-        var nodeNum;
-
-        if ($(node).hasAttr('nodeNum')) {
-            nodeNum = $(node).attr('nodeNum');
-        } else if ($(node).parents('.nodeNum:first').hasAttr('nodeNum')){
-            nodeNum = $(node).parents('.nodeNum:first').attr('nodeNum');
-        }
-
-        if (piu=='start'){
-            return this.words(range.startContainer, range.startOffset, piu);
-        } else {
-            return this.words(range.endContainer, range.endOffset, piu);
-        }
+        var start = this.words(range.startContainer, range.startOffset, 'start');
+        var end = this.words(range.endContainer, range.endOffset, 'end');
+        return start + "," + end;
     },
 
     checkSelection: function(range) {
@@ -706,7 +668,7 @@ $.TextSelector.prototype = {
     },
     enumerateElements: function(){
         // Returns first text node in each visual block element
-        var node = $(this.options.selectorSelectable)[0];
+        var node = this.selectable;
         var captureCount=0;
         var this_ = this;
 
@@ -777,7 +739,7 @@ $.TextSelector.prototype = {
         }
     },
     getNum: function(cont){
-        while (cont.parentNode){// && $(cont).parents(this.options.selectorSelectable).length){
+        while (cont.parentNode){
             while (cont.previousSibling){
                 cont = cont.previousSibling;
                 while (cont.nodeType == 1 && cont.childNodes.length){
@@ -807,7 +769,7 @@ $.TextSelector.prototype = {
         if (!range) { return false; }
         var iterator = _range.getElementIterator(range);
         while (node = iterator()){
-            if (!$(node).parents(this.options.selectorSelectable).length
+            if (!this.is_internal(node)
                 || $(node).parents('div.b-multimedia').length
                 || $(node).parents('div.photo').length
                 || $(node).parents('div.inpost').length) { 
@@ -818,9 +780,7 @@ $.TextSelector.prototype = {
                 last_node = node;
             }
             if (node.nodeType == 1) {
-                if (//$(node).hasClass('user_selection_true') // XXX support only correct merges?
-                    //|| 
-                    this.is_ignored(node)) {
+                if (this.is_ignored(node)) {
                      //alert('отказ');
                      //console.log('отказ! все из-за ', nodes[i]);
                      return false;
@@ -936,6 +896,7 @@ $.fn.cleanWhitespace = function() {
                             return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); 
                         }
                     ).remove();
+    return this;
 }
 
 $.fn.hasAttr = function(name) {  
