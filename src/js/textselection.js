@@ -21,8 +21,9 @@ $.MaSha.default_options = {
     'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
     'selectable': 'selectable-content',
     'selectorMarker': '#txtselect_marker',
-    'ignored': default_selection_ignored,
-    'location': window.location
+    'location': window.location,
+    'ignored': null,
+    'onSelected': null
 }
 
 $.MaSha.prototype = {
@@ -32,7 +33,6 @@ $.MaSha.prototype = {
                              document.getElementById(this.options.selectable):
                              this.options.selectable);
         // XXX make a callback
-        var selectableMessage = new $.TextSelectorMessage();
         var this_ = this;
 
         if (!this.selectable) return;
@@ -72,7 +72,9 @@ $.MaSha.prototype = {
             this_.count++;
 
             marker.removeClass('show');
-            selectableMessage.show();
+            if (this_.options.onSelected){
+                this_.options.onSelected(this_);
+            }
         });
     
         $('.closewrap a.txtsel_close').live('click', function(){
@@ -733,7 +735,7 @@ $.MaSha.prototype = {
     },
 
     is_ignored: function(node){
-        return this.options.ignored(node);
+        return this.options.ignored && this.options.ignored(node);
     },
 
     range_is_selectable: function(){
@@ -776,92 +778,6 @@ $.MaSha.prototype = {
         return true;
     }
 }
-
-function default_selection_ignored(node){
-    // remove out from here
-    node = $(node);
-    return (node.hasClass('inpost')
-            || node.hasClass('b-multimedia')
-            || node.hasClass('photo')
-            || node.is('script'));
-}
-
-
-$.TextSelectorMessage = function() {
-    // XXX make a callback, do not include to standart package
-    var $msg = $('#upmsg-selectable');
-    var autoclose;
-
-    this.show = function(){
-        if (get_closed()) return;
-        //if ($msg.hasClass('show')) return;
-    
-        $msg.addClass('show');
-    
-        if ($.browser.msie) {
-            $msg.animate({
-                'top': '0px'
-            }, { duration: 1000, easing: 'easeOutQuint' });
-        } else {
-            $msg.animate({
-                'top': '0px',
-                'opacity': '1'
-            }, { duration: 1000, easing: 'easeOutQuint' });
-        }
-
-        clearTimeout(autoclose);
-        autoclose = setTimeout(closemsg, 10000);
-    }
-
-
-    $msg.find('.upmsg_closebtn').click(function(){
-        closemsg();
-        save_closed();
-        clearTimeout(autoclose);
-        return false;
-    });
-
-    function closemsg(){
-        if ($.browser.msie) {
-            $msg.animate({
-                'top': '-57px'
-            }, 500,  "easeInQuint", function(){ 
-                $msg.removeClass('show');
-            });
-        } else {
-            $msg.animate({
-                'top': '-57px',
-                'opacity': 0
-            }, 500,  "easeInQuint", function(){ 
-                $msg.removeClass('show');
-            });
-        }
-        return false;
-    }
-
-    function save_closed(){
-        if (window.localStorage){
-            localStorage.selectable_warning = 'true';
-        } else {
-            $.cookie('selectable-warning', 'true');
-        }
-    }
-    function get_closed(){
-        if (window.localStorage){
-            return !!localStorage.selectable_warning;
-        } else {
-            return !!$.cookie('selectable-warning');
-        }
-    }
-}
-
-
-
-
-
-
-
-
 
 
 
