@@ -94,7 +94,7 @@
         $('#selectable-content, #txtselect_marker').remove();
         $(document.body).append('<div id="selectable-content">' + html + '</div>');
         $(document.body).append('<div id="txtselect_marker"></div>');
-        return new $.TextSelector({'location': {'hash': hash}});
+        return new $.MaSha({'location': {'hash': hash}});
     }
     function assertHTMLEqual(aim, silent){
         $('.closewrap, .selection_index').remove();

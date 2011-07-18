@@ -1,8 +1,9 @@
-
-$.TextSelector = function(options) {
+// XXX merge with range.js
+// XXX decrease jQuery dependency
+$.MaSha = function(options) {
     var this_ = this;
         
-    this.options = $.extend({}, $.TextSelector.default_options, options);
+    this.options = $.extend({}, $.MaSha.default_options, options);
     
     $.extend(this, {
         count: 0,
@@ -16,7 +17,7 @@ $.TextSelector = function(options) {
     $(function(){ this_.init() });
 }
 
-$.TextSelector.default_options = {
+$.MaSha.default_options = {
     'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
     'selectable': 'selectable-content',
     'selectorMarker': '#txtselect_marker',
@@ -24,8 +25,7 @@ $.TextSelector.default_options = {
     'location': window.location
 }
 
-// XXX rename to MaSha
-$.TextSelector.prototype = {
+$.MaSha.prototype = {
     init: function(){ // domready
         //console.log('domready');
         this.selectable = (typeof this.options.selectable == 'string'?
