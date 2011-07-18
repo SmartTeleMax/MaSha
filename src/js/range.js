@@ -1,4 +1,5 @@
 var _range = {};
+// XXX extend prototypes of default Range and DOMRange objects instead of this
 _range.splitBoundaries = function(range) {
     var sc = range.startContainer, so = range.startOffset, ec = range.endContainer, eo = range.endOffset;
     var startEndSame = (sc === ec);
@@ -71,6 +72,7 @@ _range.wrapSelection = function(className, range){
     }
 }
 
+// XXX move from here
 removeTextSelection = function(className){
     var spans = $(className);
     for (var i=spans.length; i--;){
@@ -84,6 +86,8 @@ removeTextSelection = function(className){
 
 
 // Event text-selection handler
+// XXX it is not reason to keep separate event for textselection.
+//     We bind it internaly and only in one place
 (function($) {
 	$.event.special.textselect = {
 		setup: function(data, namespaces) {

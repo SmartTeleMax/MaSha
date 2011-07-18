@@ -2,13 +2,7 @@
 $.TextSelector = function(options) {
     var this_ = this;
         
-    this.options = $.extend({
-        regexp: new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
-        selectable: 'selectable-content',
-        selectorMarker: '#txtselect_marker',
-        ignored: default_selection_ignored,
-        'location': window.location
-    }, options)
+    this.options = $.extend({}, $.TextSelector.default_options, options);
     
     $.extend(this, {
         count: 0,
@@ -22,12 +16,22 @@ $.TextSelector = function(options) {
     $(function(){ this_.init() });
 }
 
+$.TextSelector.default_options = {
+    'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
+    'selectable': 'selectable-content',
+    'selectorMarker': '#txtselect_marker',
+    'ignored': default_selection_ignored,
+    'location': window.location
+}
+
+// XXX rename to MaSha
 $.TextSelector.prototype = {
     init: function(){ // domready
         //console.log('domready');
         this.selectable = (typeof this.options.selectable == 'string'?
                              document.getElementById(this.options.selectable):
                              this.options.selectable);
+        // XXX make a callback
         var selectableMessage = new $.TextSelectorMessage();
         var this_ = this;
 
@@ -248,6 +252,7 @@ $.TextSelector.prototype = {
         // Вычисляем кол-во px от верха до первого выделенного участка текста, далее - скроллим до этого места.
         var scrollTo = $('.user_selection_true:first').offset().top - 150;
         $('html,body').animate({
+            // XXX remove dependency from easing
             scrollTop:scrollTo
             }, 1500,  "easeInOutQuint");
 
@@ -773,7 +778,7 @@ $.TextSelector.prototype = {
 }
 
 function default_selection_ignored(node){
-    // Attention! Called from templates! (dossier_item, eng/dossier_item)
+    // remove out from here
     node = $(node);
     return (node.hasClass('inpost')
             || node.hasClass('b-multimedia')
@@ -783,6 +788,7 @@ function default_selection_ignored(node){
 
 
 $.TextSelectorMessage = function() {
+    // XXX make a callback, do not include to standart package
     var $msg = $('#upmsg-selectable');
     var autoclose;
 
@@ -886,10 +892,7 @@ $.fn.hasAttr = function(name) {
 };
 
 $.fn.getCompiledStyle = function(strCssRule){
-    // XXX check if it works in IE
-    // Check if it is not implemented in jQuery
     // copypasted from Internets
-    // XXX move out from here
     var elem = this[0];
 	var strValue = "";
 	if(document.defaultView && document.defaultView.getComputedStyle){
@@ -903,3 +906,4 @@ $.fn.getCompiledStyle = function(strCssRule){
 	}
 	return strValue;
 }
+
