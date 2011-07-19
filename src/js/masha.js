@@ -6,10 +6,9 @@ $.MaSha = function(options) {
     this.options = $.extend({}, $.MaSha.default_options, options);
     
     $.extend(this, {
-        count: 0,
+        counter: 0,
         savedSel: [],
         ranges: {},
-        rootNode: 'selectable-content', // XXX what is this??
         childs: [],
         blocks: {}
     });
@@ -32,25 +31,28 @@ $.MaSha.prototype = {
         this.selectable = (typeof this.options.selectable == 'string'?
                              document.getElementById(this.options.selectable):
                              this.options.selectable);
-        // XXX make a callback
         var this_ = this;
 
         if (!this.selectable) return;
     
         $(this.selectable).cleanWhitespace().find('*').cleanWhitespace();
     
-        
+        // XXX translate comments
         // нумерация блочных элементов, которые содержат текст
         this.enumerateElements();
     
         var marker = $(this.options.selectorMarker);
 
-        $(document).bind('textselect', function(e) {
+        $(document).bind('mouseup', function(e) {
             /*
              * Show the marker if any text selected
              */
+            // XXX it's a question: bind to document or to this.selectable
+            // binding to document works better
+
             window.setTimeout(function(){
-                if (e.text == '' || !this_.options.regexp.test(e.text)) return;
+                var text = window.getSelection().toString();
+                if (text == '' || !this_.options.regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
                 marker.css({'top':e.pageY-33, 'left': e.pageX+5});
                 marker.addClass('show');
@@ -59,8 +61,7 @@ $.MaSha.prototype = {
     
     
     
-        marker.click(function(e){
-            //console.log('marker click')
+        marker.bind('click', function(e){
             e.preventDefault();
             if (!this_.range_is_selectable()){
                 marker.removeClass('show');
@@ -69,7 +70,6 @@ $.MaSha.prototype = {
             
             this_.addSelection();
             this_.updateHash();
-            this_.count++;
 
             marker.removeClass('show');
             if (this_.options.onSelected){
@@ -89,31 +89,38 @@ $.MaSha.prototype = {
             return false;
         });
 
-        $(document).click(function(e){
-            tar = $(e.target);
-            if (tar.attr('id') != 'txtselect_marker') {
-                dontrun = false;
-                if($('#txtselect_marker').hasClass('show')){
-                    // fade in/out is imlemented 
-                    $('#txtselect_marker').removeClass('show');
-                }
+        $(document).bind('click', function(e){
+            if (e.target != marker[0]) {
+                marker.removeClass('show');
             }
         });
     
         this.readHash();
     },
 
+    // XXX sort methods logically
     delete_selections: function(numclasses){
         //console.log('delete: ', numclasses)
         var ranges = [];
         for(var i=numclasses.length; i--;){
             var numclass = numclasses[i];
             $('.'+numclass+' span.closewrap').remove();
-            removeTextSelection('.'+numclass+'.user_selection_true');
+            this.removeTextSelection('.'+numclass+'.user_selection_true');
             ranges.push(this.ranges[numclass]);
             delete this.ranges[numclass];
         }
-        //this.updateHash(ranges);
+    },
+
+    // XXX choose btw camelCase and underscores!
+    removeTextSelection: function(className){
+        var spans = $(className);
+        for (var i=spans.length; i--;){
+            var span = spans[i];
+            for (var j=0; j<span.childNodes.length;j++){
+                span.parentNode.insertBefore(span.childNodes[j], span);
+            }
+            span.parentNode.removeChild(span);
+        }
     },
 
     is_internal: function(node){
@@ -239,7 +246,6 @@ $.MaSha.prototype = {
             hashAr.push(this.ranges[key]);
         }
         this.options.location.hash = 'sel='+hashAr.join(';');
-        //console.log('updateHash: обновляем хэш: ', hash);
     },
 
     readHash: function(){
@@ -283,7 +289,6 @@ $.MaSha.prototype = {
         if(range){
         //    sel.addRange(range);
             this.addSelection(range);
-            this.count++;
         }
     },
 
@@ -516,8 +521,7 @@ $.MaSha.prototype = {
 
 
         if (nextAfterRange.match(/\.|\?|\!/)){
-            //console.log('Sentence end detected: ', nextAfterRange);
-
+            // sentence end detected
             // XXX rewrite
             var text = range.toString();
             if (text.match(/(\.|\?|\!)\s+[A-ZА-ЯЁ]/)){
@@ -531,7 +535,7 @@ $.MaSha.prototype = {
                 return apply();
             }
 
-            var node, iterator = _range.getElementIterator(range)
+            var node, iterator = range.getElementIterator()
             while (node=iterator()){
                 if (node.nodeType == 1 && node.className == 'selection_index'){
                     return apply();
@@ -558,7 +562,7 @@ $.MaSha.prototype = {
 
     mergeSelections: function(range){
         var merges = []
-        var iterator = _range.getElementIterator(range);
+        var iterator = range.getElementIterator();
         var node = iterator();
         var last = node;
         var parent_ = $(node).parents('.user_selection_true')[0];
@@ -602,17 +606,15 @@ $.MaSha.prototype = {
     addSelection: function(range) {
         range = range || this.getFirstRange();
     
-        //console.log('addSelection func: range', range );
-    
         range = this.checkSelection(range);
         range = this.mergeSelections(range);
 
 
         //console.log('after checkSelection range = ', range);
         // генерируем и сохраняем якоря для выделенного
-        this.ranges['num'+this.count] = this.serializeRange(range);
+        this.ranges['num'+this.counter] = this.serializeRange(range);
 
-        _range.wrapSelection('num'+this.count+' user_selection_true', range);
+        range.wrapSelection('num'+this.counter+' user_selection_true');
 
         var timeout_hover, timeout_hover_b = false;
         var _this;
@@ -621,7 +623,7 @@ $.MaSha.prototype = {
             if (timeout_hover_b) $("."+_this.className.split(' ')[0]).removeClass("hover"); 
         }
 
-        $(".num"+this.count).mouseover(function(){
+        $(".num"+this.counter).mouseover(function(){
             _this = this;
             //console.log($(this), this.classList[1], $("."+this.classList[1]));
             $("."+this.className.split(' ')[0]).addClass('hover');
@@ -629,15 +631,14 @@ $.MaSha.prototype = {
             clearTimeout(timeout_hover);
         });
 
-        $(".num"+this.count).mouseleave(function(){
+        $(".num"+this.counter).mouseleave(function(){
             timeout_hover_b = true;
             var timeout_hover = setTimeout(unhover, 2000);
         });
 
-        $('.num'+this.count+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
+        $('.num'+this.counter+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
     
-        //this.updateHash();
-
+        this.counter++;
         window.getSelection().removeAllRanges();
     },
 
@@ -743,7 +744,7 @@ $.MaSha.prototype = {
         var node, first_node, last_node, first=true;
         var range = this.getFirstRange();
         if (!range) { return false; }
-        var iterator = _range.getElementIterator(range);
+        var iterator = range.getElementIterator();
         while (node = iterator()){
             if (node.nodeType == 3 && node.data.match(this.options.regexp) != null){
                 // first and last TEXT nodes
@@ -777,7 +778,88 @@ $.MaSha.prototype = {
         }
         return true;
     }
-}
+};
+
+(function(){
+    var Range = window.Range || window.DOMRange;
+
+    // XXX extend prototypes of default Range and DOMRange objects instead of this
+    Range.prototype.splitBoundaries = function() {
+        var sc = this.startContainer,
+            so = this.startOffset,
+            ec = this.endContainer,
+            eo = this.endOffset;
+        var startEndSame = (sc === ec);
+
+        if (ec.nodeType == 3 && eo < ec.length) {
+            ec.splitText(eo);
+        }
+
+        if (sc.nodeType == 3 && so > 0) {
+            sc = sc.splitText(so);
+            if (startEndSame) {
+                eo -= so;
+                ec = sc;
+            }
+            so = 0;
+        }
+        this.setStart(sc, so);
+        this.setEnd(ec, eo);
+    }
+
+    Range.prototype.getTextNodes = function() {
+        var iterator = this.getElementIterator();
+        var textNodes = [], node;
+        while (node = iterator()){
+            // XXX was there a reason to check for empty string?
+            // with this check selecting two sibling words separately
+            // and then selecting them both in one range doesn't work properly
+            if (node.nodeType == 3){// && !node.data.match(/^\s*$/)){
+                textNodes.push(node);
+            }
+        }
+        return textNodes
+    }
+
+    Range.prototype.getElementIterator = function(){
+        var cont = this.startContainer;
+        var end = this.endContainer;
+        var finished = false;
+        var up = false;
+
+        function next(){
+            if (finished) {return null;} 
+            var result = cont;
+            if (cont.childNodes && cont.childNodes.length && !up){
+                cont = cont.firstChild;
+            } else if (cont.nextSibling){
+                cont = cont.nextSibling;
+                up = false;
+            } else if (cont.parentNode){
+                cont = cont.parentNode;
+                up = true;
+                next();
+            }
+            finished = result === end;
+            return result
+        }
+        return next;
+    }
+
+    Range.prototype.wrapSelection = function(className){
+        this.splitBoundaries();
+
+        var textNodes = this.getTextNodes();
+        for (var i=textNodes.length; i--;){
+            var span = document.createElement('span');
+            span.className = className;
+            textNodes[i].parentNode.insertBefore(span, textNodes[i]);
+            span.appendChild(textNodes[i]);
+        }
+    }
+})();
+
+
 
 
 
@@ -791,6 +873,12 @@ $.fn.textNodes = function() {
         else $(this).contents().each(fn);
     });
     return $(ret);
+}
+
+$.fn.masha = function(options) {
+    options = options || {};
+    options = $.extend({'selectable': this[0]}, options);
+    return new $.MaSha(options);
 }
 
 $.fn.cleanWhitespace = function() {
