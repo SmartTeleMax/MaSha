@@ -22,7 +22,15 @@ $.MaSha.default_options = {
     'selectorMarker': '#txtselect_marker',
     'location': window.location,
     'ignored': null,
-    'onSelected': null
+    'onSelected': null,
+    'onHashRead': function(){
+        // Scroll to first selected range
+        // XXX rewrite w/o jquery (and timeout?)
+        window.setTimeout(function(){
+            var scrollTo = $('.user_selection_true:first').offset().top - 50;
+            $('html,body').scrollTop(scrollTo);
+        }, 20);
+    }
 }
 
 $.MaSha.prototype = {
@@ -99,6 +107,7 @@ $.MaSha.prototype = {
     },
 
     // XXX sort methods logically
+    // XXX choose btw camelCase and underscores!
     delete_selections: function(numclasses){
         //console.log('delete: ', numclasses)
         var ranges = [];
@@ -111,7 +120,6 @@ $.MaSha.prototype = {
         }
     },
 
-    // XXX choose btw camelCase and underscores!
     removeTextSelection: function(className){
         var spans = $(className);
         for (var i=spans.length; i--;){
@@ -256,15 +264,12 @@ $.MaSha.prototype = {
         for (var i=0; i < hashAr.length; i++) {
             this.deserializeSelection(hashAr[i]);
         }
-
-        // Вычисляем кол-во px от верха до первого выделенного участка текста, далее - скроллим до этого места.
-        var scrollTo = $('.user_selection_true:first').offset().top - 150;
-        $('html,body').animate({
-            // XXX remove dependency from easing
-            scrollTop:scrollTo
-            }, 1500,  "easeInOutQuint");
-
         this.updateHash();
+
+        if (this.options.onHashRead){
+            this.options.onHashRead(this);
+        }
+
         //console.log('readHash: ––––––––––––––––––––––––––––––');
 
     },
@@ -623,15 +628,13 @@ $.MaSha.prototype = {
             if (timeout_hover_b) $("."+_this.className.split(' ')[0]).removeClass("hover"); 
         }
 
-        $(".num"+this.counter).mouseover(function(){
+        $(".num"+this.counter).bind('mouseover', function(){
             _this = this;
             //console.log($(this), this.classList[1], $("."+this.classList[1]));
             $("."+this.className.split(' ')[0]).addClass('hover');
             timeout_hover_b = false;
             clearTimeout(timeout_hover);
-        });
-
-        $(".num"+this.counter).mouseleave(function(){
+        }).bind('mouseleave', function(){
             timeout_hover_b = true;
             var timeout_hover = setTimeout(unhover, 2000);
         });
@@ -675,6 +678,7 @@ $.MaSha.prototype = {
                         // remember the block
                         captureCount++;
                         //console.log('enumerating', child, captureCount)
+                        // XXX prefix all class and id attributes with "masha"
                         $(child).before('<span class="selection_index" id="selection_index' + captureCount +'"></span>');
                         idx++;
                         this_.blocks[captureCount] = child;
@@ -783,7 +787,6 @@ $.MaSha.prototype = {
 (function(){
     var Range = window.Range || window.DOMRange;
 
-    // XXX extend prototypes of default Range and DOMRange objects instead of this
     Range.prototype.splitBoundaries = function() {
         var sc = this.startContainer,
             so = this.startOffset,
