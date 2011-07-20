@@ -18,10 +18,10 @@
     #txtselect_marker.show {
         /* XXX make a common css fadeIn/fadeOut classes */
         visibility: visible;
-        -webkit-transition: opacity .4s, visibility .1s linear;
-        -moz-transition: opacity .4s, visibility .1s linear;
-        -o-transition: opacity .4s, visibility .1s linear;
-        transition: opacity .4s, visibility .1s linear;
+        -webkit-transition: opacity .4s, visibility 0s;
+        -moz-transition: opacity .4s, visibility 0s;
+        -o-transition: opacity .4s, visibility 0s;
+        transition: opacity .4s, visibility 0s;
         opacity: 1;
         }
 
