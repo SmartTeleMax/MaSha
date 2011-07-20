@@ -1,5 +1,7 @@
 // XXX merge with range.js
 // XXX decrease jQuery dependency
+(function(){
+
 $.MaSha = function(options) {
     this.options = $.extend({}, $.MaSha.default_options, options);
     
@@ -50,7 +52,7 @@ $.MaSha.prototype = {
         // enumerate block elements containing a text
         this.enumerateElements();
     
-        $(document).bind('mouseup', function(e) {
+        addEvent(document, 'mouseup', function(e) {
             /*
              * Show the marker if any text selected
              */
@@ -68,8 +70,8 @@ $.MaSha.prototype = {
     
     
     
-        $(marker).bind('click', function(e){
-            e.preventDefault();
+        addEvent(marker, 'click', function(e){
+            preventDefault(e);
             $(marker).removeClass('show');
             if (!this_.range_is_selectable()){
                 return;
@@ -83,19 +85,7 @@ $.MaSha.prototype = {
             }
         });
     
-        $('.closewrap a.txtsel_close').live('click', function(){
-            var parent = this.parentNode.parentNode;
-            var numclass = parent.className.split(' ')[0];
-            $('.'+numclass).removeClass('hover');
-            $(this).fadeOut('slow', function(){
-                this_.delete_selections([numclass]);
-                this_.updateHash();
-            });
-
-            return false;
-        });
-
-        $(document).bind('click', function(e){
+        addEvent(document, 'click', function(e){
             if (e.target != marker) {
                 $(marker).removeClass('show');
             }
@@ -611,33 +601,52 @@ $.MaSha.prototype = {
     
         range = this.checkSelection(range);
         range = this.mergeSelections(range);
+        var this_ = this;
 
 
         //console.log('after checkSelection range = ', range);
         // генерируем и сохраняем якоря для выделенного
-        this.ranges['num'+this.counter] = this.serializeRange(range);
+        var class_name = 'num'+this.counter;
+        this.ranges[class_name] = this.serializeRange(range);
 
-        range.wrapSelection('num'+this.counter+' user_selection_true');
+        range.wrapSelection(class_name+' user_selection_true');
 
-        var timeout_hover, timeout_hover_b = false;
-        var _this;
+        var timeout_hover=false;
 
         function unhover() { 
-            if (timeout_hover_b) $("."+_this.className.split(' ')[0]).removeClass("hover"); 
+            $("."+class_name).removeClass("hover"); 
         }
 
-        $(".num"+this.counter).bind('mouseover', function(){
-            _this = this;
-            //console.log($(this), this.classList[1], $("."+this.classList[1]));
-            $("."+this.className.split(' ')[0]).addClass('hover');
-            timeout_hover_b = false;
-            clearTimeout(timeout_hover);
-        }).bind('mouseleave', function(){
-            timeout_hover_b = true;
-            var timeout_hover = setTimeout(unhover, 2000);
-        });
+        var wrappers = this.selectable.getElementsByClassName('num' + this.counter);
+        for (var i=wrappers.length;i--;){
+            addEvent(wrappers[i], 'mouseover', function(){
+                $('.' + class_name).addClass('hover');
+                clearTimeout(timeout_hover);
+            });
+            addEvent(wrappers[i], 'mouseout', function(e){
+                // mouseleave
+                var t = e.relatedTarget;
+                while (t.parentNode && t.className != this.className){
+                    t = t.parentNode;
+                }
+                if (t.className != this.className){
+                    timeout_hover = setTimeout(unhover, 2000);
+                }
+            });
+        }
 
-        $('.num'+this.counter+':last').append('<span class="closewrap"><a href="#" class="txtsel_close"></a></span>');
+        var closer = document.createElement('a');
+        closer.className = 'txtsel_close';
+        closer.href = '#';
+        var closer_span = document.createElement('span');
+        closer_span.className = 'closewrap';
+        closer_span.appendChild(closer);
+        addEvent(closer, 'click', function(e){
+            preventDefault(e);
+            this_.delete_selections([class_name]);
+            this_.updateHash();
+        });
+        wrappers[wrappers.length-1].appendChild(closer_span);
     
         this.counter++;
         window.getSelection().removeAllRanges();
@@ -909,3 +918,16 @@ $.fn.getCompiledStyle = function(strCssRule){
 	return strValue;
 }
 
+// Shortcuts
+function addEvent(elem, type, fn){
+    if (elem.addEventListener) {
+        elem.addEventListener(type, fn, false);
+    } else if (elem.attachEvent) {
+        elem.attachEvent("on" + type, fn);
+    }    
+}
+function preventDefault(e){
+    if (e.preventDefault) { e.preventDefault(); }
+    else { e.returnValue = false }
+}
+})();
