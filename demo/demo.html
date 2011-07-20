@@ -28,10 +28,17 @@
     </style>
 
     <script>
-    window.addEventListener('load', function(){
-        // can be called by domready
-        MaSha.instance = new MaSha();
-    }, false);
+    if (window.addEventListener){
+        window.addEventListener('load', function(){
+            // can be called by domready
+            MaSha.instance = new MaSha();
+        }, false);
+    } else {
+        window.attachEvent('onload', function(){
+            // can be called by domready
+            MaSha.instance = new MaSha();
+        });
+    }
     </script>
     
 </head>

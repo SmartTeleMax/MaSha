@@ -72,8 +72,10 @@ MaSha.prototype = {
                 var text = window.getSelection().toString();
                 if (text == '' || !this_.options.regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
-                marker.style.top = e.pageY-33 + 'px';
-                marker.style.left = e.pageX+5 + 'px';
+
+                var coord = getPageXY(e);
+                marker.style.top = coord.y - 33 + 'px';
+                marker.style.left = coord.x + 5 + 'px';
                 addClass(marker, 'show');
             }, 1);
         });
@@ -1010,6 +1012,7 @@ function removeClass(elem, cls){
 }
 
 function inArray(elem, array) {
+    // from jQuery
     // Hate IE
     for (var i = 0, length=array.length; i < length; i++){
         if (array[i] === elem){ return i; }
@@ -1027,6 +1030,19 @@ function addEvent(elem, type, fn){
 function preventDefault(e){
     if (e.preventDefault) { e.preventDefault(); }
     else { e.returnValue = false }
+}
+function getPageXY(e){
+    // from jQuery
+    // Calculate pageX/Y if missing
+    console.log(e, e.pageX, e.pageY)
+    if (e.pageX == null) {
+        var doc = document.documentElement, body = document.body;
+        return {
+            x: e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0),
+            y: e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0)
+        }
+    }
+    return {x: e.pageX, y: e.pageY}
 }
 
 })();
