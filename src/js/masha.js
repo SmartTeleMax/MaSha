@@ -23,6 +23,7 @@ MaSha.default_options = {
     'location': window.location,
     'ignored': null,
     'onSelected': null,
+    'onDeselected': null,
     'onHashRead': function(){
         // Scroll to first selected range
         // XXX rewrite w/o jquery (and timeout?)
@@ -647,6 +648,10 @@ MaSha.prototype = {
             preventDefault(e);
             this_.delete_selections([class_name]);
             this_.updateHash();
+            
+            if (this_.options.onDeselected){
+                this_.options.onDeselected(this_);
+            }
         });
         wrappers[wrappers.length-1].appendChild(closer_span);
     
