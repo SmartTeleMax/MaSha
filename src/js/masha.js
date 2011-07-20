@@ -25,11 +25,19 @@ MaSha.default_options = {
     'onSelected': null,
     'onDeselected': null,
     'onHashRead': function(){
-        // Scroll to first selected range
-        // XXX rewrite w/o jquery (and timeout?)
         window.setTimeout(function(){
-            var scrollTo = $('.user_selection_true:first').offset().top - 50;
-            $('html,body').scrollTop(scrollTo);
+            var elem = document.getElementsByClassName('user_selection_true')[0];
+            if(elem) {
+                var x = 0, y = 0;
+                while(elem){
+                    x += elem.offsetLeft;
+                    y += elem.offsetTop;
+                    elem = elem.offsetParent;
+                }
+         
+                console.log(elem, x, y);
+                window.scrollTo(x,y-150);
+            }
         }, 1);
     }
 }
@@ -47,7 +55,7 @@ MaSha.prototype = {
 
         if (!this.selectable) return;
     
-        $(this.selectable).cleanWhitespace().find('*').cleanWhitespace();
+        cleanWhitespace(this.selectable);
     
         // XXX translate comments
         // enumerate block elements containing a text
@@ -103,15 +111,18 @@ MaSha.prototype = {
         var ranges = [];
         for(var i=numclasses.length; i--;){
             var numclass = numclasses[i];
-            $('.'+numclass+' span.closewrap').remove();
-            this.removeTextSelection('.'+numclass+'.user_selection_true');
+            var spans = this.selectable.getElementsByClassName(numclass);
+            console.log(spans)
+            var closewrap = spans[spans.length-1].getElementsByClassName('closewrap')[0];
+            closewrap.parentNode.removeChild(closewrap);
+
+            this.removeTextSelection(spans);
             ranges.push(this.ranges[numclass]);
             delete this.ranges[numclass];
         }
     },
 
-    removeTextSelection: function(className){
-        var spans = $(className);
+    removeTextSelection: function(spans){
         for (var i=spans.length; i--;){
             var span = spans[i];
             for (var j=0; j<span.childNodes.length;j++){
@@ -166,7 +177,7 @@ MaSha.prototype = {
             if (match) { _wcount += match.length; }
             //console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
         } else if (node.childNodes && node.childNodes.length){ // Child element
-            var alltxtNodes = $(node).textNodes();
+            var alltxtNodes = textNodes(node);
             //console.log('countingWord.wordCount: рассматриваемая нода имеет '+alltxtNodes.length+' чайлд(ов)');
             //console.log('alltxtNodes: ', alltxtNodes);
             for (i=0; i<alltxtNodes.length; i++) {
@@ -185,7 +196,7 @@ MaSha.prototype = {
         //console.log('countingWord: подсчет слов. аргументы: _container =', _container, '; _offset = ', _offset);
     
         if (container.nodeType == 1) {
-            container = $(container).textNodes()[0];
+            container = firstTextNode(container);
         }
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
         var wcount = container.data.substring(0, _offset).match(this.options.regexp);
@@ -229,7 +240,7 @@ MaSha.prototype = {
         if (_node.nodeType == 3) {
             _count = _node.nodeValue.length;
         } else if (_node.childNodes && _node.childNodes.length) {
-            var allnodes = $(_node).textNodes();
+            var allnodes = textNodes(_node);
             for (var i = allnodes.length; i--; ) {
                 _count += allnodes[i].nodeValue.length;
             }
@@ -411,9 +422,9 @@ MaSha.prototype = {
 
         if (position == 'start') {
             
-            if (container.nodeType == 1 && trim($(container).text()) != '') {
+            if (container.nodeType == 1 && trim(textContent(container)) != '') {
                 //console.log('в if-е.');
-                container = $(container).textNodes()[0];
+                container = firstTextNode(container);
                 offset = 0;
                 //console.log('новый container', container);
             }
@@ -440,9 +451,9 @@ MaSha.prototype = {
         
         if (position == 'end') {
             
-            if (container.nodeType == 1 && trim($(container).text()) != '' && offset != 0) {
+            if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
                 //console.log('в end if-е.');
-                container_txtnodes = $(container).textNodes();
+                container_txtnodes = textNodes(container); // XXX lastTextNode
                 container = container_txtnodes[container_txtnodes.length-1];
                 offset = container.data.length;
                 //console.log('новый container', container, offset);
@@ -560,26 +571,26 @@ MaSha.prototype = {
         var iterator = range.getElementIterator();
         var node = iterator();
         var last = node;
-        var parent_ = $(node).parents('.user_selection_true')[0];
+        var parent_ = parentWithClass(node, 'user_selection_true');
         if (parent_){
             parent_ = /(num\d+)(?:$| )/.exec(parent_.className)[1];
-            range.setStart($('.' + parent_ + ':first').textNodes()[0], 0) // XXX
+            range.setStart(firstTextNode(firstWithClass(this.selectable, parent_)), 0);
             merges.push(parent_);
         }
         while (node){
-            if (node.nodeType == 1 && $(node).hasClass('user_selection_true')){
+            if (node.nodeType == 1 && hasClass(node, 'user_selection_true')){
                var cls = /(num\d+)(?:$|)/.exec(node.className)[0];
-               if ($.inArray(cls, merges) == -1){
+               if (inArray(cls, merges) == -1){
                    merges.push(cls);
                }
             }
             last = node;
             node = iterator();
         }
-        var last = $(last).parents('.user_selection_true')[0];
+        var last = parentWithClass(last, 'user_selection_true');
         if (last){
             var last = /(num\d+)(?:$| )/.exec(last.className)[1];
-            var tnodes = $('.' + last + ':last').textNodes() // XXX
+            var tnodes = textNodes(lastWithClass(this.selectable, last)); // XXX lastTextNode
             var last_node = tnodes[tnodes.length-1];
             range.setEnd(last_node, last_node.length)
         }
@@ -688,12 +699,15 @@ MaSha.prototype = {
                     continue;
                 } else if (nodeType==3) {
                     if (!block_started){
-                        //console.log('block start',child)
                         // remember the block
                         captureCount++;
                         //console.log('enumerating', child, captureCount)
+                        var index_span = document.createElement('span');
                         // XXX prefix all class and id attributes with "masha"
-                        $(child).before('<span class="selection_index" id="selection_index' + captureCount +'"></span>');
+                        index_span.id = 'selection_index' + captureCount;
+                        index_span.className = 'selection_index';
+                        child.parentNode.insertBefore(index_span, child)
+
                         idx++;
                         this_.blocks[captureCount] = child;
                         has_blocks = block_started = true;
@@ -701,8 +715,8 @@ MaSha.prototype = {
                 } else if (nodeType==1) {
                     // XXX check if this is correct
                     if (!this_.is_ignored(child)){
-                        var is_block = $.inArray(getCompiledStyle(child, 'display'),
-                                                 ['inline', 'none']) == -1;
+                        var is_block = inArray(getCompiledStyle(child, 'display'),
+                                               ['inline', 'none']) == -1;
 
                         if (is_block){
                             var child_has_blocks = enumerate(child);
@@ -787,8 +801,8 @@ MaSha.prototype = {
                 if (iter_node != this.selectable){ return false; }
             }
         }
-        var first_selection = $(first_node).parents('.user_selection_true')[0];
-        var last_selection = $(last_node).parents('.user_selection_true')[0];
+        var first_selection = parentWithClass(first_node, 'user_selection_true');
+        var last_selection = parentWithClass(last_node, 'user_selection_true');
         if (first_selection && last_selection){
             var reg = /(?:^| )(num\d+)(?:$| )/;
             return (reg.exec(first_selection.className)[1] != 
@@ -798,7 +812,6 @@ MaSha.prototype = {
     }
 };
 
-(function(){
     var Range = window.Range || window.DOMRange;
 
     Range.prototype.splitBoundaries = function() {
@@ -838,12 +851,11 @@ MaSha.prototype = {
         return textNodes
     }
 
-    Range.prototype.getElementIterator = function(){
-        var cont = this.startContainer;
-        var end = this.endContainer;
-        var finished = false;
+    function elementIterator(parent, cont, end){
+        cont = cont || parent.childNodes[0];
+        var finished = !cont;
         var up = false;
-
+        
         function next(){
             if (finished) {return null;} 
             var result = cont;
@@ -854,13 +866,18 @@ MaSha.prototype = {
                 up = false;
             } else if (cont.parentNode){
                 cont = cont.parentNode;
+                if (cont === parent){ finished = true; }
                 up = true;
                 next();
             }
-            finished = result === end;
+            if (result === end) { finished = true; };
             return result
         }
         return next;
+    }
+
+    Range.prototype.getElementIterator = function(){
+        return elementIterator(null, this.startContainer, this.endContainer);
     }
 
     Range.prototype.wrapSelection = function(className){
@@ -868,13 +885,13 @@ MaSha.prototype = {
 
         var textNodes = this.getTextNodes();
         for (var i=textNodes.length; i--;){
+            // XXX wrap sibling text nodes together
             var span = document.createElement('span');
             span.className = className;
             textNodes[i].parentNode.insertBefore(span, textNodes[i]);
             span.appendChild(textNodes[i]);
         }
     }
-})();
 
 
 // exposing
@@ -888,35 +905,22 @@ if (window.jQuery){
     }
 }
 
-// jQuery Extensions
-$.fn.textNodes = function() {
-    var ret = [];
-    this.contents().each( function() {
-        var fn = arguments.callee;
-        if ( this.nodeType == 3 && trim(this.nodeValue) != '') 
-            ret.push( this );
-        else $(this).contents().each(fn);
-    });
-    return $(ret);
-}
-
-$.fn.cleanWhitespace = function() {
+// Shortcuts
+function cleanWhitespace(elem) {
     // XXX Is this needed? According n0s, it's done for fix problems with whitespace nodes in IE
     // XXX Additionaly this will remove nodes with &nbsp; in browsers
-    this.contents().filter(
-                        function() { 
-                            return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); 
-                        }
-                    ).remove();
-    return this;
+    var node, iter = elementIterator(elem);
+    while (node = iter()){
+        if (node.nodeType == 3 && !/\S/.test(node.nodeValue)) {
+            node.parentNode.removeChild(node);
+        }
+    }
 }
 
-// Shortcuts
 function extend(obj){
-    var merges = arguments.splace(1);
-    for(var i=0; i<merges.length; i++){
-        for (key in merges[i]){
-            obj[key] = merges[i][key];
+    for(var i=1; i<arguments.length; i++){
+        for (key in arguments[i]){
+            obj[key] = arguments[i][key];
         }
     }
     return obj;
@@ -941,8 +945,52 @@ function getCompiledStyle(elem, strCssRule){
 	return strValue;
 }
 
+function textContent(elem){
+    return elem.textContent || elem.innerText;
+}
+
+function parentWithClass(p, cls){
+    while (p && !hasClass(p, cls)){p = p.parentNode}
+    return p || null;
+}
+function firstWithClass(elem, cls){
+    // XXX use getElementsByClassName?
+    var iter = elementIterator(elem);
+    var node;
+    while (node = iter()){
+        if (node.nodeType == 1 && hasClass(node, cls)) {return node;}
+    }
+}
+function lastWithClass(elem, cls){
+    var elems = elem.getElementsByClassName(cls);
+    if (elems){
+        return elems[elems.length-1]
+    }
+}
+function firstTextNode(elem){
+    var iter = elementIterator(elem);
+    var node;
+    while (node = iter()){
+        if (node.nodeType == 3) {return node}
+    }
+}
+function textNodes(elem) {
+    var ret = [], node;
+    var iter = elementIterator(elem);
+    while (node = iter()){
+        if (node.nodeType == 3) {
+            ret.push(node);
+        }
+    }
+    return ret;
+}
+
 function _classRegExp(cls){
     return new RegExp('(^|\\s+)'+cls+'(?:$|\\s+)', 'g');
+}
+function hasClass(elem, cls){
+    var reg = _classRegExp(cls);
+    return reg.test(elem.className);
 }
 function addClass(elem, cls){
     // XXX attention! NOT UNIVERSAL!
@@ -959,6 +1007,14 @@ function removeClass(elem, cls){
     if (reg.test(elem.className)){
         elem.className = trim(elem.className.replace(reg, '$1'));
     }
+}
+
+function inArray(elem, array) {
+    // Hate IE
+    for (var i = 0, length=array.length; i < length; i++){
+        if (array[i] === elem){ return i; }
+    }
+    return -1;
 }
 
 function addEvent(elem, type, fn){

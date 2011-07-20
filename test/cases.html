@@ -70,6 +70,16 @@
     </style>
 
     <script>
+    $.fn.textNodes = function() {
+        var ret = [];
+        this.contents().each( function() {
+            var fn = arguments.callee;
+            if ( this.nodeType == 3 && $.trim(this.nodeValue) != '') 
+                ret.push( this );
+            else $(this).contents().each(fn);
+        });
+        return $(ret);
+    }
 
     function createRange(nodeNum1, pos1, nodeNum2, pos2){
         var allnodes = $('#selectable-content').textNodes();
@@ -111,10 +121,9 @@
     }
     function assertSelectionEqual(aim, num, silent){
         num = num || '0';
-        $('.closewrap').remove();
         var output_html = '';
         $('#selectable-content .num'+num).each(function(i,x){
-            output_html += x.innerHTML;
+            output_html += x.textContent;
         });
         var test = arguments.callee.caller.name_;//toString();
         if(aim == output_html) {
