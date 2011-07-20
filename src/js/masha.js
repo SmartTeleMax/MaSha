@@ -26,7 +26,7 @@ MaSha.default_options = {
     'onDeselected': null,
     'onHashRead': function(){
         window.setTimeout(function(){
-            var elem = document.getElementsByClassName('user_selection_true')[0];
+            var elem = firstWithClass(document, 'user_selection_true');
             if(elem) {
                 var x = 0, y = 0;
                 while(elem){
@@ -35,7 +35,6 @@ MaSha.default_options = {
                     elem = elem.offsetParent;
                 }
          
-                console.log(elem, x, y);
                 window.scrollTo(x,y-150);
             }
         }, 1);
@@ -68,12 +67,12 @@ MaSha.prototype = {
             // XXX it's a question: bind to document or to this.selectable
             // binding to document works better
 
+            var coord = getPageXY(e); // outside timeout function because of IE
             window.setTimeout(function(){
                 var text = window.getSelection().toString();
                 if (text == '' || !this_.options.regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
 
-                var coord = getPageXY(e);
                 marker.style.top = coord.y - 33 + 'px';
                 marker.style.left = coord.x + 5 + 'px';
                 addClass(marker, 'show');
@@ -98,7 +97,8 @@ MaSha.prototype = {
         });
     
         addEvent(document, 'click', function(e){
-            if (e.target != marker) {
+            var target = e.target || e.srcElement;
+            if (target != marker) {
                 removeClass(marker, 'show');
             }
         });
@@ -109,13 +109,11 @@ MaSha.prototype = {
     // XXX sort methods logically
     // XXX choose btw camelCase and underscores!
     delete_selections: function(numclasses){
-        //console.log('delete: ', numclasses)
         var ranges = [];
         for(var i=numclasses.length; i--;){
             var numclass = numclasses[i];
-            var spans = this.selectable.getElementsByClassName(numclass);
-            console.log(spans)
-            var closewrap = spans[spans.length-1].getElementsByClassName('closewrap')[0];
+            var spans = byClassName(this.selectable, numclass);
+            var closewrap = firstWithClass(spans[spans.length-1], 'closewrap');
             closewrap.parentNode.removeChild(closewrap);
 
             this.removeTextSelection(spans);
@@ -627,7 +625,7 @@ MaSha.prototype = {
         var timeout_hover=false;
         var this_ = this;
 
-        var wrappers = this.selectable.getElementsByClassName(class_name);
+        var wrappers = byClassName(this.selectable, class_name);
         for (var i=wrappers.length;i--;){
             addEvent(wrappers[i], 'mouseover', function(){
                 for (var i=wrappers.length;i--;){
@@ -956,7 +954,6 @@ function parentWithClass(p, cls){
     return p || null;
 }
 function firstWithClass(elem, cls){
-    // XXX use getElementsByClassName?
     var iter = elementIterator(elem);
     var node;
     while (node = iter()){
@@ -964,7 +961,7 @@ function firstWithClass(elem, cls){
     }
 }
 function lastWithClass(elem, cls){
-    var elems = elem.getElementsByClassName(cls);
+    var elems = byClassName(elem, cls);
     if (elems){
         return elems[elems.length-1]
     }
@@ -974,6 +971,20 @@ function firstTextNode(elem){
     var node;
     while (node = iter()){
         if (node.nodeType == 3) {return node}
+    }
+}
+function byClassName(elem, cls){
+    if (elem.getElementsByClassName){
+        return elem.getElementsByClassName(cls)
+    } else {
+        var ret = [], node;
+        var iter = elementIterator(elem);
+        while (node = iter()){
+            if (node.nodeType == 1 && hasClass(node, cls)) {
+                ret.push(node);
+            }
+        }
+        return ret;
     }
 }
 function textNodes(elem) {
@@ -1034,13 +1045,11 @@ function preventDefault(e){
 function getPageXY(e){
     // from jQuery
     // Calculate pageX/Y if missing
-    console.log(e, e.pageX, e.pageY)
     if (e.pageX == null) {
         var doc = document.documentElement, body = document.body;
-        return {
-            x: e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0),
-            y: e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0)
-        }
+        var x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
+        var y = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+        return {x: x, y: y}
     }
     return {x: e.pageX, y: e.pageY}
 }
