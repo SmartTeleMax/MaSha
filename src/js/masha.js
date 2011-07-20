@@ -2,10 +2,10 @@
 // XXX decrease jQuery dependency
 (function(){
 
-$.MaSha = function(options) {
-    this.options = $.extend({}, $.MaSha.default_options, options);
+var MaSha = function(options) {
+    this.options = extend({}, MaSha.default_options, options);
     
-    $.extend(this, {
+    extend(this, {
         counter: 0,
         savedSel: [],
         ranges: {},
@@ -16,7 +16,7 @@ $.MaSha = function(options) {
     this.init();
 }
 
-$.MaSha.default_options = {
+MaSha.default_options = {
     'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
     'selectable': 'selectable-content',
     'marker': 'txtselect_marker',
@@ -33,7 +33,7 @@ $.MaSha.default_options = {
     }
 }
 
-$.MaSha.prototype = {
+MaSha.prototype = {
     init: function(){ // domready
         this.selectable = (typeof this.options.selectable == 'string'?
                              document.getElementById(this.options.selectable):
@@ -63,8 +63,9 @@ $.MaSha.prototype = {
                 var text = window.getSelection().toString();
                 if (text == '' || !this_.options.regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
-                $(marker).css({'top':e.pageY-33, 'left': e.pageX+5})
-                         .addClass('show');
+                marker.style.top = e.pageY-33 + 'px';
+                marker.style.left = e.pageX+5 + 'px';
+                addClass(marker, 'show');
             }, 1);
         });
     
@@ -72,7 +73,7 @@ $.MaSha.prototype = {
     
         addEvent(marker, 'click', function(e){
             preventDefault(e);
-            $(marker).removeClass('show');
+            removeClass(marker, 'show');
             if (!this_.range_is_selectable()){
                 return;
             }
@@ -87,7 +88,7 @@ $.MaSha.prototype = {
     
         addEvent(document, 'click', function(e){
             if (e.target != marker) {
-                $(marker).removeClass('show');
+                removeClass(marker, 'show');
             }
         });
     
@@ -409,7 +410,7 @@ $.MaSha.prototype = {
 
         if (position == 'start') {
             
-            if (container.nodeType == 1 && $.trim($(container).text()) != '') {
+            if (container.nodeType == 1 && trim($(container).text()) != '') {
                 //console.log('в if-е.');
                 container = $(container).textNodes()[0];
                 offset = 0;
@@ -438,7 +439,7 @@ $.MaSha.prototype = {
         
         if (position == 'end') {
             
-            if (container.nodeType == 1 && $.trim($(container).text()) != '' && offset != 0) {
+            if (container.nodeType == 1 && trim($(container).text()) != '' && offset != 0) {
                 //console.log('в end if-е.');
                 container_txtnodes = $(container).textNodes();
                 container = container_txtnodes[container_txtnodes.length-1];
@@ -541,7 +542,7 @@ $.MaSha.prototype = {
                     var pre_data = this.prevNode(range.startContainer, /\W*/);
                     pre = pre_data._container.data;
                 }
-                pre = $.trim(pre);
+                pre = trim(pre);
                 if (pre.charAt(pre.length-1).match(/(\.|\?|\!)/)){
                     return apply();
                 }
@@ -561,10 +562,7 @@ $.MaSha.prototype = {
         var parent_ = $(node).parents('.user_selection_true')[0];
         if (parent_){
             parent_ = /(num\d+)(?:$| )/.exec(parent_.className)[1];
-            //console.log(range, 'parent', parent_, $('.' + parent_ + ':first').textNodes())
             range.setStart($('.' + parent_ + ':first').textNodes()[0], 0) // XXX
-            //console.log(range.startContainer)
-            //sd.fsd.fsd.fs.d
             merges.push(parent_);
         }
         while (node){
@@ -579,7 +577,6 @@ $.MaSha.prototype = {
         }
         var last = $(last).parents('.user_selection_true')[0];
         if (last){
-            //console.log('last')
             var last = /(num\d+)(?:$| )/.exec(last.className)[1];
             var tnodes = $('.' + last + ':last').textNodes() // XXX
             var last_node = tnodes[tnodes.length-1];
@@ -601,7 +598,6 @@ $.MaSha.prototype = {
     
         range = this.checkSelection(range);
         range = this.mergeSelections(range);
-        var this_ = this;
 
 
         //console.log('after checkSelection range = ', range);
@@ -610,27 +606,33 @@ $.MaSha.prototype = {
         this.ranges[class_name] = this.serializeRange(range);
 
         range.wrapSelection(class_name+' user_selection_true');
+        this.addSelectionEvents(class_name)
+    },
 
+    addSelectionEvents: function(class_name) {
         var timeout_hover=false;
+        var this_ = this;
 
-        function unhover() { 
-            $("."+class_name).removeClass("hover"); 
-        }
-
-        var wrappers = this.selectable.getElementsByClassName('num' + this.counter);
+        var wrappers = this.selectable.getElementsByClassName(class_name);
         for (var i=wrappers.length;i--;){
             addEvent(wrappers[i], 'mouseover', function(){
-                $('.' + class_name).addClass('hover');
-                clearTimeout(timeout_hover);
+                for (var i=wrappers.length;i--;){
+                    addClass(wrappers[i], 'hover');
+                }
+                window.clearTimeout(timeout_hover);
             });
             addEvent(wrappers[i], 'mouseout', function(e){
                 // mouseleave
                 var t = e.relatedTarget;
-                while (t.parentNode && t.className != this.className){
+                while (t && t.parentNode && t.className != this.className){
                     t = t.parentNode;
                 }
-                if (t.className != this.className){
-                    timeout_hover = setTimeout(unhover, 2000);
+                if (!t || t.className != this.className){
+                    timeout_hover = window.setTimeout(function(){ 
+                        for (var i=wrappers.length;i--;){
+                            removeClass(wrappers[i], 'hover');
+                        }
+                    }, 2000);
                 }
             });
         }
@@ -694,7 +696,7 @@ $.MaSha.prototype = {
                 } else if (nodeType==1) {
                     // XXX check if this is correct
                     if (!this_.is_ignored(child)){
-                        var is_block = $.inArray($(child).getCompiledStyle('display'),
+                        var is_block = $.inArray(getCompiledStyle(child, 'display'),
                                                  ['inline', 'none']) == -1;
 
                         if (is_block){
@@ -870,25 +872,27 @@ $.MaSha.prototype = {
 })();
 
 
+// exposing
+window.MaSha = MaSha;
 
-
+if (window.jQuery){
+    jQuery.fn.masha = function(options) {
+        options = options || {};
+        options = extend({'selectable': this[0]}, options);
+        return new MaSha(options);
+    }
+}
 
 // jQuery Extensions
 $.fn.textNodes = function() {
     var ret = [];
     this.contents().each( function() {
         var fn = arguments.callee;
-        if ( this.nodeType == 3 && $.trim(this.nodeValue) != '') 
+        if ( this.nodeType == 3 && trim(this.nodeValue) != '') 
             ret.push( this );
         else $(this).contents().each(fn);
     });
     return $(ret);
-}
-
-$.fn.masha = function(options) {
-    options = options || {};
-    options = $.extend({'selectable': this[0]}, options);
-    return new $.MaSha(options);
 }
 
 $.fn.cleanWhitespace = function() {
@@ -902,9 +906,23 @@ $.fn.cleanWhitespace = function() {
     return this;
 }
 
-$.fn.getCompiledStyle = function(strCssRule){
+// Shortcuts
+function extend(obj){
+    var merges = arguments.splace(1);
+    for(var i=0; i<merges.length; i++){
+        for (key in merges[i]){
+            obj[key] = merges[i][key];
+        }
+    }
+    return obj;
+}
+
+function trim(text) {
+    return (text || "").replace(/^\s+|\s+$/g, "");
+}
+
+function getCompiledStyle(elem, strCssRule){
     // copypasted from Internets
-    var elem = this[0];
 	var strValue = "";
 	if(document.defaultView && document.defaultView.getComputedStyle){
 		strValue = document.defaultView.getComputedStyle(elem, "").getPropertyValue(strCssRule);
@@ -918,7 +936,26 @@ $.fn.getCompiledStyle = function(strCssRule){
 	return strValue;
 }
 
-// Shortcuts
+function _classRegExp(cls){
+    return new RegExp('(^|\\s+)'+cls+'(?:$|\\s+)', 'g');
+}
+function addClass(elem, cls){
+    // XXX attention! NOT UNIVERSAL!
+    // don't use for classes with non-literal symbols
+    var reg = _classRegExp(cls);
+    if (!reg.test(elem.className)){
+        elem.className = elem.className + ' ' + cls
+    }
+}
+function removeClass(elem, cls){
+    // XXX attention! NOT UNIVERSAL!
+    // don't use for classes with non-literal symbols
+    var reg = _classRegExp(cls);
+    if (reg.test(elem.className)){
+        elem.className = trim(elem.className.replace(reg, '$1'));
+    }
+}
+
 function addEvent(elem, type, fn){
     if (elem.addEventListener) {
         elem.addEventListener(type, fn, false);
@@ -930,4 +967,5 @@ function preventDefault(e){
     if (e.preventDefault) { e.preventDefault(); }
     else { e.returnValue = false }
 }
+
 })();
