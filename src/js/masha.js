@@ -1,8 +1,6 @@
 // XXX merge with range.js
 // XXX decrease jQuery dependency
 $.MaSha = function(options) {
-    var this_ = this;
-        
     this.options = $.extend({}, $.MaSha.default_options, options);
     
     $.extend(this, {
@@ -13,13 +11,13 @@ $.MaSha = function(options) {
         blocks: {}
     });
 
-    $(function(){ this_.init() });
+    this.init();
 }
 
 $.MaSha.default_options = {
     'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
     'selectable': 'selectable-content',
-    'selectorMarker': '#txtselect_marker',
+    'marker': 'txtselect_marker',
     'location': window.location,
     'ignored': null,
     'onSelected': null,
@@ -29,16 +27,19 @@ $.MaSha.default_options = {
         window.setTimeout(function(){
             var scrollTo = $('.user_selection_true:first').offset().top - 50;
             $('html,body').scrollTop(scrollTo);
-        }, 20);
+        }, 1);
     }
 }
 
 $.MaSha.prototype = {
     init: function(){ // domready
-        //console.log('domready');
         this.selectable = (typeof this.options.selectable == 'string'?
                              document.getElementById(this.options.selectable):
                              this.options.selectable);
+        var marker = (typeof this.options.marker == 'string'?
+                      document.getElementById(this.options.marker):
+                      this.options.marker);
+
         var this_ = this;
 
         if (!this.selectable) return;
@@ -46,11 +47,9 @@ $.MaSha.prototype = {
         $(this.selectable).cleanWhitespace().find('*').cleanWhitespace();
     
         // XXX translate comments
-        // нумерация блочных элементов, которые содержат текст
+        // enumerate block elements containing a text
         this.enumerateElements();
     
-        var marker = $(this.options.selectorMarker);
-
         $(document).bind('mouseup', function(e) {
             /*
              * Show the marker if any text selected
@@ -62,24 +61,23 @@ $.MaSha.prototype = {
                 var text = window.getSelection().toString();
                 if (text == '' || !this_.options.regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
-                marker.css({'top':e.pageY-33, 'left': e.pageX+5});
-                marker.addClass('show');
+                $(marker).css({'top':e.pageY-33, 'left': e.pageX+5})
+                         .addClass('show');
             }, 1);
         });
     
     
     
-        marker.bind('click', function(e){
+        $(marker).bind('click', function(e){
             e.preventDefault();
+            $(marker).removeClass('show');
             if (!this_.range_is_selectable()){
-                marker.removeClass('show');
                 return;
             }
             
             this_.addSelection();
             this_.updateHash();
 
-            marker.removeClass('show');
             if (this_.options.onSelected){
                 this_.options.onSelected(this_);
             }
@@ -98,8 +96,8 @@ $.MaSha.prototype = {
         });
 
         $(document).bind('click', function(e){
-            if (e.target != marker[0]) {
-                marker.removeClass('show');
+            if (e.target != marker) {
+                $(marker).removeClass('show');
             }
         });
     
@@ -885,18 +883,15 @@ $.fn.masha = function(options) {
 }
 
 $.fn.cleanWhitespace = function() {
-    textNodes = this.contents()
-                    .filter(
+    // XXX Is this needed? According n0s, it's done for fix problems with whitespace nodes in IE
+    // XXX Additionaly this will remove nodes with &nbsp; in browsers
+    this.contents().filter(
                         function() { 
                             return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); 
                         }
                     ).remove();
     return this;
 }
-
-$.fn.hasAttr = function(name) {  
-    return this.attr(name) !== undefined;
-};
 
 $.fn.getCompiledStyle = function(strCssRule){
     // copypasted from Internets
