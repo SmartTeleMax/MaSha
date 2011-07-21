@@ -30,9 +30,9 @@ MaSha.default_options = {
     'onSelected': null,
     'onDeselected': null,
     'onHashRead': function(){
-        window.setTimeout(function(){
-            var elem = firstWithClass(document, 'user_selection_true');
-            if(elem) {
+        var elem = firstWithClass(this.selectable, 'user_selection_true');
+        if(elem) {
+            window.setTimeout(function(){
                 var x = 0, y = 0;
                 while(elem){
                     x += elem.offsetLeft;
@@ -41,8 +41,8 @@ MaSha.default_options = {
                 }
          
                 window.scrollTo(x,y-150);
-            }
-        }, 1);
+            }, 1);
+        }
     }
 }
 
@@ -97,7 +97,7 @@ MaSha.prototype = {
             this_.updateHash();
 
             if (this_.options.onSelected){
-                this_.options.onSelected(this_);
+                this_.options.onSelected.call(this_);
             }
         });
     
@@ -262,7 +262,7 @@ MaSha.prototype = {
         this.updateHash();
 
         if (this.options.onHashRead){
-            this.options.onHashRead(this);
+            this.options.onHashRead.call(this);
         }
     },
 
@@ -617,7 +617,7 @@ MaSha.prototype = {
             this_.updateHash();
             
             if (this_.options.onDeselected){
-                this_.options.onDeselected(this_);
+                this_.options.onDeselected.call(this_);
             }
         });
         wrappers[wrappers.length-1].appendChild(closer_span);
