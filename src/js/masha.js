@@ -27,8 +27,8 @@ MaSha.default_options = {
     'marker': 'txtselect_marker',
     'location': window.location,
     'ignored': null,
-    'onSelected': null,
-    'onDeselected': null,
+    'onMark': null,
+    'onUnmark': null,
     'onHashRead': function(){
         var elem = firstWithClass(this.selectable, 'user_selection_true');
         if(elem) {
@@ -100,8 +100,8 @@ MaSha.prototype = {
             this_.addSelection();
             this_.updateHash();
 
-            if (this_.options.onSelected){
-                this_.options.onSelected.call(this_);
+            if (this_.options.onMark){
+                this_.options.onMark.call(this_);
             }
         });
     
@@ -627,8 +627,8 @@ MaSha.prototype = {
             this_.delete_selections([class_name]);
             this_.updateHash();
             
-            if (this_.options.onDeselected){
-                this_.options.onDeselected.call(this_);
+            if (this_.options.onUnmark){
+                this_.options.onUnmark.call(this_);
             }
         });
         wrappers[wrappers.length-1].appendChild(closer_span);
@@ -778,9 +778,9 @@ MaSha.prototype = {
     }
 };
 
-    // support browsers and IE, using ierange with DOMRange exposed
-    // XXX why this doesn't work without DOMRange exposed
-    var Range = window.Range || window.DOMRange || document.createRange().constructor;
+    // support browsers and IE, using ierange with Range exposed
+    // XXX why this doesn't work without Range exposed
+    var Range = window.Range || document.createRange().constructor;
 
     Range.prototype.splitBoundaries = function() {
         var sc = this.startContainer,
