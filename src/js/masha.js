@@ -290,30 +290,37 @@ MaSha.prototype = {
     },
 
     deserializeRange: function(serialized){
-        var result = /^([^,]+),([^,]+)({([^}]+)})?$/.exec(serialized);
+        var result = /^([^,]+),([^,]+)$/.exec(serialized);
+        var bits1 = result[1].split(":");
+        var bits2 = result[2].split(":");
+        // XXX this if is ugly
+        if(parseInt(bits1[0], 10) < parseInt(bits2[0], 10) ||
+           (bits1[0] == bits2[0] && parseInt(bits1[1], 10) <= parseInt(bits2[1], 10))){
 
-        var start = this.deserializePosition(result[1], 'start'),
-            end = this.deserializePosition(result[2], 'end');
+            var start = this.deserializePosition(bits1, 'start'),
+                end = this.deserializePosition(bits2, 'end');
 
-        if (start.node && end.node){
-            var range = document.createRange();
-            range.setStart(start.node, start.offset);
-            range.setEnd(end.node, end.offset);
-            return range;
+            if (start.node && end.node){
+                var range = document.createRange();
+                range.setStart(start.node, start.offset);
+                range.setEnd(end.node, end.offset);
+                return range;
+            }
         }
+
+
+
         if (window.console && (typeof console['warn'] == 'function')){
             console['warn']('Cannot deserialize range: ' + serialized);
         }
     }, 
 
-    deserializePosition: function(serialized, pos){
+    deserializePosition: function(bits, pos){
          // deserializes №OfBlock:№OfWord pair
-         var bits = serialized.split(":");
          // getting block
          var node = this.blocks[parseInt(bits[0], 10)];
 
          var pos_text;
-
          var offset, stepCount = 0, exit = false;
          // getting word in all text nodes
          while (node) {
@@ -332,7 +339,7 @@ MaSha.prototype = {
              // word not found yet, trying next container
              node = this.nextNode(node, /.*/)
              node = node? node._container: null;
-             if (this.isFirstTextNode(node)){
+             if (node && this.isFirstTextNode(node)){
                  node = null;
              }
          }
@@ -487,6 +494,7 @@ MaSha.prototype = {
             // sentence end detected
             // XXX rewrite
             var text = range.toString();
+            // XXX support not only latin and russian?
             if (text.match(/(\.|\?|\!)\s+[A-ZА-ЯЁ]/)){
                 return apply();
             }

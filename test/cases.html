@@ -134,6 +134,14 @@
             console.error(test + ' failure. Got:\n', output_html, '\n instead of:\n', aim);
         }
     }
+    function assert(aim, result, silent){
+        var test = arguments.callee.caller.name_;//toString();
+        if(aim && !silent){
+            console.log(test + ' ok')
+        } else if(!aim) {
+            console.error(test + ' failure:', result);
+        }
+    }
     function assertHashEqual(sel, hash, silent){
         var test = arguments.callee.caller.name_;//toString();
         var got_hash = sel.options.location.hash.replace('sel=', '');
@@ -320,14 +328,7 @@
             var aim = '<p>Zero text  </p><p><span class="num0">First text</span>,</p><p> Second text</p>';
             assertHTMLEqual(aim);           
         },
-        regressionCommaOutsideTag: function(){
-            var html = '<p><b><a>Ivanov</a>:</b> some text</p>';
-            var sel = new_selection(html);
-            createRange(0, 0, 2, 3);
 
-            var aim = '<p><b><a><span class="num0">Ivanov</span></a><span class="num0">:</span></b><span class="num0"> some</span> text</p>';
-            assertHTMLEqual(aim);           
-        },
         selectCrossDivs: function(){
             var html = '<p>Zero text</p><p>First text</p><p>Second text</p>';
             var sel = new_selection(html);
@@ -399,6 +400,30 @@
             assertSelectionEqual('Word. Some', 0, 'silent');
 
             assertHashEqual(sel, '1:1,1:2');
+        },
+
+        regressionCommaOutsideTag: function(){
+            var html = '<p><b><a>Ivanov</a>:</b> some text</p>';
+            var sel = new_selection(html);
+            createRange(0, 0, 2, 3);
+
+            var aim = '<p><b><a><span class="num0">Ivanov</span></a><span class="num0">:</span></b><span class="num0"> some</span> text</p>';
+            assertHTMLEqual(aim);           
+        },
+        regressionStartGtStop: function(){
+            var html = '<p>Some text of few short words.</p>';
+            var sel = new_selection(html, '1:3,1:2');
+            assert($('.num0').length == 0, $('.num0').length);
+        },
+        regressionStartEqStop: function(){
+            var html = '<p>Some text of few short words.</p>';
+            var sel = new_selection(html, '1:3,1:3');
+            assertSelectionEqual('of');
+        },
+        regressionEndGtWords: function(){
+            var html = '<p>Some text of few short words.</p>';
+            var sel = new_selection(html, '1:3,1:10');
+            assert($('.num0').length == 0, $('.num0').length);
         }
         // XXX add tests for nbsp for IE
         // XXX selection removing tests!
