@@ -70,6 +70,16 @@
     </style>
 
     <script>
+    $.fn.textNodes = function() {
+        var ret = [];
+        this.contents().each( function() {
+            var fn = arguments.callee;
+            if ( this.nodeType == 3 && $.trim(this.nodeValue) != '') 
+                ret.push( this );
+            else $(this).contents().each(fn);
+        });
+        return $(ret);
+    }
 
     function createRange(nodeNum1, pos1, nodeNum2, pos2){
         var allnodes = $('#selectable-content').textNodes();
@@ -84,6 +94,7 @@
         //console.log(range)
 
         selection.addRange(range);
+        document.getElementById('txtselect_marker').click();
 
         return selection;
     }
@@ -91,8 +102,8 @@
         hash = hash?'#sel='+hash:'';
         $('#selectable-content, #txtselect_marker').remove();
         $(document.body).append('<div id="selectable-content">' + html + '</div>');
-        $(document.body).append('<div id="txtselect_marker"></div>');
-        return new $.MaSha({'location': {'hash': hash}});
+        $(document.body).append('<button id="txtselect_marker">Mark!</button>');
+        return new MaSha({'location': {'hash': hash}});
     }
     function assertHTMLEqual(aim, silent){
         $('.closewrap, .selection_index').remove();
@@ -110,10 +121,9 @@
     }
     function assertSelectionEqual(aim, num, silent){
         num = num || '0';
-        $('.closewrap').remove();
         var output_html = '';
         $('#selectable-content .num'+num).each(function(i,x){
-            output_html += x.innerHTML;
+            output_html += x.textContent;
         });
         var test = arguments.callee.caller.name_;//toString();
         if(aim == output_html) {
@@ -142,7 +152,6 @@
             var html = '<p>Here is a selection!</p>';
             var sel = new_selection(html);
             createRange(0, 5, 0, 9);
-            $('#txtselect_marker').click();
 
             var aim = '<p>Here <span class="num0">is a</span> selection!</p>'
             assertHTMLEqual(aim);
@@ -151,7 +160,6 @@
             var html = '<p>Here is another selection!</p>';
             var sel = new_selection(html);
             createRange(0, 6, 0, 9);
-            $('#txtselect_marker').click();
 
             var aim = 'is another'
             assertSelectionEqual(aim);
@@ -160,7 +168,6 @@
             var html = '<p>Here\'s a selection-sister selection!</p>';
             var sel = new_selection(html);
             createRange(0, 5, 0, 11);
-            $('#txtselect_marker').click();
 
             var aim = 'Here\'s a selection-sister';
             assertSelectionEqual(aim);
@@ -169,7 +176,6 @@
             var html = '<p>Here is a selection, yes, selection!</p>'; //XXX use colons, semicolons, etc
             var sel = new_selection(html);
             createRange(0, 5, 0, 13);
-            $('#txtselect_marker').click();
 
             var aim = 'is a selection';
             assertSelectionEqual(aim);
@@ -179,7 +185,6 @@
             var html = '<p>The sentence. Second sentence with V.Ivanov. And third one with smth. else! May be, the forth?</p>';
             var sel = new_selection(html);
             createRange(0, 2, 0, 6);
-            $('#txtselect_marker').click();
 
             var aim = 'The sentence.';
             assertSelectionEqual(aim);
@@ -188,7 +193,6 @@
             var html = '<p>The sentence. Second sentence with V.Ivanov. And third one with smth. else! May be, the forth?</p>';
             var sel = new_selection(html);
             createRange(0, 70, 0, 90);
-            $('#txtselect_marker').click();
 
             var aim = 'else! May be, the forth?';
             assertSelectionEqual(aim);
@@ -197,7 +201,6 @@
             var html = '<p>The sentence. Second sentence with V.Ivanov. And third one with smth. else! May be, the forth?</p>';
             var sel = new_selection(html);
             createRange(0, 75, 0, 90);
-            $('#txtselect_marker').click();
 
             var aim = 'May be, the forth?';
             assertSelectionEqual(aim);
@@ -206,7 +209,6 @@
             var html = '<p>The sentence. Second sentence with V.Ivanov. And third one with smth. else! May be, the forth?</p>';
             var sel = new_selection(html);
             createRange(0, 34, 0, 43);
-            $('#txtselect_marker').click();
 
             var aim = 'V.Ivanov';
             assertSelectionEqual(aim);
@@ -215,7 +217,6 @@
             var html = '<p>The sentence. Second sentence with V.Ivanov. And third one with smth. else! May be, the forth?</p>';
             var sel = new_selection(html);
             createRange(0, 60, 0, 72);
-            $('#txtselect_marker').click();
 
             var aim = 'with smth. else';
             assertSelectionEqual(aim);
@@ -224,7 +225,6 @@
             var html = '<p>The sentence. Second sentence with V.Ivanov. And third one with smth. else! May be, the forth?</p>';
             var sel = new_selection(html);
             createRange(0, 70, 0, 72);
-            $('#txtselect_marker').click();
 
             var aim = 'else';
             assertSelectionEqual(aim);
@@ -233,7 +233,6 @@
             var html = '<p>The sentence.</p><p>Second sentence. And third one.</p>';
             var sel = new_selection(html);
             createRange(0, 5, 1, 9);
-            $('#txtselect_marker').click();
 
             var aim = 'sentence.Second sentence.';
             assertSelectionEqual(aim);
@@ -242,7 +241,6 @@
             var html = '<p>The sentence. <b>Second sentence</b>.</p>';
             var sel = new_selection(html);
             createRange(0, 4, 1, 8);
-            $('#txtselect_marker').click();
 
             var aim = 'sentence. Second sentence.';
             assertSelectionEqual(aim);
@@ -252,7 +250,6 @@
             var html = '<p>Something (in brackets) is here.</p>';
             var sel = new_selection(html);
             createRange(0, 10, 0, 15);
-            $('#txtselect_marker').click();
 
             var aim = '(in brackets)';
             assertSelectionEqual(aim);
@@ -261,7 +258,6 @@
             var html = '<p>Something (long in brackets) is here.</p>';
             var sel = new_selection(html);
             createRange(0, 10, 0, 17);
-            $('#txtselect_marker').click();
 
             var aim = 'long in';
             assertSelectionEqual(aim);
@@ -270,7 +266,6 @@
             var html = '<p>Something (long in brackets) is here.</p>';
             var sel = new_selection(html);
             createRange(0, 1, 0, 25);
-            $('#txtselect_marker').click();
 
             var aim = 'Something (long in brackets)';
             assertSelectionEqual(aim);
@@ -279,7 +274,6 @@
             var html = '<p>Something (<b>long in brackets</b>) is here.</p>';
             var sel = new_selection(html);
             createRange(1, 1, 1, 10);
-            $('#txtselect_marker').click();
 
             var aim = '(long in brackets)';
             assertSelectionEqual(aim);
@@ -288,7 +282,6 @@
             var html = '<p>Something (long in brackets). Yes, it is here</p>';
             var sel = new_selection(html);
             createRange(0, 1, 0, 25);
-            $('#txtselect_marker').click();
 
             var aim = 'Something (long in brackets).';
             assertSelectionEqual(aim);
@@ -297,7 +290,6 @@
             var html = '<p>Something «long in quotes» is here.</p>';
             var sel = new_selection(html);
             createRange(0, 10, 0, 25);
-            $('#txtselect_marker').click();
 
             var aim = '«long in quotes»';
             assertSelectionEqual(aim);
@@ -307,7 +299,6 @@
             var html = '<p>Here is a selection!</p>';
             var sel = new_selection(html);
             createRange(0, 4, 0, 10);
-            $('#txtselect_marker').click();
 
             var aim = 'is a';
             assertSelectionEqual(aim);
@@ -316,7 +307,6 @@
             var html = '<p>Here is a, selection!</p>'; //XXX use colons, semicolons, etc
             var sel = new_selection(html);
             createRange(0, 4, 0, 11);
-            $('#txtselect_marker').click();
 
             var aim = 'is a';
             assertSelectionEqual(aim);
@@ -326,7 +316,6 @@
             var html = '<p>Zero text  </p><p>First text,</p><p> Second text</p>';
             var sel = new_selection(html);
             createRange(0, 9, 2, 1);
-            $('#txtselect_marker').click();
 
             var aim = '<p>Zero text  </p><p><span class="num0">First text</span>,</p><p> Second text</p>';
             assertHTMLEqual(aim);           
@@ -335,7 +324,6 @@
             var html = '<p><b><a>Ivanov</a>:</b> some text</p>';
             var sel = new_selection(html);
             createRange(0, 0, 2, 3);
-            $('#txtselect_marker').click();
 
             var aim = '<p><b><a><span class="num0">Ivanov</span></a><span class="num0">:</span></b><span class="num0"> some</span> text</p>';
             assertHTMLEqual(aim);           
@@ -344,7 +332,6 @@
             var html = '<p>Zero text</p><p>First text</p><p>Second text</p>';
             var sel = new_selection(html);
             createRange(0, 7, 2, 1);
-            $('#txtselect_marker').click();
 
             var aim = '<p>Zero <span class="num0">text</span></p><p><span class="num0">First text</span></p><p><span class="num0">Second</span> text</p>';
             assertHTMLEqual(aim);           
@@ -353,11 +340,9 @@
             var html = '<p>Some text of few short words.</p>';
             var sel = new_selection(html);
             createRange(0, 7, 0, 11);
-            $('#txtselect_marker').click();
             assertSelectionEqual('text of', 0, 'silent');
 
             createRange(1, 5, 2, 3);
-            $('#txtselect_marker').click();
             assertSelectionEqual('text of few', 1, 'silent');
             assertSelectionEqual('', 0, 'silent');
             assertHashEqual(sel, '1:2,1:4');
@@ -366,26 +351,21 @@
             var html = '<p>Some text of few short words.</p>';
             var sel = new_selection(html);
             createRange(0, 11, 0, 14);
-            $('#txtselect_marker').click();
             assertSelectionEqual('of few', 0, 'silent');
 
             createRange(0, 7, 1, 3);
-            $('#txtselect_marker').click();
             assertSelectionEqual('text of few', 1);
         },
         mergeTwoSelections: function(){
             var html = '<p>Some text of few short words.</p>';
             var sel = new_selection(html);
             createRange(0, 7, 0, 8);
-            $('#txtselect_marker').click();
             assertSelectionEqual('text', 0, 'silent');
 
             createRange(2, 4, 2, 6);
-            $('#txtselect_marker').click();
             assertSelectionEqual('few', 1, 'silent');
 
             createRange(0, 1, 4, 3);
-            $('#txtselect_marker').click();
             assertSelectionEqual('Some text of few short', 2, 'silent');
             assertSelectionEqual('', 0, 'silent');
             assertSelectionEqual('', 1, 'silent');
@@ -404,11 +384,9 @@
             var sel = new_selection(html);
 
             createRange(1, 14, 2, 6);
-            $('#txtselect_marker').click();
             assertSelectionEqual('text. And one', 0, 'silent');
 
             createRange(0, 1, 1, 1);
-            $('#txtselect_marker').click();
             assertSelectionEqual('Word. Some', 1, 'silent');
 
             assertHashEqual(sel, '2:3,3:2;1:1,2:1');
@@ -418,7 +396,6 @@
             var sel = new_selection(html);
 
             createRange(0, 2, 1, 3);
-            $('#txtselect_marker').click();
             assertSelectionEqual('Word. Some', 0, 'silent');
 
             assertHashEqual(sel, '1:1,1:2');
