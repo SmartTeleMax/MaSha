@@ -22,7 +22,7 @@ var MaSha = function(options) {
 }
 
 MaSha.default_options = {
-    'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
+    'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
     'selectable': 'selectable-content',
     'marker': 'txtselect_marker',
     'location': window.location,
@@ -54,6 +54,10 @@ MaSha.prototype = {
         var marker = (typeof this.options.marker == 'string'?
                       document.getElementById(this.options.marker):
                       this.options.marker);
+        if (typeof this.options.regexp != 'string'){
+            throw 'regexp is set as string'
+        }
+        this.regexp = new RegExp(this.options.regexp, 'ig');
 
         var this_ = this;
 
@@ -75,7 +79,7 @@ MaSha.prototype = {
             var coord = getPageXY(e); // outside timeout function because of IE
             window.setTimeout(function(){
                 var text = window.getSelection().toString();
-                if (text == '' || !this_.options.regexp.test(text)) return;
+                if (text == '' || !this_.regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
 
                 marker.style.top = coord.y - 33 + 'px';
@@ -148,7 +152,7 @@ MaSha.prototype = {
     },
 
     _siblingNode: function(cont, prevnext, firstlast, offs, regexp){
-        var regexp = regexp || this.options.regexp;
+        var regexp = regexp || this.regexp;
         while (cont.parentNode && this.is_internal(cont)){
             while (cont[prevnext + 'Sibling']){
                 cont = cont[prevnext + 'Sibling'];
@@ -175,13 +179,13 @@ MaSha.prototype = {
         var _wcount = 0;
         if (node.nodeType == 3) {
             // counting words in text node
-            var match = node.nodeValue.match(this.options.regexp);
+            var match = node.nodeValue.match(this.regexp);
             if (match) { _wcount += match.length; }
         } else if (node.childNodes && node.childNodes.length){ // Child element
             // counting words in element node with nested text nodes
             var alltxtNodes = textNodes(node);
             for (i=alltxtNodes.length; i--;) {
-                _wcount += alltxtNodes[i].nodeValue.match(this.options.regexp).length;
+                _wcount += alltxtNodes[i].nodeValue.match(this.regexp).length;
             }
         }
         return _wcount;
@@ -194,7 +198,7 @@ MaSha.prototype = {
             container = firstTextNode(container);
         }
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
-        var wcount = container.data.substring(0, offset).match(this.options.regexp);
+        var wcount = container.data.substring(0, offset).match(this.regexp);
         
         if (wcount != null) { 
             if (pos=='start') wcount = wcount.length+1; 
@@ -324,8 +328,7 @@ MaSha.prototype = {
          var offset, stepCount = 0, exit = false;
          // getting word in all text nodes
          while (node) {
-             // XXX duplicating regexp!!!
-             var re = new RegExp ('[^\\s,;:–.!?\xA0\\*]+', 'ig');
+             var re = new RegExp(this.options.regexp, 'ig');
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
                  if (stepCount == bits[1]) {
@@ -368,14 +371,14 @@ MaSha.prototype = {
 
 
     checkPosition: function(range, offset, container, position) {
-        var options = this.options;
+        var this_ = this;
         
         function is_word(str){
-            return str.match(options.regexp) != null;
+            return str.match(this_.regexp) != null;
         }
 
         function is_not_word(str){
-            return str.match(options.regexp) == null;
+            return str.match(this_.regexp) == null;
         }
 
         function stepBack(container, offset, condition) {
@@ -406,7 +409,7 @@ MaSha.prototype = {
             }
 
             if (container.nodeType != 3 ||
-                container.data.substring(offset).match(this.options.regexp) == null) {
+                container.data.substring(offset).match(this.regexp) == null) {
                 var newdata = this.nextNode(container);
                 container = newdata._container;
                 offset = newdata._offset;
@@ -427,7 +430,7 @@ MaSha.prototype = {
             }
             
             if (container.nodeType != 3 ||
-                container.data.substring(0, offset).match(this.options.regexp) == null) {
+                container.data.substring(0, offset).match(this.regexp) == null) {
                 var newdata = this.prevNode(container);
                 container = newdata._container;
                 offset = newdata._offset;
@@ -658,7 +661,7 @@ MaSha.prototype = {
             for (var idx=0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
-                if (nodeType==3 && !child.nodeValue.match(this_.options.regexp)) {
+                if (nodeType==3 && !child.nodeValue.match(this_.regexp)) {
                     // ..if it is a textnode that is logically empty, ignore it
                     continue;
                 } else if (nodeType==3) {
@@ -741,7 +744,7 @@ MaSha.prototype = {
         if (!range) { return false; }
         var iterator = range.getElementIterator();
         while (node = iterator()){
-            if (node.nodeType == 3 && node.data.match(this.options.regexp) != null){
+            if (node.nodeType == 3 && node.data.match(this.regexp) != null){
                 // first and last TEXT nodes
                 first_node = first_node || node;
                 last_node = node;
