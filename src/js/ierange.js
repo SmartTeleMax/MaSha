@@ -498,7 +498,6 @@ window.getSelection = function () {
 	return selection;
 };
 
-window.DOMRange = DOMRange; // exposed for make MaSha work!
 //[TODO] expose DOMRange/DOMSelection to window.?
 
 })();

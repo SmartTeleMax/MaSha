@@ -1,5 +1,10 @@
-// XXX merge with range.js
-// XXX decrease jQuery dependency
+/*
+ * Mark and share text 
+ * 
+ * by SmartTeleMax team
+ * Released under the MIT License
+ */
+
 (function(){
 
 var MaSha = function(options) {
@@ -144,7 +149,6 @@ MaSha.prototype = {
 
     _siblingNode: function(cont, prevnext, firstlast, offs, regexp){
         var regexp = regexp || this.options.regexp;
-        //console.log('getting', prevnext, cont);
         while (cont.parentNode && this.is_internal(cont)){
             while (cont[prevnext + 'Sibling']){
                 cont = cont[prevnext + 'Sibling'];
@@ -153,8 +157,6 @@ MaSha.prototype = {
                 }
                 if(cont.nodeType == 3 && 
                    (cont.data.match(regexp) != null)){
-                    //console.log('getting ' + prevnext +  ': _container:', cont.data,
-                    //            '_offset:', offs * cont.data.length);
                     return {_container: cont, _offset: offs * cont.data.length};
                 }
             }
@@ -171,49 +173,40 @@ MaSha.prototype = {
 
     wordCount: function wordCount(node) {
         var _wcount = 0;
-        //console.log('countingWord.wordCount: в wordCount func. node = ', node, '; nodeType = ', node.nodeType);
-        if (node.nodeType == 3) { // Text only
+        if (node.nodeType == 3) {
+            // counting words in text node
             var match = node.nodeValue.match(this.options.regexp);
             if (match) { _wcount += match.length; }
-            //console.log('countingWord.wordCount: эта нода', node, 'текстовая. Слов в ноде: '+ _wcount);
         } else if (node.childNodes && node.childNodes.length){ // Child element
+            // counting words in element node with nested text nodes
             var alltxtNodes = textNodes(node);
-            //console.log('countingWord.wordCount: рассматриваемая нода имеет '+alltxtNodes.length+' чайлд(ов)');
-            //console.log('alltxtNodes: ', alltxtNodes);
-            for (i=0; i<alltxtNodes.length; i++) {
-                //console.log('countingWord.wordCount: Шаг №', i, '. Считаем кол-во слов в ноде', alltxtNodes[i], '. Слов = ', alltxtNodes[i].nodeValue.match(this.options.regexp).length);
+            for (i=alltxtNodes.length; i--;) {
                 _wcount += alltxtNodes[i].nodeValue.match(this.options.regexp).length;
-                //console.log('_wcount = ', _wcount);
             }
         }
-        //console.log('countingWord.wordCount: возвращаю _wcount = ', _wcount);
         return _wcount;
     },
 
-    // counting symbols/word functions
-    words: function(container, _offset, pos){
-        //console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
-        //console.log('countingWord: подсчет слов. аргументы: _container =', _container, '; _offset = ', _offset);
+    words: function(container, offset, pos){
+        // counting words in container from/untill offset position
     
         if (container.nodeType == 1) {
             container = firstTextNode(container);
         }
         // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
-        var wcount = container.data.substring(0, _offset).match(this.options.regexp);
+        var wcount = container.data.substring(0, offset).match(this.options.regexp);
         
-        //console.log('wcount', wcount);
         if (wcount != null) { 
             if (pos=='start') wcount = wcount.length+1; 
             if (pos=='end') wcount = wcount.length;
         } else { 
             wcount = 1;
         }
-        //console.log('countingWord: в '+pos+'Container ноде до начала выделения слов:', wcount);
 
         var node = container;
         var selection_index = this.getNum(container);
         var first_node = this.getFirstTextNode(selection_index);
-        //console.log(first_node, node, selection_index)
+
         while(node && node != first_node){
             node = this.prevNode(node, /.*/)._container;
             var onei_ = this.wordCount(node);
@@ -230,8 +223,6 @@ MaSha.prototype = {
             n = n.previousSibling;
         }
         */
-        //console.log('countingWord: итог работы (кол-во слов до первого/последнего слова)', wcount);
-        //console.log('countingWord: ––––––––––––––––––––––––––––––––––––––––––––––––');
         return selection_index + ':' + wcount;
     },
 
@@ -254,13 +245,16 @@ MaSha.prototype = {
         for (key in this.ranges) { 
             hashAr.push(this.ranges[key]);
         }
+        // XXX use location.replace?
         this.options.location.hash = 'sel='+hashAr.join(';');
     },
 
     readHash: function(){
+        /*
+         * Reads Hash from URL and marks texts
+         */
         var hashAr = this.splittedHash();
         if (!hashAr){ return; }
-        //console.log('readHash: из хэша получен массив меток выделений: ', hashAr);
     
         for (var i=0; i < hashAr.length; i++) {
             this.deserializeSelection(hashAr[i]);
@@ -270,9 +264,6 @@ MaSha.prototype = {
         if (this.options.onHashRead){
             this.options.onHashRead(this);
         }
-
-        //console.log('readHash: ––––––––––––––––––––––––––––––');
-
     },
 
     splittedHash: function(){
@@ -316,33 +307,29 @@ MaSha.prototype = {
     }, 
 
     deserializePosition: function(serialized, pos){
+         // deserializes №OfBlock:№OfWord pair
          var bits = serialized.split(":");
+         // getting block
          var node = this.blocks[parseInt(bits[0], 10)];
 
          var pos_text;
 
-         //console.log('deserializePosition: Осуществляем подсчет '+pos+'-овой позиции');
-         //console.log('deserializePosition: выбран элемент = ', node, bits[0]);
-         //console.log('deserializePosition: в выбранном элементе '+$(el).contents().length+' childNodes');
-
-
          var offset, stepCount = 0, exit = false;
-         //console.log('deserializePosition: ищем по счету '+bits[1]+' слово. Запускаем цикл перебора всех слов родительского элемента.');
+         // getting word in all text nodes
          while (node) {
              // XXX duplicating regexp!!!
              var re = new RegExp ('[^\\s,;:–.!?\xA0\\*]+', 'ig');
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
-                 //console.log('deserializePosition: слово №'+stepCount+' = "', myArray[0], '"; (startoffset =', myArray.index, ', endoffset =', re.lastIndex, ')');
                  if (stepCount == bits[1]) {
                      if (pos=='start') offset = myArray.index;
                      if (pos=='end') offset = re.lastIndex;
 
                      return {node: node, offset: parseInt(offset, 10)};
-                     //console.log('deserializePosition: '+pos+'овое слово найдено = ', myArray[0], '. Целевая нода = ', _allnodes[i], '. Символьный offset = ', offset);
                  }
 
              }
+             // word not found yet, trying next container
              node = this.nextNode(node, /.*/)
              node = node? node._container: null;
              if (this.isFirstTextNode(node)){
@@ -363,18 +350,12 @@ MaSha.prototype = {
          * Corrects selection.
          * Returns range object
          */
-        //console.log('checkSelection: ––––––––––––––––––––––––––––––');
-        //console.log('checkSelection: получен аргумент range = ', range);
-        //console.log('checkSelection: range = ', range.endOffset, range.endContainer);
-    
-        //console.log('checkSelection: range = ', range);
         this.checkPosition(range, range.startOffset, range.startContainer, 'start');
         this.checkPosition(range, range.endOffset, range.endContainer, 'end');
         
         this.checkBrackets(range);
         this.checkSentence(range);
 
-        //console.log('checkSelection: ––––––––––––––––––––––––––––––');
         return range;
     },
 
@@ -391,72 +372,51 @@ MaSha.prototype = {
         }
 
         function stepBack(container, offset, condition) {
+            // correcting selection stepping back and including symbols
+            // that match a given condition
             var init_offset = offset;
-            //console.log('checkSelection.stepBack: offset: ', offset);
             while (offset > 0 && condition(container.data.charAt(offset-1))){
-                //console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
-                //            'Шаг #', init_offset - offset + 1, '; '+
-                //            'Проверяем символ "', container.data[offset - 1], '"');
                 offset--;
             }
-            //console.log('checkSelection.stepBack: корректируем offset шагом назад. '+ 
-            //            'Шаг #', init_offset - offset + 1, '; '+
-            //            'Проверяем символ "', container.data[offset - 1], '"');
             return offset;
         }
         
         function stepForward(container, offset, condition) {
+            // correcting selection stepping forward and including symbols
+            // that match a given condition
             var init_offset = offset;
-            //console.log('checkSelection.stepForward: offset: ', offset);
             while (offset < container.data.length && condition(container.data.charAt(offset))){
-                //console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
-                //            'Шаг #', offset - init_offset + 1, '; '+
-                //            'Проверяем символ "', container.data[offset], '"');
                 offset++;
             }
-            //console.log('checkSelection.stepForward: корректируем offset шагом назад. '+ 
-            //            'Шаг #', offset - init_offset + 1, '; '+
-            //            'Проверяем символ "', container.data[offset], '"');
             return offset;
         }
 
         if (position == 'start') {
             
             if (container.nodeType == 1 && trim(textContent(container)) != '') {
-                //console.log('в if-е.');
                 container = firstTextNode(container);
                 offset = 0;
-                //console.log('новый container', container);
             }
 
             if (container.nodeType != 3 ||
                 container.data.substring(offset).match(this.options.regexp) == null) {
-                //console.log('in if nodeType=', container.nodeType);
                 var newdata = this.nextNode(container);
-                //range.setStart(newdata._container, newdata._offset);
                 container = newdata._container;
                 offset = newdata._offset;
-                //console.log('offset', offset);
             }
 
-            // Важно! Сначала сокращаем выделение, потом расширяем
+            // Important! Shorten the selection first and then extend it!
             offset = stepForward(container, offset, is_not_word);
-            //console.log('checkSelection: скорректированный offset = ', offset);
-        
             offset = stepBack(container, offset, is_word);
-            //console.log('checkSelection: скорректированный offset = ', offset);
             
             range.setStart(container, offset);
         }
         
         if (position == 'end') {
-            
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
-                //console.log('в end if-е.');
                 container_txtnodes = textNodes(container); // XXX lastTextNode
                 container = container_txtnodes[container_txtnodes.length-1];
                 offset = container.data.length;
-                //console.log('новый container', container, offset);
             }
             
             if (container.nodeType != 3 ||
@@ -464,15 +424,12 @@ MaSha.prototype = {
                 var newdata = this.prevNode(container);
                 container = newdata._container;
                 offset = newdata._offset;
-                //console.log('offset', offset);
             }
             
-            // Важно! Сначала сокращаем выделение, потом расширяем
+            // Important! Shorten the selection first and then extend it!
             offset = stepBack(container, offset, is_not_word);
-            //console.log('checkSelection: скорректированный offset = ', offset);
-
             offset = stepForward(container, offset, is_word);
-            //console.log('checkSelection: скорректированный offset = ', offset);
+
             range.setEnd(container, offset);
         }
     },
@@ -612,9 +569,8 @@ MaSha.prototype = {
         range = this.mergeSelections(range);
 
 
-        //console.log('after checkSelection range = ', range);
-        // генерируем и сохраняем якоря для выделенного
         var class_name = 'num'+this.counter;
+        // generating hash part for this range
         this.ranges[class_name] = this.serializeRange(range);
 
         range.wrapSelection(class_name+' user_selection_true');
@@ -673,11 +629,11 @@ MaSha.prototype = {
     getFirstRange: function(){
         var sel = window.getSelection();
         var res = sel.rangeCount ? sel.getRangeAt(0) : null;
-        //console.log('getFirstRange func:', res);
         return res;
     },
     enumerateElements: function(){
-        // Returns first text node in each visual block element
+        // marks first text node in each visual block element:
+        // inserts a span with special class and ID before it
         var node = this.selectable;
         var captureCount=0;
         var this_ = this;
@@ -701,7 +657,6 @@ MaSha.prototype = {
                     if (!block_started){
                         // remember the block
                         captureCount++;
-                        //console.log('enumerating', child, captureCount)
                         var index_span = document.createElement('span');
                         // XXX prefix all class and id attributes with "masha"
                         index_span.id = 'selection_index' + captureCount;
@@ -812,7 +767,8 @@ MaSha.prototype = {
     }
 };
 
-    var Range = window.Range || window.DOMRange;
+    // support browsers and IE, using ierange with or without DOMRange exposed
+    var Range = window.Range || window.DOMRange || document.createRange().constructor;
 
     Range.prototype.splitBoundaries = function() {
         var sc = this.startContainer,
