@@ -767,7 +767,8 @@ MaSha.prototype = {
     }
 };
 
-    // support browsers and IE, using ierange with or without DOMRange exposed
+    // support browsers and IE, using ierange with DOMRange exposed
+    // XXX why this doesn't work without DOMRange exposed
     var Range = window.Range || window.DOMRange || document.createRange().constructor;
 
     Range.prototype.splitBoundaries = function() {
