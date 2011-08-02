@@ -436,6 +436,10 @@ MaSha.prototype = {
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
 	        container = range.endContainer.childNodes[range.endOffset-1];
+	        //hack to compensate difference between chrome and firefox
+	        while (container.nodeType != 3) {
+		    container = container.previousSibling;
+	        }
 	        //container_txtnodes = textNodes(container); // XXX lastTextNode
                 //container = container_txtnodes[container_txtnodes.length-1];
 
