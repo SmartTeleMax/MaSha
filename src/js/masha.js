@@ -201,7 +201,8 @@ MaSha.prototype = {
         if (container.nodeType == 1) {
             container = firstTextNode(container);
         }
-        // вычитаем из start/end Container кусок текста, который входит в выделенное. Оставшееся разбиваем регекспом, и считаем кол-во слов.
+        //get content part, that isn't included in selection, 
+        //split it with regexp and count words in it
         var wcount = container.data.substring(0, offset).match(this.regexp);
         
         if (wcount != null) { 
@@ -224,7 +225,7 @@ MaSha.prototype = {
 
         /*
         n = container.previousSibling;
-        // FIXME! Требуется подсчет кол-ва слов и за пределами внутренних <b></b>
+        // FIXME! Required word count outside of inner <b></b>
         while (n) {
             var onei = wordCount(n);
             wcount += onei;
@@ -754,7 +755,6 @@ MaSha.prototype = {
     },
 
     range_is_selectable: function(){
-        // getNodes() это от rangy вроде.
         var node, first_node, last_node, first=true;
         var range = this.getFirstRange();
         if (!range) { return false; }
