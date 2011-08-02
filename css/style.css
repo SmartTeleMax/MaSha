@@ -330,6 +330,7 @@ b.s {
         margin: 0 auto;
         padding-top: 16px;
         width: 802px;
+        position: relative;
         }
     #footer .mark {
         padding:0;
@@ -348,6 +349,9 @@ b.s {
     #footer .btn {
         float: right;
         width: 300px;
+        position: absolute;
+        right: 0;
+        top: 18px;
     }
     
     
