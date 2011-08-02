@@ -43,6 +43,10 @@ MaSha.default_options = {
                 window.scrollTo(x,y-150);
             }, 1);
         }
+    },
+    'is_block': function(el){
+      return /*el.nodeName == 'BR' || */inArray(getCompiledStyle(el, 'display'),
+                                               ['inline', 'none']) == -1;
     }
 }
 
@@ -362,7 +366,7 @@ MaSha.prototype = {
          */
         this.checkPosition(range, range.startOffset, range.startContainer, 'start');
         this.checkPosition(range, range.endOffset, range.endContainer, 'end');
-        
+
         this.checkBrackets(range);
         this.checkSentence(range);
 
@@ -372,7 +376,7 @@ MaSha.prototype = {
 
     checkPosition: function(range, offset, container, position) {
         var this_ = this;
-        
+
         function is_word(str){
             return str.match(this_.regexp) != null;
         }
@@ -404,10 +408,13 @@ MaSha.prototype = {
         if (position == 'start') {
             
             if (container.nodeType == 1 && trim(textContent(container)) != '') {
-                container = firstTextNode(container);
+	        container = range.startContainer.childNodes[range.startOffset];
+	        while (container.nodeType != 3) {
+		  container = container.nextSibling;
+	        }
+                //container = firstTextNode(container);
                 offset = 0;
             }
-
             if (container.nodeType != 3 ||
                 container.data.substring(offset).match(this.regexp) == null) {
                 var newdata = this.nextNode(container);
@@ -424,8 +431,12 @@ MaSha.prototype = {
         
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
-                container_txtnodes = textNodes(container); // XXX lastTextNode
-                container = container_txtnodes[container_txtnodes.length-1];
+                //container_txtnodes = textNodes(container); // XXX lastTextNode
+                //container = container_txtnodes[container_txtnodes.length-1];
+	        container = range.endContainer.childNodes[range.endOffset];
+	        while (container.nodeType != 3) {
+		  container = container.previousSibling;
+	        }
                 offset = container.data.length;
             }
             
@@ -575,7 +586,6 @@ MaSha.prototype = {
 
     addSelection: function(range) {
         range = range || this.getFirstRange();
-    
         range = this.checkSelection(range);
         range = this.mergeSelections(range);
 
@@ -656,11 +666,12 @@ MaSha.prototype = {
             var has_blocks = false;
             var block_started = false;
             
-
+	  //console.log(children)
             var len;
             for (var idx=0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
+	      //console.log(child, nodeType)
                 if (nodeType==3 && !child.nodeValue.match(this_.regexp)) {
                     // ..if it is a textnode that is logically empty, ignore it
                     continue;
@@ -681,9 +692,8 @@ MaSha.prototype = {
                 } else if (nodeType==1) {
                     // XXX check if this is correct
                     if (!this_.is_ignored(child)){
-                        var is_block = inArray(getCompiledStyle(child, 'display'),
-                                               ['inline', 'none']) == -1;
-
+                        var is_block = this_.options.is_block(child);
+		      
                         if (is_block){
                             var child_has_blocks = enumerate(child);
                             has_blocks = has_blocks || child_has_blocks;
@@ -850,7 +860,6 @@ MaSha.prototype = {
 
     Range.prototype.wrapSelection = function(className){
         this.splitBoundaries();
-
         var textNodes = this.getTextNodes();
         for (var i=textNodes.length; i--;){
             // XXX wrap sibling text nodes together
