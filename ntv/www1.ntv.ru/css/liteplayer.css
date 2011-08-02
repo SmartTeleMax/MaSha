@@ -1,0 +1,17 @@
+.videofile {
+  width: 480px;
+  height: 360px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vplay {
+  position: absolute;
+  top: 140px;
+  left: 190px;
+  width: 100px;
+  height: 100px;
+  background-image: url("../img/bplay.png")/*tpa=http://www1.ntv.ru/img/bplay.png*/;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}

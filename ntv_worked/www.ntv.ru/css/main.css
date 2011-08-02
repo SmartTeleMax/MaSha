@@ -1,0 +1,3151 @@
+h2, a  {  outline: none;  }
+
+body, #fsearch form, #mainmenu ul, #citylist ul, #clouds table td, #videodate ul, #news_tags ul, #lastnews ul, #btm9news ul, #itemnews #recom h2, #itemnews #rother h2, #itemnews #authors h2, #big_tags_in ul, #printpdf ul, #schedule_list li.topen a, #schedule_list li.topen .plusminus a, #promopic ul, #about_prog .c_left h1, #new_tags ul, #export_mdl .export_item h2, .export_item ul, #rss_lj ul, #tagspage ul, .small_a_in ul, .small_a_in form, #hres h2, #results dl, #results dl dd, #results dl dt strong, .tabnewslst ul, .tabteamlst ul, #company_news ul, #arcblck ul { padding: 0; margin: 0;  }
+
+a.ibuzz, a.ifb, a.ilj, a.imail, a.itwitter, a.ivk, a.iyandex, #fmenu, #mainmenu #city li, #mainmenu #city li a, #mainmenu #export, #mainmenu #export li, .bc1, .bc2, .bc3, .bc4, #carpages a, .banner_mdl, #clouds, #mainprog_top, #mainprog_btm, #mainnews_btm, #newsvideo, #videoplayer, #newsvideo li strong, #soon_left, #soon_right, #news_tags, #itemvideo, #itemvideobtm, #itemnews #item_comm a, ul.funclist li a.comm, #itemnews #authors li a.comm, #nt_right, #nt_left, #item6news, #tv_week li a, #schedule_list li a.rem, #tv_anons h2, #tv_anons a.rss, .tv_anons, #tv_anons h2.sel, #mainprog .c_left, #mainprog .c_right, #promopic li, #sendyourvideo a, #new_tags, #export_top, #export_btm, .rss_ico, .lj_ico, .pod_ico, .pod_twitter, .pod_facebook, .youtube_ico, #tagspage li, .small_a, .pop_out, .small_a h2, a.podcast, a.print, a.more, #hres, a.siteout, li.siteout, #refresh a, ul.tab_top li, #mainnews_top, ul#tabs_blk, #export_mdl h2 a, #audit_btm, #audit h2, .bubble, .bubble em, .txtdesc  { background-repeat: no-repeat; }
+
+#mainmenu, #mainmenu #chapter, #mainmenu #chapter li, #mainmenu #chapter li a, #car_content li a strong, #car_content li a strong big, #soon, #news_tags li.ui-tabs-selected a, #big_tags, #big_tags_in a.sel, #big_tags_in a:active, #big_tags_in a:hover, #tv_week, #tv_week li strong a, #tv_week li a:active, #tv_week li a:hover, #printpdf, #schedule_list li.topen .more, #mainprog .c_left #videoplayer, #new_tags li.ui-tabs-selected, #about_in, #exp_in, ul.tab_top li a, #export_mdl h2 { background-repeat: repeat-x;  }
+
+.txtdesc, #about_in, #exp_in, #new_tags li.ui-tabs-selected, #mainprog .c_left, #tv_anons h2.sel, .tv_anons, #mainmenu { background-position: bottom;  }
+
+.bubble em, #export_mdl h2 a, #soon_right, #mainmenu #export, #mainmenu #city li a  { background-position: right; }
+
+#audit_btm, #export_mdl h2, #export_btm, #new_tags, #newsvideo, #mainprog_btm, #mainnews_btm, .small_a h2.popsel, #itemvideobtm, .bc4, .bc3, .bc2, .bc1, #fmenu  { background-position: bottom left; }
+
+.tabnewslst li small a, #mainnews_btm h1 a:active, #mainnews_btm h1 a:hover, .small_a_in a:active, .small_a_in a:hover, #tagspage li a:active strong, #tagspage li a:hover strong, #new_tags ul li a:active, #new_tags ul li a:hover, #item6news li a:active, #item6news li a:hover, #soon a:active, #soon a:hover, #video4news li div a:active, #video4news li div a:hover, #newsvideo li a:active, #newsvideo li a:hover, #news_tags a:active, #news_tags a:hover, #clouds a:active, #clouds a:hover, #fmenu li a:active, #fmenu li a:hover { text-decoration: underline; }
+
+.bubble, ul#tabs_blk, #mainnews_top, #refresh a, #refresh, #newsdescr, #tv_anons small, #btm9news .sprev, #btm9news .snext, #tagspage .sprev, #tagspage .snext, #about_prog .sprev, #about_prog .snext, #search_out .sprev, #search_out .snext, .small_a, #new_tags ul, #sendyourvideo, #promopic, #tv_anons a.rss, #schedule_list li.topen strong.date, #arr_rght, #arr_left, #soon, #video4news li .play, .cartime, #car_content li a strong big, #car_content li a strong, #car_content, #car_right, #car_left, #carousel, #now_func, #ntvlogo, #mainmenu #chapter, #mainmenu #export, #mainmenu #city, #citylist, #x8831 #ntvd, #fsearch  { position: absolute; }
+
+#company_news ul, .abouttab ul, #about_tabs ul, #arcblck ul, .tabteamlst ul, .tabnewslst ul, ul.tab_top, #soup_arc ul, .small_a_in ul, #tagspage ul, #tagspage ul, .export_item ul, #rss_lj ul, #new_tags ul, #promopic ul, .tv_anons ul, #schedule_list ul, #printpdf ul, #tv_week ul, #item6news ul, #big_tags_in ul, #itemnews #recom ul, #itemnews #rother ul, #mainprog ul.funclist, #itemnews #authors ul, #itemnews .podprint ul, #lastnews ul, #btm9news ul, #news_tags ul, #video4news ul, #videodate ul, #newsvideo ul, #now_func ul, #mainmenu ul, #fmenu ul, #x8831 ul { list-style: none; }
+
+.abouttab li, #about_tabs ul li, #arcblck ul li, .tabteamlst li img, .tabteamlst li, .tabnewslst li .bubble, ul.tab_top li a, ul.tab_top li, ul.tab_top, #btm9news .pages, #tagspage .pages, #about_prog .pages, #search_out .pages, #results dl dd, #results dl dt, #btm3 .small_a_in a, #btm3about .small_a, #tagspage li, .export_item, #new_tags ul li, #promopic li, .tv_anons a, #tv_anons h2, #schedule_list li.topen .more ul li, #schedule_list li a, .ophoto, #schedule_list li strong, #schedule_list li, #printpdf li, #tv_week li a, #tv_week li, #item6news li, #nt_right, #nt_left, #big_tags_in a, #big_tags_in ul li, #big_tags_in, #itemnews #authors li img, #itemnews #authors li, #itemnews .podprint li, #lastnews li img, #btm9news li img, #lastnews li, #btm9news li, #video4news li, #videodate li, #newsvideo li, .banner_mdl, #promoblockm, #newsblock, #mainblock h1, #car_content li img, #carpages a, .bc4, .bc3, .bc2, .bc1, #car_content li, #now_func ul li, #mainmenu #chapter li a, #mainmenu #export li a, #mainmenu #export li, #mainmenu #city li a, #mainmenu ul li, #x8831 li, #fmenu li, .c_right, #c_right_n, .c_left, #c_left_n  { float: left;  }
+
+#now_func ul li a, #export_mdl h2 a, #about_tabs ul li a, .arcsort li.nsel a, .arcsort a:active, .arcsort a:hover, .arcsort a, .tabnewslst li a, #mainnews_btm h2 a, ul.tab_top li a, #results dl dt strong a, #soup_arc li a, #btm3about .small_a_in a, #btm3 .small_a_in a, #tagspage li a, #new_tags ul li a, .tv_anons a, #tv_anons h2 a, #schedule_list li.topen .more ul li a, #schedule_list li a, #tv_week li a, #item6news li a, #big_tags_in a, #itemnews .podprint li a:active, #itemnews .podprint li a:hover, #itemvideo a:active, #itemvideo a:hover, #lastnews li a, #btm9news li a, #soon a, #soon strong, #video4news li a, #newsvideo li a, #news_tags a, #clouds a, #car_content li a, #mainmenu #chapter li a, #mainmenu #export li a, #mainmenu #city li a, #fmenu li a { text-decoration: none;  }
+
+#now_func ul li a:active, #now_func ul li a:hover { text-decoration: underline; }
+
+h2.h2hdr, #audit h2, #export_mdl h2, #mainnews_btm h2, ul.tab_top li.nsel a, ul.tab_top li a:active, ul.tab_top li a:hover, #results dl dt strong, #hres h2, #btm3about h1, #btm3about h1, #export_mdl .export_item h2, #export_mdl .export_item h2, #correspondent h1, #mainprog .c_left h2, #schedule_list li strong, #tv_week li strong a, #tv_week li a:active, #tv_week li a:hover, #schedule_main h1, #big_tags_in a.sel, #big_tags_in a:active, #big_tags_in a:hover, #itemnews #recom h2, #itemnews #rother h2, #itemnews #authors h2, #itemnews h1, #lastnews li a strong, #btm9news li a strong, #soon a, #soon strong, #newsvideo li strong, #mainblock h1, #car_content li a strong, #now_func ul li strong, #now h1, #mainmenu #export li a:active, #mainmenu #export li a:hover, #mainmenu #export li strong a, #mainmenu #chapter li strong a, #mainmenu #chapter li a:active, #mainmenu #chapter li a:hover { font-weight: 400; }
+
+body {
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-color: #fff;
+  color: #000;
+}
+
+.c_left, #c_left_n {
+  overflow: auto;
+  height: 100%;
+  width: 542px;
+}
+
+#c_left_n { overflow: hidden; }
+
+.c_right, #c_right_n {
+  overflow: auto;
+  height: 100%;
+  width: 412px;
+}
+
+img { display: block; }
+
+#banner_top { border-bottom: 1px solid #8bd249; }
+
+#banner_top img, #banner_btm img { border: 0;  }
+
+#content {
+  width: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+
+#footer { padding: 20px 0 0 43px; }
+
+#fmenu {
+  background-image: url("../img/bg_fmenu.jpg")/*tpa=http://www.ntv.ru/img/bg_fmenu.jpg*/;
+  background-color: #f2f2f2;
+  width: 914px;
+  height: 62px;
+  position: relative;
+  font-size: 11px;
+}
+
+#fmenu ul {
+  padding: 23px 0 0 0;
+  margin: 0 0 0 20px;
+}
+
+#fmenu li { padding-right: 30px;  }
+
+#fmenu li a { color: #6c6c6c; }
+
+#fsearch {
+  right: 20px;
+  top: 20px;
+}
+
+#fsearch input {  width: 290px; }
+
+#x8831 {
+  width: 914px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+#x8831 img {
+  border: 0;
+}
+
+#x8831 #ntvd {
+  top: 10px;
+  right: 0;
+}
+
+#x8831 ul {
+  overflow: auto;
+  width: 850px;
+  padding: 10px 0 0 0;
+  margin: 0;
+}
+
+#x8831 li {
+  padding: 0 5px 0 0;
+  width: 88px;
+  height: 36px;
+}
+
+#copyr {
+  clear: both;
+  font-size: 11px;
+  color: #6c6c6c;
+  padding: 0 0 30px 0;
+}
+
+#copyr span {
+  position: relative;
+  left: -12px;
+}
+
+#copyr a {  color: #14aaef;  }
+
+#mainmenu {
+  position: relative;
+  width: 914px;
+  height: 82px;
+  margin: 0 0 0 43px;
+  border-bottom: 1px solid #8bd249;
+  font-size: 11px;
+  background-image: url("../img/bg_menu.gif")/*tpa=http://www.ntv.ru/img/bg_menu.gif*/;
+  z-index: 1;
+}
+
+#citylist {
+  display: none;
+  padding: 12px 0 6px 20px;
+  border-bottom: 1px solid #fff;
+  left: 0;
+  top: 84px;
+  z-index: 999;
+  background: #eeeeef;
+  width: 110px;
+}
+
+#citylist li {  clear: both;  }
+
+#citylist li a {  color: #000;  }
+
+#mainmenu #city {
+  height: 36px;
+  overflow: hidden;
+  left: 0;
+  bottom: 1px;
+}
+
+#mainmenu #city li {
+  float: none;
+  height: 36px;
+  background-image: url("../img/sep.gif")/*tpa=http://www.ntv.ru/img/sep.gif*/;
+}
+
+#mainmenu #city li a {
+  color: #000;
+  height: 25px;
+  display: block;
+  padding: 11px 34px 0 19px;
+  background-image: url("../img/bg_city.png")/*tpa=http://www.ntv.ru/img/bg_city.png*/;
+}
+
+#mainmenu #export {
+  height: 36px;
+  right: -1px;
+  bottom: 1px;
+  padding: 0;
+  background-image: url("../img/sep.gif")/*tpa=http://www.ntv.ru/img/sep.gif*/;
+}
+
+#mainmenu #export li {
+  background-image: url("../img/sep.gif")/*tpa=http://www.ntv.ru/img/sep.gif*/;
+  padding-right: 1px;
+}
+
+#mainmenu #export li a {
+  color: #000;
+  height: 25px;
+  display: block;
+  padding: 11px 19px 0 19px;
+}
+
+#mainmenu #chapter {
+  background-image: url("../img/bg_menu.gif")/*tpa=http://www.ntv.ru/img/bg_menu.gif*/;
+  height: 36px;
+  width: 647px;
+  left: 267px;
+  bottom: 1px;
+}
+
+#mainmenu #chapter li {
+  background-image: url("../img/sep.gif")/*tpa=http://www.ntv.ru/img/sep.gif*/;
+  padding-right: 1px;
+}
+
+#mainmenu #chapter li a {
+  background-image: url("../img/bg_menu.gif")/*tpa=http://www.ntv.ru/img/bg_menu.gif*/;
+  color: #000;
+  height: 25px;
+  display: block;
+  padding: 11px 19px 0 19px;
+}
+
+#mainmenu #export li a:active, #mainmenu #export li a:hover, #mainmenu #export li strong a, #mainmenu #chapter li strong a, #mainmenu #chapter li a:active, #mainmenu #chapter li a:hover {
+  background-image: url("../img/sbg_menu.gif")/*tpa=http://www.ntv.ru/img/sbg_menu.gif*/;
+  color: #fff;
+}
+
+#ntvlogo {
+  bottom: 0;
+  left: 178px;
+}
+
+#ntvlogo img {  border: 0;  }
+
+#now {
+  height: 285px;
+  position: relative;
+}
+
+#now h1 {
+  padding: 20px 0 0 0;
+  margin: 0 0 0 43px;
+  font-size: 18px;
+}
+
+#now_func {
+  top: 0;
+  left: 487px;
+  font-size: 11px;
+  width: 470px;
+  height: 62px;
+}
+
+#now_func ul {
+  padding: 0;
+  margin: 25px 0 0 0;
+}
+
+#now_func ul li {
+  color: #14AAEF;
+  padding: 0 0 0 15px;
+}
+
+#now_func ul li strong {  color: #6c6c6c; }
+
+#now_func ul li a { color: #14AAEF; }
+
+#carousel {
+  bottom: 0;
+  left: 0;
+  width: 1000px;
+  height: 227px;
+  overflow: hidden;
+}
+
+#car_left {
+  top: 0;
+  left: 0;
+}
+
+#car_right {
+  top: 0;
+  right: 0;
+}
+
+#car_right img, #car_left img { border: 0;  }
+
+#car_content {
+  top: 0;
+  left: 0;
+  width: 1000px;
+  height: 227px;
+  font-size: 12px;
+}
+
+#car_content li {
+  height: 227px;
+  position: relative;
+}
+
+#car_content li a {
+  color: #8c8c8c;
+  cursor: pointer;
+  position: relative;
+}
+
+* html #car_content li a {  z-index: 1000;  }
+
+#car_content li a strong {
+  height: 190px;
+  left: 2px;
+  bottom: 35px;
+  padding: 13px 5px 0 5px;
+  margin: 0;
+  color: #fff;
+  background-image: url("../img/1x1.png")/*tpa=http://www.ntv.ru/img/1x1.png*/;
+}
+
+#car_content li a strong big {
+  padding: 13px 5px 0 5px;
+  height: 82px;
+  left: 0;
+  bottom: 0;
+  background-image: url("../img/bgshdw.png")/*tpa=http://www.ntv.ru/img/bgshdw.png*/;
+  font-size: 100%;
+}
+
+* html #car_content li a strong {  display: block;  }
+
+* html #car_content li a strong big {  background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/img/bgshdw.png, sizingMethod=scale);  }
+
+* html #car_content li a strong {  bottom: 33px;}
+
+.cartitle {
+  font-size: 18px;
+  height: 22px;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+}
+
+.cartime {
+  bottom: 10px;
+  left: 5px;  
+}
+
+.carnote {
+  color: #00b7ff;
+  font-size: 11px;
+  line-height: 11px;
+}
+
+.bc1, .bc2, .bc3, .bc4  {
+  height: 227px;
+  position: relative;
+}
+
+.bc1 {
+  width: 231px;
+  background-image: url("../img/shdw1.jpg")/*tpa=http://www.ntv.ru/img/shdw1.jpg*/;
+}
+
+.bc2 {
+  width: 461px;
+  background-image: url("../img/shdw2.jpg")/*tpa=http://www.ntv.ru/img/shdw2.jpg*/;
+}
+
+.bc3 {
+  width: 686px;
+  background-image: url("../img/shdw3.jpg")/*tpa=http://www.ntv.ru/img/shdw3.jpg*/;
+  margin-right: 6px;
+}
+
+.bc4 {
+  width: 919px;
+  background-image: url("../img/shdw4.jpg")/*tpa=http://www.ntv.ru/img/shdw4.jpg*/;
+}
+
+.bc1 strong big, .bc1 strong { width: 211px; }
+.bc2 strong big, .bc2 strong { width: 441px; }
+.bc3 strong big, .bc3 strong { width: 672px; }
+.bc4 strong big, .bc4 strong { width: 905px; }
+
+#carpages {
+  text-align: center;
+  position: relative;
+  top: 195px;
+  height: 10px;
+  z-index: 10;
+  height: 32px;
+}
+
+#carpagesin {
+  margin: 0 auto;
+  position: relative;
+  height: 11px;
+  top: 9px;
+}
+
+#carpages .all8 { width: 144px;  }
+* html #carpages .all8 {  width: 148px;  }
+
+#carpages .all7 { width: 126px;  }
+* html #carpages .all7 {  width: 130px;  }
+
+#carpages .all6 { width: 108px;  }
+* html #carpages .all6 {  width: 112px;  }
+
+#carpages .all5 { width: 90px;  }
+* html #carpages .all5 {  width: 94px;  }
+
+#carpages .all4 { width: 72px;  }
+* html #carpages .all4 {  width: 76px;  }
+
+#carpages .all3 { width: 54px;  }
+* html #carpages .all3 {  width: 58px;  }
+
+#carpages .all2 { width: 36px;  }
+* html #carpages .all2 {  width: 40px;  }
+
+#carpages .all1 { width: 16px;  }
+* html #carpages .all2 {  width: 20px;  }
+
+#carpages a span { display: none; }
+
+#carpages a {
+  display: block;  
+  width: 10px;
+  height: 11px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+
+#carpages a:active, #carpages a:hover { background-image: url("../img/bdot.png")/*tpa=http://www.ntv.ru/img/bdot.png*/; }
+
+a.wdot {  background-image: url("../img/wdot.png")/*tpa=http://www.ntv.ru/img/wdot.png*/; }
+a.bdot {  background-image: url("../img/bdot.png")/*tpa=http://www.ntv.ru/img/bdot.png*/; }
+a.gdot {  background-image: url("../img/gdot.png")/*tpa=http://www.ntv.ru/img/gdot.png*/; }
+
+* html a.wdot {  background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/img/wdot.png, sizingMethod=scale);  }
+* html a.bdot {  background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/img/bdot.png, sizingMethod=scale);  }
+* html a.gdot {  background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/img/gdot.png, sizingMethod=scale);  }
+
+* html #carpages a:active, * html #carpages a:hover { background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/img/bdot.png, sizingMethod=scale); }
+
+#car_content li img {
+  border: 1px solid #cecece;
+  padding: 1px;
+}
+
+#peredachaflash {
+  margin: 0 23px;
+  overflow: auto;
+}
+
+#correspondent, #mainblock {
+  background-color: #f2f2f2;  
+  margin: 0 23px;
+  padding: 10px 0 15px 10px;
+  overflow: auto;
+  height: 100%;
+  width: 944px;
+}
+
+#mainblock {  position: relative; }
+
+#mainblock h1 {
+  padding: 0 0 0 11px;
+  margin: 0;
+  font-size: 18px;
+  color: #000;
+  width: 500px;
+}
+
+#mainblock h1 small { font-size: 12px;  }
+
+#mainblock h1 small a { color: #14aaef; }
+
+#newsblock, #promoblock {  width: 467px; }
+
+.banner_mdl {
+  background: #f2f2f2;
+  background-image: url("../img/bg_ban_mdl.jpg")/*tpa=http://www.ntv.ru/img/bg_ban_mdl.jpg*/;
+  padding: 5px 0 5px 10px;
+  width: 914px;
+}
+
+.banner_mdl img { border: 0;  }
+
+#clouds {
+  background-image: url("../img/bg_clouds.png")/*tpa=http://www.ntv.ru/img/bg_clouds.png*/;
+  height: 173px;
+  text-align: center;
+}
+
+#clouds table {
+  border: 1px;
+  padding: 0;
+  margin: 0 35px;
+}
+
+#clouds table td {  height: 173px;  }
+
+#news_tags a, #clouds a {
+  font-size: 10px;
+  color: #14aaef;
+}
+
+#news_tags a.c0, #clouds a.c0 {  font-size: 11px;  }
+#news_tags a.c1, #clouds a.c1 {  font-size: 12px;  }
+#news_tags a.c2, #clouds a.c2 {
+  font-size: 14px;
+  color: #6bb6b2;
+}
+#news_tags a.c3, #clouds a.c3 {
+  font-size: 15px;
+  color: #6bb6b2;
+}
+#news_tags a.c4, #clouds a.c4 {
+  font-size: 18px;
+  color: #6bb6b2;
+}
+#news_tags a.c5, #clouds a.c5 {
+  font-size: 18px;
+  color: #73b66e;
+}
+#news_tags a.c6, #clouds a.c6 {
+  font-size: 20px;
+  color: #73b66e;
+}
+#news_tags a.c7, #clouds a.c7 {
+  font-size: 22px;
+  color: #73b66e;
+}
+#news_tags a.c8, #clouds a.c8 {
+  font-size: 22px;
+  color: #6ed400;
+}
+#news_tags a.c9, #clouds a.c9 {
+  font-size: 24px;
+  color: #6ed400;
+}
+
+#banner_btm { padding: 20px 0 0 0;  }
+
+#mainprog_top {
+  clear: both;
+  background-image: url("../img/shdw_top.png")/*tpa=http://www.ntv.ru/img/shdw_top.png*/;
+  padding: 11px 0 0 0;
+  height: 526px;
+  margin: 0 0 12px 0;
+}
+
+#mainprog_btm, #mainnews_btm {
+  background-image: url("../img/shdw_btm.png")/*tpa=http://www.ntv.ru/img/shdw_btm.png*/;
+  padding: 0 0 11px 0;
+  clear: both;
+  width: 932px;
+  margin: 0 0 12px 0;
+  position: relative;
+  z-index: 1;
+}
+
+#mainprog, #mainnews {
+  width: 932px;
+  height: 100%;
+  background-image: url("../img/shdw_mdl.png")/*tpa=http://www.ntv.ru/img/shdw_mdl.png*/;
+  background-repeat: repeat-y;
+  background-color: #fff;
+  position: relative;
+  overflow: auto;
+  z-index: 4;
+}
+
+.ui-tabs-hide { display: none;  }
+
+#mainprog_btm, #mainprog { height: 470px ;}
+
+#mainprog_top {
+  height: 460px;
+  margin-bottom: 5px;
+}
+
+#newsvideo {
+  width: 480px;
+  margin: 0 0 0 11px;
+  height: 423px;
+  background-image: url("../img/bg_news_btm.png")/*tpa=http://www.ntv.ru/img/bg_news_btm.png*/;
+  padding: 0 10px;
+}
+
+#videotags {
+  width: 901px;
+  font-size: 11px;
+  color: #aaa;
+  padding: 5px 0 10px 21px;
+  height: auto;
+  overflow: auto;
+}
+
+#tagsword { width: 480px; }
+
+#videotags a {
+  color: #aaaaaa;
+  white-space : nowrap;
+}
+
+#vplay {
+  position: absolute;
+  top: 140px;
+  left: 190px;
+  width: 100px;
+  height: 100px;
+  background-image: url("../img/btn/bplay.png")/*tpa=http://www.ntv.ru/img/btn/bplay.png*/;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+#videoplayer {
+  position: relative;
+  padding: 11px 0 0 0;
+  background-image: url("../img/bg_player.jpg")/*tpa=http://www.ntv.ru/img/bg_player.jpg*/;
+}
+
+#newsvideo ul {
+  padding: 0;
+  margin: 8px 0 0 0;
+  font-size: 11px;
+  color: #14aaef;
+}
+
+#newsvideo li {
+  color: #6f6f6f;
+  padding: 0 10px 0 0;
+  line-height: 15px;
+}
+
+#newsvideo li a { color: #6f6f6f; }
+
+#mainnews .c_left { width: 511px; }
+
+#mainnews .c_right {  width: 410px; }
+
+#newsvideo li strong {
+  background-image: url("../img/ico_comm.png")/*tpa=http://www.ntv.ru/img/ico_comm.png*/;
+  padding: 0 0 0 15px;
+  background-position: left;
+}
+
+#sendvideo {
+  padding: 13px 0 0 0;
+  float: right;
+}
+
+#sendvideo img {  border: 0;  }
+
+#videodate {
+  width: 383px;
+  padding: 0 0 0 19px;
+  float: right;
+}
+
+#videodate ul {
+  font-size: 11px;
+  overflow: auto;
+  height: 100%;
+}
+
+#videodate li {
+  color: #aaa;
+  width: 189px;
+}
+
+#video4news {
+  background: #f2f2f2;
+  width: 409px;
+  border-top: 1px solid #cecece;
+  border-left: 1px solid #cecece;
+  font-size: 11px;
+}
+
+#video4news img {
+  border: 0px;
+  margin: 0 0 7px 0;
+}
+
+#video4news ul {
+  padding: 0;
+  margin: 19px 0 0 15px;
+  overflow: auto;
+  height: 403px;
+}
+
+#video4news li {
+  width: 183px;
+  height: 195px;
+  padding: 1px 0 0 4px;
+  overflow: hidden;
+  color: #aaa;
+  position: relative;
+}
+
+#video4news li a {  color: #14aaef; }
+
+#video4news li .play {
+  left: 25px;
+  top: 82px;
+  border: 0;
+}
+
+#video4news li div {
+  color: #aaa;
+  width: 172px;
+  height: 15px;
+  overflow: hidden;
+}
+
+#video4news li img {
+	padding : 1px;
+	border  : 1px solid #c2c2c2;
+}
+
+#video4news li div a {  color: #aaa;  }
+
+#soon_left {
+  background-image: url("../img/soon_left.png")/*tpa=http://www.ntv.ru/img/soon_left.png*/;
+  position: relative;
+}
+
+#soon_right {
+  background-image: url("../img/soon_right.png")/*tpa=http://www.ntv.ru/img/soon_right.png*/;
+  height: 22px;
+  font-size: 11px;
+  color: #4f7a8e;
+  padding: 8px 20px 0 20px;
+}
+
+#soon {
+  background-image: url("../img/soon_rep.png")/*tpa=http://www.ntv.ru/img/soon_rep.png*/;
+  left: 42px;
+  top: 16px;
+  max-width: 440px;
+  overflow: hidden;
+}
+
+* html #soon {    width:expression(document.body.clientWidth > 440? "440px": "auto"); }
+
+#soon a, #soon strong { color: #14aaef; }
+
+#soonin {
+  height: 13px;
+  overflow: hidden;
+  color: #000;
+}
+
+#news_tags {
+  background-image: url("../img/bg_newstags.png")/*tpa=http://www.ntv.ru/img/bg_newstags.png*/;
+  width: 912px;
+  height: 55px;
+  padding: 5px 0 20px 0;
+  margin: 0 0 0 10px;
+}
+
+#news_tags h1 {
+  float: none;
+  padding-left: 0;
+}
+
+#news_tags li {
+  display: inline;
+  padding-right: 10px;
+}
+
+#news_tags li.ui-tabs-selected a  { background-image: url("../img/bg_tags.png")/*tpa=http://www.ntv.ru/img/bg_tags.png*/;  }
+
+#tags_line {
+  height: 30px;
+  overflow: hidden;
+}
+
+#btm9news { margin-left: 4px; }
+
+#lastnews { padding: 20px 0 0 0;  }
+
+#lastnews ul {  margin: 15px 0 0 15px; }
+
+#btm9news li, #lastnews li {
+  width: 305px;
+  height: 70px;
+  padding: 3px 0 0 6px;
+  font-size: 11px;
+}
+
+#lastnews li {  width: 370px; }
+
+#btm9news li img, #lastnews li img {
+	padding	: 1px;
+	border	: 1px solid #c2c2c2;
+  margin: 0 10px 0 0;
+}
+
+#lastnews li a, #btm9news li a {
+  display: block;
+  padding: 0;
+  color: #aaa;
+  width: 305px;
+  height: 56px;
+}
+
+#lastnews li a strong, #btm9news li a strong {  color: #14aaef; }
+
+#itemnews {
+  background-image: url("../img/bg_newsitem.gif")/*tpa=http://www.ntv.ru/img/bg_newsitem.gif*/;
+  background-repeat: repeat-y;
+  overflow: auto;
+  height: 100%;
+  width: 954px;
+  position: relative;
+  margin: 0 0 0 23px;
+  padding-top: 10px;
+}
+
+#itemnews h1 {
+  padding: 10px 0 0 21px;
+  margin: 0;
+  font-size: 18px;
+  color: #000;
+}
+
+#btm3about, #btm3 {
+  padding: 20px 43px;
+  position: relative;
+  overflow: auto;
+  height: 100%;
+}
+
+#btm3about {  padding: 20px 0 20px 43px; }
+
+#itemvideo {
+  background-image: url("../img/newsitem_top.png")/*tpa=http://www.ntv.ru/img/newsitem_top.png*/;
+  padding: 11px 0 0 0;
+  width: 522px;
+  margin: 0 0 0 10px;
+  font-size: 11px;
+  color: #aaa;
+}
+
+#itemvideobtm {
+  xbackground-image: url("../img/newsitem_btm.png")/*tpa=http://www.ntv.ru/img/newsitem_btm.png*/;
+  padding: 0 0 0 0;
+  width: 522px;
+}
+
+#itemvideomdl {
+  background-image: url("../img/newsitem_mdl.png")/*tpa=http://www.ntv.ru/img/newsitem_mdl.png*/;
+  background-repeat: repeat-y;
+  padding: 0 11px;
+  width: 500px;
+}
+
+#itemvideo h1 {
+  color: #14aaef;
+  padding: 10px 0 0 10px;
+  margin-bottom: 7px;
+  width: 460px;
+  line-height: 100%;
+  overflow: hidden;
+}
+
+#itemvideo #videotags {
+  padding: 0 10px 0 10px;
+  margin: 0 0 10px 0;
+  width: 460px;
+  overflow: hidden;
+}
+
+#itemvideo #videoplayer { margin: 0 0 10px 10px;  }
+
+#itemvideo #itemdescr {
+  padding: 0 0 13px 10px;
+  border-bottom: 1px solid #cfcfcf;
+}
+
+#itemvideo #itemdescr a { color: #14aaef; }
+
+#itemvideo #itemtime {
+  float: right;
+  padding: 0 10px 0 0;
+}
+
+#itemnews .podprint {
+  position: relative;
+  font-size: 11px;
+  height: 60px;
+  padding: 8px 0 0 10px;
+  overflow: visible;
+  background-image: url("../img/bg_socialize.png")/*tpa=http://www.ntv.ru/img/bg_socialize.png*/;
+  background-repeat: no-repeat;
+}
+
+#itemnews .podnew {  padding: 5px 0 0 10px;  }
+
+
+#itemnews .podprint ul {
+  padding: 0 0 0 20px;
+  margin: 0;
+  overflow: auto;
+}
+
+#itemnews .podprint li {
+  padding: 0 10px 10px 0;
+  white-space: nowrap;
+}
+
+#itemnews .podnew li {
+  padding: 0 5px 10px 0;
+  white-space: normal;
+  overflow: hidden !important;
+  height: 18px;
+  width: 145px;
+}
+
+#itemnews .podprint li a {
+  color: #6f6f6f;
+}
+
+#itemnews #text {
+  color: #292929;
+  font-size: 75%;
+  padding: 0 30px 20px 30px;
+  border-bottom: 1px solid #fff;
+}
+
+#itemnews #text a { color: #14aaef; }
+
+#itemnews #item_comm a {
+  display: block;
+  margin: 15px 0 0 0;
+  background-image: url("../img/ico_comm.png")/*tpa=http://www.ntv.ru/img/ico_comm.png*/;
+  padding: 0 0 0 15px;
+  background-position: left;
+  color: #14aaef;
+  position: relative;
+  left: -15px;
+  font-size: 11px;
+}
+
+#itemnews #recom, #itemnews #rother, #itemnews #authors  {
+  border-bottom: 1px solid #fff;
+  padding: 15px 0 30px 30px;
+  overflow: auto;
+  height: 100%;
+  font-size: 70%;
+  clear: both;
+}
+
+#itemnews #recom {
+  border: 0;
+  padding: 15px 0 15px 30px;
+}
+
+#itemnews #recom h2, #itemnews #rother h2, #itemnews #authors h2 {
+  font-size: 125%;
+  color: #000;
+}
+
+#itemnews #authors ul {
+  padding: 20px 0 0 0;
+  margin: 0;
+}
+
+#itemnews #authors li { width: 250px; }
+
+#itemnews #recom a, #itemnews #rother a, #itemnews #authors li a { color: #14aaef; }
+
+ul.funclist li a.comm, #itemnews #authors li a.comm {
+  background-image: url("../img/ico_comm.png")/*tpa=http://www.ntv.ru/img/ico_comm.png*/;
+  background-position: left;
+  padding: 0 0 0 15px;
+  position: relative;
+  left: -15px;
+}
+
+#mainprog ul.funclist {
+  padding: 5px 0 5px 30px;
+  margin: 0;
+}
+
+ul.funclist li a.comm {
+  font-size: 11px;
+  color: #14aaef;
+}
+
+#itemnews #authors li img { margin: 0 10px 0 0; }
+
+#itemnews #recom ul, #itemnews #rother ul {
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+#itemnews #recom li, #itemnews #rother li {  padding: 0 0 7px 0; }
+
+#big_tags {
+  background-image: url("../img/bg_bt_rep.gif")/*tpa=http://www.ntv.ru/img/bg_bt_rep.gif*/;
+  width: 381px;
+  margin: 9px 0 0 11px;
+  height: 32px;
+}
+
+#big_tags_in {
+  width: 337px;
+  height: 32px;
+  overflow: hidden;
+  white-space : nowrap;
+	position: relative;
+  padding: 0;
+  margin: 0 10px 0 10px;
+}
+
+#big_tags_in ul { width: 700px; }
+
+#big_tags_in ul li {  border-right: 1px solid #e5e5e5;  }
+
+#big_tags_in a {
+  padding: 5px 10px 0 10px;
+  color: #000;
+  margin: 0 1px;
+  display: block;
+  font-size: 18px;
+  height: 26px;
+}
+
+#big_tags_in a.sel, #big_tags_in a:active, #big_tags_in a:hover {
+  background-image: url("../img/bt_sel.gif")/*tpa=http://www.ntv.ru/img/bt_sel.gif*/;
+  border-right: 1px solid #fff;
+  border-left: 1px solid #fff;
+  margin: 0;
+  color: #14aaef;
+}
+
+#nt_right, #nt_left {
+  width: 12px;
+  height: 32px;
+  display: block;
+}
+
+#nt_left { background-image: url("../img/left.gif")/*tpa=http://www.ntv.ru/img/left.gif*/;  }
+#nt_right { background-image: url("../img/rght.gif")/*tpa=http://www.ntv.ru/img/rght.gif*/;  }
+
+#nt_left span { display: none;  }
+#nt_right span { display: none;  }
+
+
+#item6news {
+  background-image: url("../img/bg_6.jpg")/*tpa=http://www.ntv.ru/img/bg_6.jpg*/;
+  width: 381px;
+  margin: 0 0 0 11px;
+  font-size: 70%;
+  overflow: auto;
+  height: 100%;
+}
+
+#item6news ul {
+  padding: 14px 0 0 0;
+  margin: 0;
+}
+
+#item6news li {
+  width: 180px;
+  padding: 0 0 0 10px;
+  height: 60px;
+  color: #aaa;
+}
+
+#item6news li a { color: #14aaef; }
+
+#nitem_tags {
+  text-align: center;
+  width: 315px;
+  margin: 20px 0 0 40px;
+  padding: 0 0 20px 0;
+  position: relative;
+}
+
+#nitem_tags a.c0 {
+  font-size: 11px;
+  color: #14aaef;
+}
+#nitem_tags a.c1 {
+  font-size: 12px;
+  color: #14aaef;
+}
+#nitem_tags a.c2 {
+  font-size: 14px;
+  color: #6bb6b2;
+}
+#nitem_tags a.c3 {
+  font-size: 16px;
+  color: #6bb6b2;
+}
+#nitem_tags a.c4 {
+  font-size: 18px;
+  color: #6bb6b2;
+}
+#nitem_tags a.c5 {
+  font-size: 18px;
+  color: #73b66e;
+}
+#nitem_tags a.c6 {
+  font-size: 20px;
+  color: #73b66e;
+}
+#nitem_tags a.c7 {
+  font-size: 22px;
+  color: #73b66e;
+}
+#nitem_tags a.c8 {
+  font-size: 22px;
+  color: #6ed400;
+}
+#nitem_tags a.c9 {
+  font-size: 24px;
+  color: #6ed400;
+}
+
+#schedule_main {
+  background-color: #f2f2f2;
+  width: 954px;
+  margin: 0 23px;
+  padding: 10px 0 0 0;
+  overflow: auto;
+  height: 100%;
+}
+
+#schedule_main h1 {
+  padding: 0 0 0 20px;
+  margin: 0;
+  line-height: 100%;
+  font-size: 18px;
+}
+
+#tv_week {
+  width: 954px;
+  margin: 10px 0 0 0;
+  background-image: url("../img/bg_week.gif")/*tpa=http://www.ntv.ru/img/bg_week.gif*/;
+  height: 55px;
+  font-size: 11px;
+  position: relative;
+}
+
+#tv_week ul {
+  padding: 0;
+  margin: 0 0 0 10px;
+}
+
+#tv_week li {
+  height: 55px;
+  width: 14%;
+}
+
+#arr_left {
+  top: 0;
+  left: 0;
+}
+
+#arr_rght {
+  right: 0;
+  top: 0;
+}
+
+#arr_rght img, #arr_left img { border: 0;  }
+
+#tv_week li a {
+  width: 100%;
+  display: block;
+  height: 43px;
+  background-image: url("../img/wsep.gif")/*tpa=http://www.ntv.ru/img/wsep.gif*/;
+  background-position: left;
+  color: #000;
+  padding: 12px 0 0 0;
+  text-align: center;
+}
+
+#tv_week li a em {
+  color: #6f6f6f;
+  font-style: normal;
+}
+
+#tv_week li a.first {
+  background: none;
+  text-align: left;
+  padding-left: 8%;
+  width: 92%;
+}
+
+#tv_week li strong a, #tv_week li a:active, #tv_week li a:hover {
+  background-image: url("../img/bg_week_s.gif")/*tpa=http://www.ntv.ru/img/bg_week_s.gif*/;
+  color: #99e750;
+}
+
+#tv_week li strong a em, #tv_week li a:active em, #tv_week li a:hover em {  color: #14aaef; }
+
+#printpdf {
+  background-image: url("../img/bg_fmenu.jpg")/*tpa=http://www.ntv.ru/img/bg_fmenu.jpg*/;
+  width: 914px;
+  margin: 0 0 0 20px;
+  font-size: 11px;
+  height: 30px;
+  padding: 6px 0 0 0;
+}
+
+#printpdf li {  padding-right: 15px;  }
+
+#printpdf li a {  color: #14aaef; }
+
+#schedule_list {
+  font-size: 75%;
+  padding-top: 5px;
+}
+
+#schedule_list ul {
+  padding: 2px 0 0 0;
+  margin: 0;
+}
+
+#schedule_list li {
+  color: #14aaef;
+  padding: 0 0 0 20px;
+  clear: both;
+  width: 621px;
+}
+
+#schedule_list li.topen {
+  color: #6f6f6f;
+  padding: 7px 10px 10px 57px;
+  border: 1px solid #d9d9d9;
+  margin: 5px 0 10px 9px;
+  width: 555px;
+  background-color: #f2f2f2;
+  position: relative;
+}
+
+* html #schedule_list li.topen {  width: 540px; }
+
+#schedule_list li {
+  padding-bottom: 10px;
+  color: #000;
+}
+
+#schedule_list li a {
+  color: #14aaef;
+  display: block;
+  margin: 0 0 0 20px;
+  border-bottom: 1px dotted #14aaef;
+}
+
+#schedule_list li a.rem  {
+  background-image: url("../img/rem.gif")/*tpa=http://www.ntv.ru/img/rem.gif*/;
+  display: none;
+  width: 88px;
+  height: 20px;
+  position: relative;
+  top: -3px;
+}
+
+#schedule_list li a.rem em {  display: none;  }
+
+#schedule_list li a span img {  border: 0; }
+
+#schedule_main #c_left_n {
+  width: 641px;
+  background-color: #f9f9f9;
+  padding-bottom: 30px;
+}
+
+#schedule_main #c_right_n { width: 312px; }
+
+#schedule_main #list_off {
+  overflow: auto;
+  height: 100%;
+  padding: 5px 0 3px 0;
+}
+
+#schedule_main #list_off li { color: #6f6f6f; }
+
+#schedule_main #list_off a {
+  color: #6f6f6f;
+  border-bottom: 1px dotted #6f6f6f;
+}
+
+#schedule_list #list_off li.topen a {
+  color: #14aaef;
+  border-bottom: 1px dotted #14aaef;
+}
+
+#schedule_list li.topen a { font-size: 130%;  }
+
+#schedule_list li.topen .plusminus {
+  width: 62px;
+  height: 22px;
+  float: right;
+  margin: 15px 0 0 0;
+}
+
+#schedule_list li.topen .plusminus img {  border: 0;  }
+
+#schedule_list li.topen .plusminus a {  width: 31px;  }
+
+#schedule_list li.topen strong {  float: none;  }
+
+#schedule_list li.topen strong.date {
+  font-size: 15px;
+  left: 10px;
+  top: 23px;  
+}
+
+.ophoto {
+  border: 1px solid #c2c2c2;
+  padding: 1px;
+  margin: 0 10px 0 5px;
+}
+
+.odescr {
+  clear: both;
+  color: #000;
+  font-size: 90%;
+  margin: 0 0 0 6px;
+  padding: 3px 10px 10px 0;
+}
+
+#schedule_list li.topen .more {
+  font-size: 90%;
+  background-image: url("../img/bg_open.jpg")/*tpa=http://www.ntv.ru/img/bg_open.jpg*/;
+  background-position: top;
+  overflow: auto;
+  height: 100%;
+  margin-left: 6px;
+}
+
+#schedule_list li.topen .more ul {
+  padding: 0;
+  margin: 5px 0 0 0;
+}
+
+#schedule_list li.topen .more ul li {
+  padding: 0 15px 0 0;
+  margin: 0;
+  clear: none;
+  width: auto;
+}
+
+#schedule_list li.topen .more ul li a {
+  color: #14aaef;
+  border-bottom: 1px solid #14aaef !important;
+  font-size: 100%;
+}
+
+#schedule_list li.topen .more ul li a.shedvideo { border-bottom: 1px dotted #14aaef !important; }
+
+.hbig { width: 450px; }
+
+a.hbig {  border: 0 !important; }
+
+.hbig span {  border-bottom: 1px dotted #14aaef;  }
+
+#tv_anons {
+  background-color: #fff;
+  width: 382px;
+  height: 448px;
+  margin: 0 0 0 9px;
+  position: relative;
+  overflow: hidden;
+}
+
+.small {
+  width: 293px !important;
+  height: 412px !important;
+}
+
+#tv_anons h1 {
+  color: #14aaef;
+  padding: 12px 0 12px 20px;
+  margin: 0;
+  font-size: 14px;
+}
+
+#tv_anons h2 {
+  width: 352px;
+  color: #6c6c6c;
+  font-size: 11px;
+  padding: 8px 0 0 10px;
+  margin: 0;
+  height: 22px;
+  background-image: url("../img/sel3.png")/*tpa=http://www.ntv.ru/img/sel3.png*/;
+  clear: both;
+  border-bottom: 1px solid #cecece;
+}
+
+.small h2 { width: 263px !important;  }
+
+#tv_anons h2 a {
+  color: #6c6c6c;
+  display: block;
+}
+
+.small h2 a {
+  width: 253px;
+  overflow: hidden;
+  height: 13px;
+}
+
+#tv_anons a.rss {
+  background-image: url("../img/rss.png")/*tpa=http://www.ntv.ru/img/rss.png*/;
+  right: 10px;
+  top: 18px;
+  display: block;
+  width: 10px;
+  height: 10px;
+}
+
+#tv_anons a.rss span {  display: none;  }
+
+#pr_menu_acc, #tv_ann_acc {
+  height: 398px;
+  margin: 0 0 0 9px;
+  width: 362px;
+  border: 1px solid #cecece;
+  overflow: hidden;
+}
+
+.small #tv_ann_acc {
+  width: 273px;
+  height: 363px;
+}
+
+.tv_anons {
+  font-size: 70%;
+  width: 342px;
+  margin: 0;
+  padding: 0 10px;
+  clear: both;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  border-bottom: 1px solid #cecece;
+  position: relative;
+}
+
+.tv_anons a.siteout {
+  background-position: 0 10px;
+  width: 157px;
+}
+
+.small .tv_anons {  width: 253px; }
+
+.tv_anons img {
+  margin: 1px 0 0 0;
+  border: 0;
+}
+
+.tv_anons input { margin: 3px 0;  }
+
+.tv_anons a { 
+  padding: 7px 65px 8px 0;
+  display: block;
+  width: 170px;
+  clear: both;
+  border-bottom: 1px dotted #cecece;
+  color: #6c6c6c;
+  position: relative;
+}
+
+.tv_anons a:active span, .tv_anons a:hover span {
+  border-bottom: 1px solid #14aaef;
+  color: #14aaef;
+}
+
+* html .tv_anons a:active, * html .tv_anons a:hover { color: #14aaef; }
+
+.tv_anons textarea {
+  width: 308px;
+  height: 100px;
+  margin: 3px 0;
+}
+
+.tv_anons select {  margin: 3px 0;  }
+
+.tv_anons li {  padding: 0 0 5px 0; }
+
+#tv_anons h2.sel {
+  color: #000;
+  width: 342px;
+  padding: 8px 0 0 0;
+  margin: 0;
+  background-image: url("../img/bg_player.jpg")/*tpa=http://www.ntv.ru/img/bg_player.jpg*/;
+  background-repeat: no-repeat;
+  height: 22px;
+  position: relative;
+  left: 10px;
+  border: 0;
+}
+
+.small h2.sel { width: 235px !important;  }
+
+#tv_anons h2.sel a {  color: #000;  }
+
+#mainprog .c_left {
+  margin: 0 0 0 11px;
+  width: 490px;
+  height: 470px;
+  background-image: url("../img/bg_c_left.png")/*tpa=http://www.ntv.ru/img/bg_c_left.png*/;
+}
+
+#mainprog .wide {
+  background-image: url("../img/bg_btm.png")/*tpa=http://www.ntv.ru/img/bg_btm.png*/;
+  width: 900px;
+  padding-right: 10px;
+}
+
+* html #mainprog .c_left {  margin: 0 0 0 6px;  }
+
+#mainprog .c_right {
+  width: 420px;
+  height: 470px;
+  background-image: url("../img/bg_c_right.png")/*tpa=http://www.ntv.ru/img/bg_c_right.png*/;
+  background-position: right bottom;
+  position: relative;
+}
+
+* html #mainprog .c_right {width: 419px;}
+
+#mainprog .c_left h1 {
+  padding-top: 10px;
+  color: #14aaef;
+  float: none;
+}
+
+#mainprog .c_left h2 {
+  padding: 0 0 20px 10px;
+  margin: 0;
+  font-size: 14px;
+  color: #000;
+}
+
+#mainprog .c_left #videoplayer {  margin-left: 10px;  }
+
+#promopic {
+  overflow: auto;
+  height: 362px;
+  padding: 10px 0 0 0;
+  top: 68px;
+  left: 27px;
+  width: 375px;
+}
+
+#promopic li {
+  background-image: url("../img/shdw_p.png")/*tpa=http://www.ntv.ru/img/shdw_p.png*/;
+  width: 60px;
+  height: 60px;
+  padding: 2px 4px 7px 6px;
+}
+
+#phv2 li {
+  background-image: url("../img/shdw_v.png")/*tpa=http://www.ntv.ru/img/shdw_v.png*/;
+  width: 80px;
+  height: 60px;
+  padding: 3px 0 0 6px;
+}
+
+#promopic li img {  border: 0;  }
+
+#about_prog {
+  overflow: auto;
+  height: 100%;
+  width: 934px;
+}
+
+#about_prog a { color: #14aaef;}
+
+#about_prog .c_left h1 {
+  color: #292929;
+  width: auto;
+  float: none;
+}
+
+#about_prog .c_left {
+  padding: 0;
+  width: 501px;
+  overflow: hidden;
+}
+
+#about_prog .wide {
+  width: 900px;
+  padding-right: 10px;
+}
+
+#about_prog .c_right {
+  width: 420px;
+  overflow: hidden;
+}
+
+#about_prog #tv_anons {
+  margin: 0;
+  left: 21px;
+}
+
+#about_prog #tv_anons h1 {
+  float: none;
+  width: auto;
+}
+
+#about_text {
+  font-size: 80%;
+  padding: 15px 0 0 0;
+}
+
+#correspondent  {
+  background-image: url("../img/bg_narcorr.gif")/*tpa=http://www.ntv.ru/img/bg_narcorr.gif*/;
+  background-repeat: repeat-y;
+  position: relative;
+}
+
+#correspondent h1 {
+  padding: 0 0 15px 11px;
+  margin: 0;
+  font-size: 18px;
+  color: #000;
+}
+
+#sendyourvideo {
+  left: 317px;
+  top: 5px;
+}
+
+#sendyourvideo a {
+  background-image: url("../img/sendvideo.png")/*tpa=http://www.ntv.ru/img/sendvideo.png*/;
+  display: block;
+  width: 314px;
+  height: 29px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  padding: 5px 0 0 0;
+}
+
+#new_tags a.c0 {
+  font-size: 11px;
+  color: #14aaef;
+}
+#new_tags a.c1 {
+  font-size: 12px;
+  color: #14aaef;
+}
+#new_tags a.c2 {
+  font-size: 14px;
+  color: #6bb6b2;
+}
+#new_tags a.c3 {
+  font-size: 16px;
+  color: #6bb6b2;
+}
+#new_tags a.c4 {
+  font-size: 18px;
+  color: #6bb6b2;
+}
+#new_tags a.c5 {
+  font-size: 18px;
+  color: #73b66e;
+}
+#new_tags a.c6 {
+  font-size: 20px;
+  color: #73b66e;
+}
+#new_tags a.c7 {
+  font-size: 22px;
+  color: #73b66e;
+}
+#new_tags a.c8 {
+  font-size: 22px;
+  color: #6ed400;
+}
+#new_tags a.c9 {
+  font-size: 24px;
+  color: #6ed400;
+}
+
+#new_tags {
+  background-image: url("../img/bg_newstags.png")/*tpa=http://www.ntv.ru/img/bg_newstags.png*/;
+  width: 912px;
+  position: relative;
+  height: 95px;
+  padding: 5px 0 0 0;
+  margin: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+#new_tags ul {
+  bottom: 25px;
+  left: 0;
+  height: 50px;
+  width: 2000px;
+}
+
+* html #new_tags ul { bottom: 15px; }
+
+#new_tags ul li {
+  font-size: 50px;
+  padding: 0 5px;
+}
+
+#new_tags ul li a {
+  position: relative;
+  bottom: 10px;
+}
+
+#new_tags li.ui-tabs-selected { background-image: url("../img/bg_tags.png")/*tpa=http://www.ntv.ru/img/bg_tags.png*/;  }
+
+#new_tags h1 {
+  width: auto;
+  float: none;
+  padding-left: 0;
+}
+
+#main_export {
+  clear: both;
+  height: 100%;
+  overflow: auto;
+  padding: 15px 11px;
+  font-size: 75%;
+  line-height: 150%;
+}
+
+#main_export a {  color: #14aaef; }
+
+#main_export .c_left {
+  width: 417px;
+  padding-right: 50px;
+}
+
+#main_export .c_right { width: 443px; }
+
+#export_top {
+  clear: both;
+  background-image: url("../img/shdw_top.png")/*tpa=http://www.ntv.ru/img/shdw_top.png*/;
+  padding: 12px 0 0 0;
+  margin: 0 0 12px 0;
+}
+
+#export_btm {
+  background-image: url("../img/shdw_btm.png")/*tpa=http://www.ntv.ru/img/shdw_btm.png*/;
+  padding: 0 0 10px 0;
+}
+
+#export_mdl {
+  width: 910px;
+  height: 100%;
+  overflow: auto;
+  background-image: url("../img/shdw_mdl.png")/*tpa=http://www.ntv.ru/img/shdw_mdl.png*/;
+  background-repeat: repeat-y;
+  background-color: #fff;
+  position: relative;
+  padding: 0 11px;
+}
+
+.export_item {
+  padding: 20px 0 0 0;
+  width: 425px;
+  font-size: 75%;
+  color: #888;
+}
+
+#export_mdl .export_item h2 {
+  font-size: 18px;
+  color: #000;
+  background: none;
+  border: 0;
+  width: auto;
+}
+
+#rss_lj {
+  background-color: #f9f9f9;
+  padding: 10px;
+}
+
+.export_item ul {
+  padding-top: 10px;
+  padding-bottom: 35px;
+}
+
+.export_item li { padding: 0 0 2px 35px;  }
+
+#export_mdl .c_left { width: 425px; }
+
+#export_mdl .c_right {  width: 425px; }
+
+.export_item a {  color: #14aaef; }
+
+#about_in, #exp_in {
+  background-image: url("../img/bg_btm.png")/*tpa=http://www.ntv.ru/img/bg_btm.png*/;
+  height: 100%;
+  overflow: auto;
+  padding: 0 20px;
+}
+
+.rss_ico {
+  background-image: url("../img/ico_rss.png")/*tpa=http://www.ntv.ru/img/ico_rss.png*/;
+  background-position: left;
+  padding: 0 0 0 35px;
+}
+
+.lj_ico {
+  background-image: url("../img/ico_lj.png")/*tpa=http://www.ntv.ru/img/ico_lj.png*/;
+  background-position: left;
+  padding: 0 0 0 35px;
+}
+
+.pod_ico {
+  background-image: url("../img/ico_pod.png")/*tpa=http://www.ntv.ru/img/ico_pod.png*/;
+  background-position: left;
+  padding: 0 0 0 35px;
+}
+
+.pod_twitter {
+  background-image: url("../img/ico_twitter.png")/*tpa=http://www.ntv.ru/img/ico_twitter.png*/;
+  background-position: left;
+  padding: 0 0 0 35px;
+}
+
+.pod_facebook {
+  background-image: url("../img/ifb.png")/*tpa=http://www.ntv.ru/img/ifb.png*/;
+  background-position: 5px 0;
+  padding: 0 0 0 35px;
+}
+
+.youtube_ico {
+  background-image: url("../img/ico_youtube.png")/*tpa=http://www.ntv.ru/img/ico_youtube.png*/;
+  background-position: left;
+  padding: 0 0 0 35px;
+}
+
+#tagspage {
+  overflow: hidden;
+  height: 100%;
+}
+
+#tagspage ul {
+  clear: both;
+  font-size: 70%;
+}
+
+#tagspage img {
+  border: 0px;
+  margin: 0 0 3px 0;
+}
+
+#tagspage ul {
+  overflow: auto;
+  height: 100%;
+  padding: 10px 0 0 0;
+  margin: 0 0 0 7px;
+}
+
+#tagspage li {
+  background-image: url("../img/shdw_vid.png")/*tpa=http://www.ntv.ru/img/shdw_vid.png*/;
+  width: 225px;
+  height: 195px;
+  padding: 2px 0 0 5px;
+  overflow: hidden;
+  color: #aaa;
+  position: relative;
+}
+
+#tagspage li a {
+  display: block;
+  width: 172px;
+  color: #aaa;
+}
+
+#tagspage li a strong { color: #14aaef; }
+
+#about_in { padding-bottom: 25px; }
+
+#about_in h1 {
+  padding: 0 0 15px 0;
+  margin: 0;
+  width: 860px;
+}
+
+#about_in .c_left { clear: both;  }
+
+#about_in .c_left .export_item {  width: 400px; }
+
+#about_in ul {
+  padding: 15px 0;
+  list-style: circle;
+}
+
+#tender {
+  padding: 0;
+  font-size: 75%;
+}
+
+#history {
+  font-size: 75%;
+  padding: 15px 10px 0 10px;
+}
+
+#history a {  color: #000;  }
+
+#history ul {
+  padding: 10px 0;  
+}
+
+#tender h1, #history h1 {
+  width: auto;
+  float: none;
+  padding: 0 0 15px 0;
+}
+
+#history dl {
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  height: 100%;
+  clear: both;
+}
+
+#history dl dt {
+  float: left;
+  font-size: 18px;
+  width: 250px;
+  padding: 0 0 20px 0;
+}
+
+#history dl dd {
+  float: left;
+  width: 660px;
+  padding: 3px 0 20px 0;
+  line-height: 150%;
+}
+
+#history dl.bcast dt {
+  width: 286px;
+  padding: 0 0 20px 21px;
+}
+
+#history dl.bcast dd {
+  width: 603px;
+  padding: 3px 0 20px 0;
+}
+
+#history dl dd strong {
+  color: #d6d6d6;
+  font-weight: 400;
+  font-size: 18px;
+  padding: 0 40px 20px 0;
+  display: block;
+  float: left;
+  position: relative;
+  top: -2px;
+  left: 0;
+}
+
+#btm3about h1 {
+  font-size: 14px;
+  passing: 0;
+  margin: 0;
+}
+
+.small_a {
+  top: 0;
+  left: 312px;
+  background-image: url("../img/bg_anons.png")/*tpa=http://www.ntv.ru/img/bg_anons.png*/;
+  width: 290px;
+  height: 349px;
+  padding: 1px 0 0 0;
+}
+
+.small_a_lng {
+  background-image: url("../img/bg_anons1.png")/*tpa=http://www.ntv.ru/img/bg_anons1.png*/;
+  height: 525px;
+}
+
+.small_a h1 { color: #14aaef; }
+
+.small_a_in {
+  width: 270px;
+  height: 208px;
+  position: relative;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  padding: 0;
+  font-size: 11px;
+}
+
+#disclosure { padding: 0 0 0 10px;  }
+
+#disclosure .small_a_in { height: 146px;  }
+
+.small_a_in form {
+  color: #6c6c6c;
+  font-size: 11px;
+}
+
+.small_a_in input {
+  width: 235px;
+  padding: 0;
+  margin: 2px 0 3px 0;
+  font-size: 10px;
+}
+
+.small_a_in select {
+  width: 235px;
+  font-size: 10px;
+  margin: 2px 0 3px 0;
+}
+
+.small_a_in textarea {
+  width: 235px;
+  height: 50px;
+  margin: 2px 0 3px 0;
+}
+
+.small_a h2.popsel {
+  background-image: url("../img/h2_pop_sel.jpg")/*tpa=http://www.ntv.ru/img/h2_pop_sel.jpg*/;
+  color: #000;
+}
+
+.pop_out {
+  padding: 0 0 20px 0;
+  background-image: url("../img/sel2.png")/*tpa=http://www.ntv.ru/img/sel2.png*/;
+  background-position: 10px bottom;
+}
+
+#btm3about .small_a_in {
+  width: 250px;
+  padding: 0 10px 0 10px;
+}
+
+#btm3about .small_a {
+  position: relative;
+  top: 0;
+  left: 0;
+  padding-right: 20px;
+}
+
+#btm3about .small_a h4, #btm3about .small_a h3 {  font-size: 100%;  }
+
+#btm3 .small_a_in a {
+  padding: 7px 0 8px 0;
+  left: 10px;
+  display: block;
+  width: 235px;
+  clear: both;
+  border-bottom: 1px dotted #cecece;
+  color: #6c6c6c;
+}
+
+#btm3about .small_a_in a {  color: #6c6c6c; }
+
+.small_a h2 {
+  width: 260px;
+  color: #6c6c6c;
+  font-size: 11px;
+  padding: 8px 0 0 10px;
+  margin: 0;
+  height: 23px;
+  background-image: url("../img/sel2.png")/*tpa=http://www.ntv.ru/img/sel2.png*/;
+  cursor: pointer;
+  cursor: hand;
+}
+
+#btm3about h1 {
+  padding: 12px 0 0 0;
+  margin: 0 0 0 9px;
+  font-size: 14px;
+  color: #78b53f;
+  height: 27px;
+}
+
+#about_text dl {
+  padding: 15px 0 0 0;
+  margin: 0;
+}
+
+#about_text dl dd { padding-bottom: 15px; }
+
+#soup_arc {
+  font-size: 75%;
+  color: #000;
+}
+  
+#soup_arc ul {
+  padding: 15px 0 0 0;
+  margin: 0;
+}
+
+#soup_arc li { padding: 0 0 10px 0; }
+
+#soup_arc li a {
+  color: #14aaef;
+  border-bottom: 1px dotted #14aaef;
+}
+
+.list_content { display: none;  }
+
+a.podcast, a.print, a.more, a.ibuzz, a.ifb, a.ilj, a.imail, a.itwitter, a.ivk, a.iyandex {
+  background-position: left;
+  padding-left: 21px;
+  height: 16px;
+  display: block;
+  width: 60px;
+}
+
+a.ibuzz { background-image: url("../img/ibuzz.png")/*tpa=http://www.ntv.ru/img/ibuzz.png*/; }
+a.ifb { background-image: url("../img/ifb.png")/*tpa=http://www.ntv.ru/img/ifb.png*/; }
+a.ilj { background-image: url("../img/ilj.png")/*tpa=http://www.ntv.ru/img/ilj.png*/; }
+a.imail { background-image: url("../img/imail.png")/*tpa=http://www.ntv.ru/img/imail.png*/; }
+a.itwitter { background-image: url("../img/itwitter.png")/*tpa=http://www.ntv.ru/img/itwitter.png*/; }
+a.ivk { background-image: url("../img/ivk.png")/*tpa=http://www.ntv.ru/img/ivk.png*/; }
+a.iyandex { background-image: url("../img/iyandex.png")/*tpa=http://www.ntv.ru/img/iyandex.png*/; }
+a.podcast { background-image: url("../img/ipod.png")/*tpa=http://www.ntv.ru/img/ipod.png*/; }
+a.print { background-image: url("../img/iprint.png")/*tpa=http://www.ntv.ru/img/iprint.png*/;  }
+a.more { background-image: url("../img/ico_more.png")/*tpa=http://www.ntv.ru/img/ico_more.png*/;  }
+
+#search_out {
+  padding: 0 20px 20px 20px;
+  overflow: auto;
+  height: 100%;
+}
+
+#hres {
+  color: #888;
+  font-size: 70%;
+  background-image: url("../img/bg_fmenu.jpg")/*tpa=http://www.ntv.ru/img/bg_fmenu.jpg*/;
+  padding: 15px 0 25px 0;
+}
+
+#hres h2 {
+  font-size: 18px;
+  color: #77b810;
+  background: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+}
+
+#results dl {
+  overflow: auto;
+  height: 100%;
+  clear: both;
+}
+
+#results dl dt {
+  font-size: 70%;
+  clear: both;
+  padding: 0 65px 15px 0;
+  margin: 0;
+  width: 585px;
+}
+
+#results dl dd {
+  font-size: 70%;
+  color: #888;
+  width: 200px;
+}
+
+#results dl dt strong {
+  font-size: 125%;
+  color: #14aaef;
+}
+
+#results dl dt a {  color: #14aaef; }
+
+#search_out form {
+  padding: 0 0 3px 0;
+  margin: 0;
+}
+
+#search_out td {
+  font-size: 11px;
+  color: #000;
+}
+
+#btm9news .newpages, #btm9news .pages, #tagspage .pages, #about_prog .pages, #search_out .pages {
+  clear: both;
+  position: relative;
+  padding: 0 30px;
+  height: 22px;
+  font-size: 11px;
+  margin: 10px 0 0 0;
+}
+
+#btm9news .newpages {
+  padding: 0;
+  margin: 0 0 0 8px;
+}
+
+#about_prog .pages {  margin: 15px 0 0 0;  }
+
+#btm9news .pagesin, #tagspage .pagesin, #about_prog .pagesin, #search_out .pagesin {  padding: 3px 0 0 0; }
+
+#btm9news .pagesin a, #tagspage .pagesin a, #about_prog .pagesin a, #search_out .pagesin a { color: #14aaef; }
+
+#btm9news .sprev, #btm9news .snext, #tagspage .sprev, #tagspage .snext, #about_prog .sprev, #about_prog .snext, #search_out .sprev, #search_out .snext {
+  background-repeat: no-repeat;
+  width: 23px;
+  height: 22px;
+}
+
+#btm9news .sprev span, #btm9news .snext span, #tagspage .sprev span, #tagspage .snext span, #about_prog .sprev span, #about_prog .snext span, #search_out .sprev span, #search_out .snext span {  display: none;  }
+
+#btm9news .sprev a, #btm9news .snext a, #tagspage .sprev a, #tagspage .snext a, #about_prog .sprev a, #about_prog .snext a, #search_out .sprev a, #search_out .snext a {
+  display: block;
+  width: 23px;
+  height: 22px;
+}
+
+#btm9news .sprev, #tagspage .sprev, #about_prog .sprev, #search_out .sprev  {
+  background-image: url("../img/sprev.png")/*tpa=http://www.ntv.ru/img/sprev.png*/;
+  left: 0;
+  top: 0;
+}
+
+#btm9news .snext, #tagspage .snext, #about_prog .snext, #search_out .snext  {
+  background-image: url("../img/snext.png")/*tpa=http://www.ntv.ru/img/snext.png*/;
+  right: 0;
+  top: 0;
+}
+
+a.siteout {
+  background-image: url("../img/url.gif")/*tpa=http://www.ntv.ru/img/url.gif*/;
+  padding-left: 13px !important;
+}
+
+li.siteout {
+  background-image: url("../img/url.gif")/*tpa=http://www.ntv.ru/img/url.gif*/;
+  background-position: 0 2px;
+  padding-left: 13px !important;
+}
+
+#tv_anons small {
+  right: 0;
+  top: 8px;  
+  width: 65px;
+  overflow: hidden;
+  height: 10px;
+  text-align: right;
+}
+
+#newsdescr {
+  color: #6f6f6f;
+  right: 431px;
+  bottom: 15px;
+  font-size: 11px;
+  width: 195px;
+  text-align: right;
+  line-height: 13px;
+}
+
+#refresh {
+  font-size: 11px;
+  color: #6c6c6c;
+  top: 18px;
+  left: 329px;
+  padding-right: 17px;
+  z-index: 100;
+}
+
+#refresh a span { display: none;  }
+
+#refresh a {
+  top: 0;
+  right: 0;
+  display: block;
+  width: 12px;
+  height: 12px;  
+  background-image: url("../img/refresh.png")/*tpa=http://www.ntv.ru/img/refresh.png*/;
+}
+
+ul.tab_top {
+  padding: 0 0 0 11px;
+  margin: 0;
+  width: 450px;
+  height: 31px;
+  position: relative;
+  top: 6px;
+  z-index: 5;
+}
+
+ul.tab_top li {
+  font-size: 10px;
+  background-image: url("../img/tab_lft.gif")/*tpa=http://www.ntv.ru/img/tab_lft.gif*/;
+  background-position: right top;
+}
+
+ul.tab_top li a {
+  display: block;
+  padding: 10px 6px 0 6px;  
+  background-color: #e9e9e9;
+  height: 21px;
+  background-image: url("../img/tab_rep.gif")/*tpa=http://www.ntv.ru/img/tab_rep.gif*/;
+  color: #000;
+  margin: 0 1px 0 0;
+}
+
+ul.tab_top li.nsel a, ul.tab_top li a:active, ul.tab_top li a:hover, ul.tab_top li.ui-tabs-selected a {
+  background-color: #fff;
+  background-image: url("../img/tab_sel.gif")/*tpa=http://www.ntv.ru/img/tab_sel.gif*/;
+  color: #14aaef;
+}
+
+ul.tab_top li big { font-size: 18px;  }
+
+ul.tab_top big a {
+  padding: 3px 9px 0 0;
+  height: 28px;
+  background: none !important;
+  color: #000 !important;
+}
+
+#main_news_tabs { top: 12px;  }
+
+#mainnews_top {
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 12px 0 0 21px;
+  float: none;
+  clear: both;
+  width: 910px;
+  background-image: url("../img/shdw_top.png")/*tpa=http://www.ntv.ru/img/shdw_top.png*/;
+  z-index: 5;
+}
+
+#mainnews_btm h2 {
+  position: relative;
+  margin: 10px 0 0 0;
+  padding: 0 0 0 21px;
+  line-height: 18px;
+  color: #14aaef;
+  float: none;
+  clear: both;
+  font-size: 18px;
+}
+
+#mainnews_btm h2 a {  color: #14aaef; }
+
+#h1last {
+  padding: 10px 0 15px 21px;
+  z-index: 5;
+  font-size: 12px;
+  width: 380px;
+  color: #000;
+  overflow: hidden;
+  height: 31px;
+}
+
+#h1last a { color: #14aaef;  }
+
+#h1last img { border: 0;  }
+
+#mainnews { padding-top: 10px;  }
+
+.tabnewslst {
+  position: relative;
+  top: 21px;
+  left: 21px;
+  overflow: auto;
+  width: 420px;
+  height: 480px;
+}
+
+.tabnewslst li a.siteout {  background-position: 0 4px; }
+
+.tabnewslst ul {  width: 383px; }
+
+.tabnewslst li {
+  border-bottom: 1px dotted #cfcfcf;  
+  padding: 8px 0 11px 0;
+  color: #b7b7b7;
+  font-size: 70%;
+  position: relative;
+}
+
+* html .tabnewslst li {
+  float: left;
+  clear: both;
+  width: 383px;
+}
+
+.tabnewslst li a {
+  clear: both !important;
+  font-size: 125%;
+  color: #14aaef;
+}
+
+.tabnewslst li small a {
+  font-size: 120%;
+  color: #737373;
+}
+
+.tabnewslst li .bubble {
+  display: block;
+  position: relative;  
+  left: 0;
+  top: 0;
+  background-image: url("../img/bg_bubble1s.png")/*tpa=http://www.ntv.ru/img/bg_bubble1s.png*/ !important;
+}
+
+.tabnewslst li .bubble em {  background-image: url("../img/bg_bubble2s.png")/*tpa=http://www.ntv.ru/img/bg_bubble2s.png*/ !important; }
+
+.newspage .tabnewslst {
+  width: 480px;
+  height: 485px;
+  top: 11px;
+}
+
+.newspage .tabnewslst ul {  width: 443px; }
+
+#archlist {
+  height: 425px;
+  top: 11px;
+}
+
+#arcblck {
+  width: 420px;
+  margin: 0 0 0 15px;
+  padding: 5px 0 0 5px;
+  background-color: #f5f5f5;
+  height: 30px;
+  top: 10px;
+  position: relative;
+}
+
+.newspage #arcblck {
+  padding: 5px 0 0 10px;
+  border-bottom: 1px solid #d9d9d9;
+  height: 30px;
+  width: 479px;
+  margin: 0 0 0 11px;
+  top: 2px;
+}
+
+.tabteamlst {
+  position: relative;
+  top: 21px;
+  left: 21px;
+  overflow: auto;
+  width: 480px;
+  height: 480px;
+}
+
+.tabteamlst ul {  width: 460px; }
+
+.tabteamlst li {
+  color:#888;
+  font-size:11px;
+  height:71px;
+  overflow:hidden;
+  padding: 0;
+  width:230px;
+}
+
+.tabteamlst li a {  color: #14AAEF; }
+
+.tabteamlst li img {  margin:0 9px 0 0; }
+
+.tabteamlst .del {
+  border: 1px solid #000;
+  width: 221px;
+  height: 60px;
+  padding: 1px;
+  margin: 0 5px 7px 0;
+}
+
+#arcblck ul li {  padding-left: 9px;  }
+
+.arcsort {
+  width: 490px !important;
+  padding: 21px 0 0 0 !important;
+  font-size: 11px;
+  height: 33px !important;
+  background-color: #fff !important;
+}
+
+.arcsort a {
+  color: #14AAEF;
+  border-bottom: 1px dotted #14AAEF;
+}
+
+.arcsort li.nsel a, .arcsort a:active, .arcsort a:hover {
+  color: #000;
+  border-bottom: 1px dotted #000;
+}
+
+ul#tabs_blk {
+  width: 870px;
+  left: 0;
+  top: 0;
+  background-image: url("../img/tab_lft.gif")/*tpa=http://www.ntv.ru/img/tab_lft.gif*/;
+  background-position: 10px 0;
+}
+
+#tabs_blk a { white-space: nowrap;  }
+
+#about_tabs {
+  height: 43px;
+  overflow: hidden;
+  background-image: url("../img/rep_menu.png")/*tpa=http://www.ntv.ru/img/rep_menu.png*/;
+  background-repeat: repeat-x;
+  background-color: #f9f9f9;
+  width: 954px;
+  border-bottom: 1px solid #fff;
+  margin: 0 0 0 23px;
+}
+
+#about_tabs ul {
+  width: 1000px;
+  padding: 0;
+  margin: 0;
+  height: 43px;
+}
+
+#about_tabs ul li {
+  font-size: 12px;
+  padding-left: 20px;
+  text-transform: uppercase;
+  height: 43px;
+}
+
+#about_tabs ul li.sel a { color: #14aaef; }
+
+#about_tabs ul li a:active, #about_tabs ul li a:hover { color: #005a79; }
+
+#about_tabs ul li a {
+  float: left;
+  padding: 14px 0 0 0;
+  color: #000;
+  height: 29px;
+  display: block;
+  text-shadow: 0.1em 0.1em #fff;
+}
+
+#about_tabs ul li.nsel a {
+  color: #14aaef;  
+  border: 0;
+}
+
+.abouttab {
+  overflow: hidden !important;
+  padding: 0 0 0 20px;
+  margin: 0;
+  width: 890px;
+  border-bottom: 1px solid #d1d1d1;
+}
+
+* html .abouttab {  width: 889px; }
+
+.abouttab ul {
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.abouttab li {
+  color: #888;
+  font-size: 11px;
+  height: 71px;
+  overflow: hidden;
+  padding: 0;
+  width: 210px;
+}
+
+.abouttab li.del {
+  border: 1px solid #000;
+  width: 201px;
+  height: 60px;
+  padding: 1px;
+  margin: 0 5px 7px 0;
+}
+
+.delayed_p {
+  border: 1px solid #000;
+  width: 201px;
+  height: 60px;
+  padding: 1px;
+  margin: 0 5px 7px 0;
+}
+
+.abouttab li a {  color: #14AAEF; }
+
+.abouttab li img {
+  float: left;
+  margin:0 9px 0 0;
+}
+
+#export_mdl h2 {
+  padding: 7px 0 0 20px;
+  margin: 0;
+  font-size: 18px;
+  height: 32px;
+  border-bottom: 1px solid #d1d1d1;
+  background-image: url("../img/bg_tab.gif")/*tpa=http://www.ntv.ru/img/bg_tab.gif*/;
+}
+
+* html #export_mdl h2 { width: 890px; }
+
+#export_mdl h2 a {
+  display: block;  
+  color: #000;
+  background-image: url("../img/arr_btm.gif")/*tpa=http://www.ntv.ru/img/arr_btm.gif*/;
+}
+
+#export_mdl h2.sel {
+  background: none;
+  border: 0;
+}
+
+#export_mdl h2.sel a {  background-image: url("../img/arr_top.gif")/*tpa=http://www.ntv.ru/img/arr_top.gif*/;  }
+
+.tenderin {
+  overflow: hidden;
+  width: 910px;
+}
+
+.finaltext {
+  font-size: 11px;
+  background-color: #f3f3f3;
+  padding: 20px;
+}
+
+.tenderin h3 {
+  padding: 13px 0 0 20px;
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  height: 26px;
+  border-top: 1px solid #d5d5d5;
+  background-image: url("../img/bg_tab.gif")/*tpa=http://www.ntv.ru/img/bg_tab.gif*/;
+  background-position: bottom;
+  background-repeat: repeat-x;
+  color: #7b7b7b;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.tenderin h3.sel b {
+  background-image: url("../img/arr_top.gif")/*tpa=http://www.ntv.ru/img/arr_top.gif*/;
+  height: auto;
+}
+
+.tenderin h3.sel {
+  color: #000;
+  background: 0;
+  height: auto;
+  padding-bottom: 15px;
+}
+
+.tenderin h3:focus {  outline: none;  }
+
+.tenderin h3 b {
+  font-weight: 400;
+  display: block;
+  background-image: url("../img/arr_btm.gif")/*tpa=http://www.ntv.ru/img/arr_btm.gif*/;
+  background-position: right;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  height: 13px;
+  padding-right: 50px;
+}
+
+.tenderin h1 {
+  padding: 13px 0 15px 20px !important;
+  font-weight: 400;
+  border-top: 1px solid #d5d5d5;
+}
+
+.newt {
+  background-image: url("../img/bg_tab.gif")/*tpa=http://www.ntv.ru/img/bg_tab.gif*/;
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+.newt table {
+  width: 860px;
+  margin: 0 0 0 30px;
+}
+
+.newt table td {
+  vertical-align: top;
+  padding-top: 5px;
+}
+
+.newt table td big {  font-size: 18px;  }
+
+.newt table td strong { font-weight: 400; }
+.newt table td strong.tstart {  color: #00b3f3; }
+.newt table td strong.tfinish { color: #7eb841; }
+
+.tndrcls table td strong.tstart {  color: #bdbdbd; }
+.tndrcls table td strong.tfinish { color: #bdbdbd; }
+.tndrcls table td big { color: #bdbdbd; }
+
+td.wfile {
+  padding-left: 54px;
+  height: 80px;
+  background-image: url("../img/word.png")/*tpa=http://www.ntv.ru/img/word.png*/;
+  background-repeat: no-repeat;
+}
+
+#audit {
+  width: 443px;
+  background-image: url("../img/mdl_audit.gif")/*tpa=http://www.ntv.ru/img/mdl_audit.gif*/;
+  background-color: #fff;
+}
+
+#audit blockquote {
+  padding: 0 19px;
+  margin: 0 3px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+#audit_btm {
+  background-image: url("../img/btm_audit.png")/*tpa=http://www.ntv.ru/img/btm_audit.png*/;
+  padding: 18px 22px;
+}
+
+#audit h2 {
+  width: 421px;
+  padding: 25px 0 20px 22px;
+  margin: 0;
+  font-size: 18px;
+  background-image: url("../img/top_audit.png")/*tpa=http://www.ntv.ru/img/top_audit.png*/;
+}
+
+#company_news ul {
+  overflow: auto;
+  height: 100%;
+}
+
+#company_news ul li { float: left;  }
+
+.bubble {
+  top: 5px;
+  left: 280px;
+  background-image: url("../img/bg_bubble1.png")/*tpa=http://www.ntv.ru/img/bg_bubble1.png*/;
+  font-size: 10px;
+}
+
+.bubble em {
+  height: 18px;
+  padding: 0 5px;
+  display: block;
+  font-style: normal;
+  color: #ff5300;
+  background-image: url("../img/bg_bubble2.png")/*tpa=http://www.ntv.ru/img/bg_bubble2.png*/;
+}
+
+* html .bubble em {
+  float: left;
+  white-space: nowrap;
+}
+
+.newspage #arcblck {
+  background-color: #fff;
+  height: 40px;
+  padding-top: 15px;
+}
+
+h2.h2hdr {
+  font-size: 18px;
+  color: #000;
+  padding: 0 0 20px 11px;  
+  margin: 0;
+}
+
+.txtdesc {
+  font-size: 70%;    
+  line-height: 150%;
+  color: #333;
+  background-image: url("../img/bg_open.jpg")/*tpa=http://www.ntv.ru/img/bg_open.jpg*/;
+  padding: 10px 0 14px 0;
+  width: 872px;
+}
+
+.txtdesc a {
+  color: #14aaef;
+  padding-right: 15px;
+}
+
+.txtdesc a.siteout {  background-position: 0 2px;  }
+
+.newpages {
+  font-size: 11px;
+  overflow: hidden;
+  width: 865px;
+  margin: 20px 0 0 25px;
+  position: relative;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+}
+
+.newpages strong, .newpages a {
+  height: 25px;
+  color: #737373 !important;
+  padding: 2px 5px 5px 5px;
+  line-height: 25px;
+}
+
+
+* html .newpages a {  border: 1px solid #fff;  }
+
+.newpages strong, .newpages a:active, .newpages a:hover {
+  background: #19bff3;
+  color: #fff !important;
+  font-weight: 400;
+}
+
+#pages-slider {
+  width: 840px;
+  height: 16px;
+  position: relative;
+}
+
+#slider_out {
+  background-image: url("../img/bg_slider.png")/*tpa=http://www.ntv.ru/img/bg_slider.png*/;
+  background-repeat: repeat-x;
+  margin: 0 0 0 25px;
+  width: 865px;
+}
+
+.ui-slider-handle {
+  width: 25px;
+  height: 19px;
+  position: absolute;
+  top: 0;
+  background-image: url("../img/slider.png")/*tpa=http://www.ntv.ru/img/slider.png*/;
+  background-repeat: no-repeat;
+}
+
+#hiddenContent {  padding: 30px;  }
+
+#logmessage, #message {
+  color: red;
+  position: absolute;
+  top: 47px;
+  left: 30px;
+}
+
+#topright {
+  position: absolute;
+  top: 18px;
+  right: 50px;
+  font-size: 11px;
+  z-index: 99;
+}
+
+#topright a { color: #14AAEF; } 
+
+#btmsocialize {
+  clear: both;
+  padding: 10px 0 0 20px;
+  font-size: 11px;
+  height: 28px;
+  background-image: url("../img/bg_socialize2.png")/*tpa=http://www.ntv.ru/img/bg_socialize2.png*/;
+  background-repeat: repeat-x;
+}
+
+#btmsocialize ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow: auto;
+}
+
+#btmsocialize ul li {
+  float: left;
+  padding-right: 20px;
+}
+
+#btmsocialize ul li a { width: auto;  }
+
+#history dl.tenderdoc { padding: 10px 0 0 32px;  }
+#history dl.tenderdoc dt {  width: 280px; }
+#history dl.tenderdoc dd {  width: 580px; }
+      
+#tenderacc dl.tenderdoc { padding: 20px;  }
+#tenderacc dl.tenderdoc dd {  width: 590px; }
+
+#tenderacc dl.tenderdoc dt, #tenderacc dl.tenderdoc dd {  padding-bottom: 10px; }
+
+#tenderacc h2 {
+  padding: 10px 0 10px 30px;
+  margin: 0;
+  font-weight: 400;
+}
+
+dl.tenderdoc table td { padding: 0 25px 0 0;  }
+
+dl.tenderdoc table td b {
+  font-weight: 400;
+  color: #7b7b7b;
+}
+
+.wfile em, dl.tenderdoc em {
+  font-style: normal;
+  color: #7b7b7b;
+}
+
+#disclosure, #vacancy {
+  padding: 13px 0 0 0;
+  clear: both;
+}
+
+#disclosure h2, #vacancy h2 {
+  padding: 6px 0 0 0;
+  margin: 0;
+  cursor: pointer;
+  cursor: hand;
+  font-weight: normal;
+  font-size: 18px;
+  height: 39px;
+  line-height: 13px;
+  width: 300px;
+  float: left;
+  clear: both;
+}
+
+.divo {
+  overflow: auto;
+  background-image: url("../img/dotted.png")/*tpa=http://www.ntv.ru/img/dotted.png*/;
+  background-repeat: repeat-x;
+  background-position: bottom;
+  overflow: hidden;
+  width: 900px;
+  padding-left: 21px;
+}
+
+#disclosure h2 {
+  padding: 8px 0 0 0;
+  height: 27px;
+}
+
+#vacancy h2 small {
+  color: #7b7b7b;
+  font-size: 11px;
+}
+
+#vacancy h2 { width: 100%;  }
+
+#disclosure .big_a, #vacancy .big_a {
+  width: 590px;
+  margin: 0 0 0 300px;
+  display: none;
+}
+
+#awards .big_a {  display: none;  }
+
+.big_a_in {
+  font-size: 75%;
+  padding: 10px 10px 10px 0;
+  position: relative;
+}
+
+.big_a_in a {  color: #00b4f1; }
+
+#disclosure .big_a_in a { color: #000;  }
+
+#history dd em, #disclosure .big_a_in em {
+  font-style: normal;
+  color: #7b7b7b;
+}
+
+#disclosure .big_a_in {   padding: 10px 10px 10px 0;  }
+
+#awards .divo {
+  width: 926px;
+  padding-left: 0;
+}
+
+#awards h2 {
+  padding: 6px 0 0 23px;
+  margin: 0;
+  cursor: pointer;
+  cursor: hand;
+  font-weight: normal;
+  font-size: 18px;
+  height: 30px;
+}
+
+#awards ul {
+  padding: 0 0 0 285px;
+  list-style: none;
+}
+
+#awards h2.ui-state-active {  background: 0 !important;  }
+
+#awards .big_a_in {
+  background-image: url("../img/dotted.png")/*tpa=http://www.ntv.ru/img/dotted.png*/;
+  background-repeat: repeat-x;
+  background-position: bottom;
+  padding-left: 23px;
+}
+
+#awards h4 {
+  padding: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+#awards p, #awards blockquote {  padding: 0 0 20px 285px; }
+
+#awards ul li { padding: 0 0 20px 0; }
+
+.vactbl {
+  width: 514px;
+  background-image: url("../img/bg_vactbl.png")/*tpa=http://www.ntv.ru/img/bg_vactbl.png*/;
+  background-repeat: no-repeat;
+  padding: 10px 0 10px 20px;
+}
+
+.vactblbtm {
+  background-image: url("../img/bg_vactbl_btm.png")/*tpa=http://www.ntv.ru/img/bg_vactbl_btm.png*/;
+  background-repeat: no-repeat;
+  background-position: bottom left;
+}
+
+.vactbl td {
+  padding: 0 20px 5px 0;
+  color: #7b7b7b;
+  font-size: 12px;
+  vertical-align: top;
+}
+
+.vactbl table select, .vactbl table textarea, .vactbl table input { margin: 3px 0 0 0;  }
+
+.vactbl table select {
+  padding: 0;
+  border: 1px solid #d7d7d7;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.vactbl table td textarea {
+  width: 481px;
+  height: 45px;
+  border: 1px solid #d7d7d7;
+  padding: 5px;
+}
+
+.vactbl table td input {
+  font-size: 12px;
+  padding: 0 5px;
+}
+
+.vactbl table td input.w3 {
+  width: 139px;
+  height: 30px;
+  border: 1px solid #d7d7d7;
+}
+
+.vactbl table td input.w2 {
+  width: 309px;
+  height: 30px;
+  border: 1px solid #d7d7d7;
+}
+
+.kompaniya {  padding-bottom: 30px; }
+
+
+.itemtopdescr {
+  padding: 0 0 10px 10px;
+  color: #292929;
+  font-size: 120%;
+  width: 480px;
+}
+
+.nintxt {
+  position: relative;
+  float: left;
+  clear: both;
+  margin: 5px 10px 10px 0;
+  width: 120px;
+  height: 90px;
+}
+
+.nintxt .splash {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.nintxt .play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -15px 0 0 -43px;
+  z-index: 999;
+}
+
+.nintxt .svideo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+}
+
+.nintxt .descr {
+  display: none;
+  font-weight: bold;
+  margin-top: -5px;
+  height: 30px;
+  position: relative;
+}
+
+.nintxt a { color: #14AAEF;  }
+
+.vitemtime {
+  padding: 0;
+  width: 450px; 
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+}
+
+.vitemtime a {  white-space: nowrap;  }
+
+.vitemdescr { padding: 10px 0 10px 0; }
+
+ul.twitt {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+ul.twitt li a { white-space: nowrap;  }
+
+ul.twitt li { padding-bottom: 15px; }
+
+ul.twitt li small { color: #aaa;  }
+
+ul.twitt li b { font-weight: 400; }
+
+span.sclose {
+  background-image: url("../img/closex.png")/*tpa=http://www.ntv.ru/img/closex.png*/;
+  background-repeat:  no-repeat;
+  background-position:  right;
+  display: block;
+  padding-right: 17px;
+  height: 15px;
+  cursor: pointer;
+  cursor: hand;
+  position: absolute;
+  right: 0;
+  top: -22px;
+}
