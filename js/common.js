@@ -1,12 +1,38 @@
+var options = {
+
+}
 if (window.addEventListener){
     window.addEventListener('load', function(){
         // can be called by domready
-        MaSha.instance = new MaSha();
+        MaSha.instance = new MaSha({
+            ignored: function(arg){
+                if ($(arg).attr('id') == 'projects' || $(arg).parents('#projects').length ||
+                    $(arg).attr('id') == 'plugins' || $(arg).parents('#plugins').length ||
+                    $(arg).attr('id') == 'download' || $(arg).parents('#download').length) {
+                    console.log(arg);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }, false);
 } else {
     window.attachEvent('onload', function(){
         // can be called by domready
-        MaSha.instance = new MaSha();
+        MaSha.instance = new MaSha({
+            ignored: function(arg){
+                
+                if ($(arg).attr('id') == 'projects' || $(arg).parents('#projects').length ||
+                    $(arg).attr('id') == 'plugins' || $(arg).parents('#plugins').length ||
+                    $(arg).attr('id') == 'download' || $(arg).parents('#download').length) {
+                    console.log(arg);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     });
 }
 

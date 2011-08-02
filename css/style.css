@@ -151,9 +151,9 @@ b.s {
                     font-size: 18px;
                     position: relative;
                     text-align: center;
-                    text-shadow: -1px 0 0 #616161;
-                    top: 18px;
-                    text-shadow: -1px 0px 0px #616161;
+                    top: 20px;
+                    left: 2px;
+                    text-shadow: 0px -1px 0px #616161;
                     filter: dropshadow(color=#616161, offx=-1, offy=0);
                 }
             #wraper .content .slider .item i {
@@ -167,7 +167,8 @@ b.s {
         #wraper .code {
             padding: 36px 0 36px 0;
             border-top: 1px solid #d0d0d0;
-            background: url(../img/code_bg.png) repeat-x;
+            /*background: url(../img/code_bg.png) repeat-x;*/
+            border-top: 1px solid #ffe600;
             border-bottom: 1px solid #FFE600;
             margin-bottom: 25px;
             }
@@ -221,11 +222,11 @@ b.s {
             font-weight: normal;
             }
         #wraper .authorslist div.card {
-            width: 243px;
-            float:left;
+            width: 235px;
+            float: left;
             height: 63px;
-            padding-left: 57px;
-            margin-bottom: 10px;
+            padding-left: 54px;
+            padding-right: 10px;
             }
             #wraper .authorslist h3 {
                 padding: 0;
