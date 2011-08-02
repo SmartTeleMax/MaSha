@@ -45,7 +45,7 @@ MaSha.default_options = {
         }
     },
     'is_block': function(el){
-      return /*el.nodeName == 'BR' || */inArray(getCompiledStyle(el, 'display'),
+      return el.nodeName == 'BR' || inArray(getCompiledStyle(el, 'display'),
                                                ['inline', 'none']) == -1;
     }
 }
