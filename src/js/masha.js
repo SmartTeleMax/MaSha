@@ -515,7 +515,7 @@ MaSha.prototype = {
             // XXX rewrite
             var text = range.toString();
             // XXX support not only latin and russian?
-            if (text.match(/(\.|\?|\!)\s+[A-ZА-ЯЁ]/)){
+            if (text.match(/(\.|\?|\!)\s+[A-Z\u0410-\u042f\u0401]/)){
                 return apply();
             }
 
@@ -533,7 +533,7 @@ MaSha.prototype = {
                 }
             }
 
-            if (text.charAt(0).match(/[A-ZА-ЯЁ]/)){
+            if (text.charAt(0).match(/[A-Z\u0410-\u042f\u0401]/)){
                 var pre = range.startContainer.data.substring(0, range.startOffset)
                 if(!pre.match(/\S/)) {
                     var pre_data = this.prevNode(range.startContainer, /\W*/);
