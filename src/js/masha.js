@@ -408,11 +408,14 @@ MaSha.prototype = {
         if (position == 'start') {
             
             if (container.nodeType == 1 && trim(textContent(container)) != '') {
-	        container = range.startContainer.childNodes[range.startOffset];
-	        while (container.nodeType != 3) {
-		  container = container.nextSibling;
-	        }
-                //container = firstTextNode(container);
+	        if(range.startContainer.nodeType == 1) {
+	            container = range.startContainer.childNodes[range.startOffset];
+	            while (container.nodeType != 3) {
+		        container = container.nextSibling;
+	            }
+		} else {
+                    container = firstTextNode(container);
+		}
                 offset = 0;
             }
             if (container.nodeType != 3 ||
@@ -431,12 +434,15 @@ MaSha.prototype = {
         
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
-                //container_txtnodes = textNodes(container); // XXX lastTextNode
-                //container = container_txtnodes[container_txtnodes.length-1];
-	        container = range.endContainer.childNodes[range.endOffset];
-	        while (container.nodeType != 3) {
-		  container = container.previousSibling;
-	        }
+	        if (range.endContainer.nodeType == 1 && range.endContainer.childNodes.length == 0) {
+	            container = range.endContainer.childNodes[range.endOffset];
+	            while (container.nodeType != 3) {
+		        container = container.previousSibling;
+	            }
+		} else {
+		    container_txtnodes = textNodes(container); // XXX lastTextNode
+                    container = container_txtnodes[container_txtnodes.length-1];
+		}
                 offset = container.data.length;
             }
             
