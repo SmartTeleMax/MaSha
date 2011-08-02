@@ -435,15 +435,10 @@ MaSha.prototype = {
         
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
-	        if (range.endContainer.nodeType == 1 && range.endContainer.childNodes.length == 0) {
-	            container = range.endContainer.childNodes[range.endOffset];
-	            while (container.nodeType != 3) {
-		        container = container.previousSibling;
-	            }
-		} else {
-		    container_txtnodes = textNodes(container); // XXX lastTextNode
-                    container = container_txtnodes[container_txtnodes.length-1];
-		}
+	        container = range.endContainer.childNodes[range.endOffset-1];
+	        //container_txtnodes = textNodes(container); // XXX lastTextNode
+                //container = container_txtnodes[container_txtnodes.length-1];
+
                 offset = container.data.length;
             }
             
