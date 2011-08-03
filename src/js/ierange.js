@@ -248,8 +248,7 @@ DOMRange.prototype = {
 	getTextNodes_: function(node){
     for(var i in node.childNodes){
       if(node.childNodes[i].nodeType == 3){
-        this._textNodes[c] = node.childNodes[i];
-        c++;
+        this._textNodes.push(node.childNodes[i]);
       }else this.getTextNodes(node.childNodes[i]);
     }
   },
