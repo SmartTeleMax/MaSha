@@ -21,6 +21,24 @@ var MaSha = function(options) {
     this.init();
 }
 
+MaSha.bind = function(fn, ctx, var_args) {
+  var context = ctx || goog.global;
+
+  if (arguments.length > 2) {
+    var boundArgs = Array.prototype.slice.call(arguments, 2);
+    return function() {
+      var newArgs = Array.prototype.slice.call(arguments);
+      Array.prototype.unshift.apply(newArgs, boundArgs);
+      return fn.apply(context, newArgs);
+    };
+
+  } else {
+    return function() {
+      return fn.apply(context, arguments);
+    };
+  }
+};
+
 MaSha.default_options = {
     'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
     'selectable': 'selectable-content',
@@ -73,25 +91,8 @@ MaSha.prototype = {
         // enumerate block elements containing a text
         this.enumerateElements();
     
-        addEvent(document, 'mouseup', function(e) {
-            /*
-             * Show the marker if any text selected
-             */
-            // XXX it's a question: bind to document or to this.selectable
-            // binding to document works better
-
-            var coord = getPageXY(e); // outside timeout function because of IE
-            window.setTimeout(function(){
-                var text = window.getSelection().toString();
-                if (text == '' || !this_.regexp.test(text)) return;
-                if (!this_.range_is_selectable()) return;
-
-                marker.style.top = coord.y - 33 + 'px';
-                marker.style.left = coord.x + 5 + 'px';
-                addClass(marker, 'show');
-            }, 1);
-        });
-    
+        addEvent(document, 'mouseup', MaSha.bind(this.highlight, this, marker));
+        addEvent(document, 'keyup', MaSha.bind(this.highlight, this, marker));
     
     
         addEvent(marker, 'click', function(e){
@@ -117,6 +118,48 @@ MaSha.prototype = {
         });
     
         this.readHash();
+    },
+    
+    highlight: function(marker, e){
+      /*
+       * Show the marker if any text selected
+       */
+      // XXX it's a question: bind to document or to this.selectable
+      // binding to document works better
+
+      // var coord = getPageXY(e); // outside timeout function because of IE
+      
+      var selection = window.getSelection();
+      
+      if (selection.toString().length) {
+        var range = window.getSelection().getRangeAt(0),
+            textNodes = range.getTextNodes(),
+            endContainer = textNodes.pop(),
+            endOffset = range.endOffset;
+        
+        if (endOffset === 0) {
+          endOffset = endContainer.nodeValue.length - 1;
+        }
+        
+        var r = document.createRange();
+        r.setStart(endContainer, endOffset - 1);
+        r.setEnd(endContainer, endOffset);
+        
+        var rect = r.getClientRects().item(0);
+        coord = {x: rect.right, y: rect.top};
+      }
+      
+      var this_ = this;
+      window.setTimeout(function(){
+          if (selection == '' || !this_.regexp.test(selection)) {
+            return;
+          }
+          if (!this_.range_is_selectable()) return;
+          
+          marker.style.top = (coord.y - 33) + 'px';
+          marker.style.left = (coord.x + 5) + 'px';
+          addClass(marker, 'show');
+      }, 1);
     },
 
     // XXX sort methods logically
