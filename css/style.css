@@ -391,7 +391,9 @@ b.s {
    
 #vk_like {
     float:left;
-}
+    width: 46px !important;
+    overflow:hidden;
+    }
 
 #vkwidget1 {
     width: 50px !important;
