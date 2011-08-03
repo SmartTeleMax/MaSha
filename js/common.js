@@ -8,7 +8,8 @@ if (window.addEventListener){
             ignored: function(arg){
                 if ($(arg).attr('id') == 'projects' || $(arg).parents('#projects').length ||
                     $(arg).attr('id') == 'plugins' || $(arg).parents('#plugins').length ||
-                    $(arg).attr('id') == 'download' || $(arg).parents('#download').length) {
+                    $(arg).attr('id') == 'download' || $(arg).parents('#download').length ||
+                    $(arg).hasClass('code') || $(arg).parents('.code:first').length) {
                     console.log(arg);
                     return true;
                 } else {
@@ -25,8 +26,8 @@ if (window.addEventListener){
                 
                 if ($(arg).attr('id') == 'projects' || $(arg).parents('#projects').length ||
                     $(arg).attr('id') == 'plugins' || $(arg).parents('#plugins').length ||
-                    $(arg).attr('id') == 'download' || $(arg).parents('#download').length) {
-                    console.log(arg);
+                    $(arg).attr('id') == 'download' || $(arg).parents('#download').length ||
+                    $(arg).hasClass('code') || $(arg).parents('.code:first').length) {
                     return true;
                 } else {
                     return false;
