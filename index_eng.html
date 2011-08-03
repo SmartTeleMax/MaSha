@@ -98,9 +98,8 @@
                 
             </div>
             <div class="section" id="usage">
-                <h1>ИНСТРУКЦИИ</h1>
-                <p>MASHA написана на чистом javascript и не требует для своей работы каких-либо дополнительных библиотек (кроме ierange, поставляющегося вместе с MASHA для поддержки Internet Explorer).
-                Чтобы подключить MASHA, необходимо внутри тега &lt;head&gt;&lt;/head&gt; добавить:</p>
+                <h1>USAGE</h1>
+                <p>MASHA is implemented in pure JavaScript and does’t need any third party libraries to work (except the ierange library, provided with MASHA to support Internet Explorer). To enable MASHA put the following code in the &lt;head&gt;&lt;/head&gt;:</p>
                 
                 <div class="code">
                     
@@ -127,12 +126,12 @@
                 </div>
 
 
-                <p>Для работы MASHA необходимо наличие в HTML двух элементов:</p>
+                <p>MASHA requires the following HTML elements on the page to work:</p>
                     <ol>
-                	    <li>Элемент, содержащий текст, который можно выделять (cм. настройку "selectable" ниже).</li>
-                	    <li>Кнопка, появляющаяся при выделении текста мышкой, при нажатии на которую подсвечивается текст и меняется адресная строка браузера (cм. настройку "marker" ниже).</li>
+                	    <li>element with text to select (see ‘selectable’ option below),</li>
+                	    <li>button appearing when some text is selected with mouse (see ‘marker’ option below).</li>
                 	</ol>
-                <p>При активации MASHA вы можете воспользоваться настройками по умолчанию или переопределить их по своему усмотрению:</p>
+                <p>You can use MASHA with default settings or pass configuration object to constructor:</p>
                 <div class="code">
             
                     <pre class="brush: js">
@@ -140,12 +139,12 @@
                     </pre>
             
                 </div>
-                <p>Настройки передаются в виде словаря и по умолчанию имеют следующие значения:</p>
+                <p>The default setting are:</p>
                 <div class="code">
                     
                     <pre class="brush: js">
                         {
-                          'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
+                          'regexp': new RegExp('[^\\s,;:–.!?&lt;&gt;…\\n\xA0\\*]+', 'ig'),
                           'selectable': 'selectable-content',
                           'marker': 'txtselect_marker',
                           'ignored': null,
@@ -156,28 +155,25 @@
                     </pre>
                     
                 </div>
-                <p>Здесь:</br>
-                <strong>'regexp'</strong> - регулярное выражение, соответствующее слову;
+                <p>Where</br>
+                <strong>'regexp'</strong> — regular expression to determine words (as minimal selectable item),
                 <br/>
-                <strong>'selectable'</strong> - html-элемент или id элемента, содержащего текст, который можно выделять;
+                <strong>'selectable'</strong> — HTML-element (or id of it) determining selectable area,
                 <br/>
-                <strong>'marker'</strong> -  html-элемент или id элемента с иконкой маркера, который появляется при выделении текста;
+                <strong>'marker'</strong> — HTML-element (or id of it) of marker icon appearing when some text is selected with mouse,
                 <br/>
-                <strong>'ignored'</strong> - функция-фильтр, позволяющая запретить выделение в элементах, находящихся внутри 'selectable', принимает в качестве аргумента html-элемент, возращает true/false, true означает запрет на выделение;
+                <strong>'ignored'</strong> — predicate function of HTML element argument returning true to forbid selection in some elements inside selectable area and false otherwise,
                 <br/>
-                <strong>'selectable'</strong>, принимает в качестве аргумента html-элемент, возращает true/false, true означает запрет 
-                на выделение.
+                <strong>'onMark'</strong> — callback function called when user click on marker,
                 <br/>
-                <strong>'onMark'</strong> - callback, вызывается при выделении текста;
+                <strong>'onUnmark'</strong> — callback function called when user deletes mark,
                 <br/>
-                <strong>'onUnmark'</strong> - callback, вызывается при снятии выделения;
-                <br/>
-                <strong>'onHashRead'</strong> - функция, вызывающаяся при загрузке страницы с метками, по умолчанию задана функция, проскроливающая страницу до первого выделенного фрагмента.
+                <strong>'onHashRead'</strong> — function called when page is loaded and marks are restored (by default scrolls to first marked fragment).
                 </p>
         </div>
         <div class="section">
-            <h1>Поддержка Internet Explorer </h1>
-            <p>Для поддержки Internet Explorer используется библиотека ierange, немного отличающаяся от <a href="#">оригинала</a>. Вы можете использовать поставляющуюся вместе с MASHA, либо добавить в конец корневой функции строку:</p>
+            <h1>Internet Explorer support</h1>
+            <p>The ierange library is used for support Internet Explorer. Necessary version is a bit different from <a href="http://code.google.com/p/ierange/">original</a>. You can use ierange distributed with MASHA or add the following line to ierange’s top-level function:</p>
             <div class="code">
                 <pre class="brush: js">
                     window.DOMRange = DOMRange;
@@ -185,7 +181,7 @@
             </div>
         </div>
         <div class="section" id="plugins">
-            <h1>ПЛАГИНЫ</h1>
+            <h1>PLUGINS</h1>
             <div class="pluginlist">
                 <a class="active" href="#">
                     <img src="img/plugin_wordpress.png" alt="WORDPRESS"/>
@@ -211,41 +207,41 @@
             <div style="clear:both;"></div>
         </div>
 		<div class="section" id="development">
-			<h1>РАЗРАБОТКА</h1>
+			<h1>DEVELOPMENT</h1>
             <a href="https://github.com/SmartTeleMax/MaSha"><img src="img/icon_github.png" style="margin-bottom: 15px;" alt="github"/></a>
-			<p>Разработка проекта <a href="https://github.com/SmartTeleMax/MaSha">ведётся на сервисе github</a>, где вы можете <A href="https://github.com/SmartTeleMax/MaSha/issues">сообщить об ошибке и предложить реализовать новые возможности</a> или <a href="http://help.github.com/fork-a-repo/">самостоятельно внести изменения и предложить их включить в основную ветку</a>.</p>
+			<p>Development of the project is <a href="https://github.com/SmartTeleMax/MaSha">hosted on github</a>. Use it to <a href="https://github.com/SmartTeleMax/MaSha/issues">submit bugs and feature requests</a> or <a href="http://help.github.com/fork-a-repo/">contribute by forking and submitting a pull request</a>.</p>
 		</div>
         <div class="section" id="authors">
-            <h1>АВТОРЫ</h1>
+            <h1>AUTHORS</h1>
             <div class="authorslist">
                 <div class="card geller">
-                    <h3>АРТЕМ ГЕЛЛЕР</h3>
+                    <h3>Artem Geller</h3>
                     <span class="slinks"><a href="http://twitter.com/#!/darkboutique">@darkboutique</a>, <a href="http://www.facebook.com/artemgeller">facebook</a>, <a href="https://plus.google.com/107566059773067039127/">gplus</a>, <a href="http://gellera.moikrug.ru/">moikrug</a></span>
                 </div>
                 <div class="card sensey">
-                    <h3>ДЕНИС ОТКИДАЧ</h3>
-                    <span class="slinks"><a href="http://twitter.com/#!/otkds">@otkds</a>, <a href="http://dotkidach.moikrug.ru/">moikrug</a> <!--a href="#">github</a--></span>
+                    <h3>Denis Otkidach</h3>
+                    <span class="slinks"><a href="http://twitter.com/#!/otkds">@otkds</a>, <a href="http://dotkidach.moikrug.ru/">LinkedIn</a> <!--a href="https://github.com/ods">github</a--></span>
                 </div>
                 <div style="clear:both;"></div>
                 <div class="card iam">
-                    <h3>СТАНИСЛАВ БОНБИН</h3>
+                    <h3>Stas Bonbin</h3>
                     <span class="slinks"><a href="http://twitter.com/#!/iamn0s">@iamn0s</a>, <a href="http://www.facebook.com/sbonbin">facebook</a>, <a href="https://plus.google.com/118210746303172876703">gplus</a>, <a href="http://n0s.moikrug.ru/">moikrug</a></span>
                 </div>
                 <div class="card harut">
-                    <h3>АРУТЮН ДАГЕСЯН</h3>
+                    <h3>Harut Dagesyan</h3>
                     <span class="slinks"><a href="http://twitter.com/#!/harutune">@harutune</a>, <a href="http://dagesyan.moikrug.ru/">moikrug</a>, <a href="https://github.com/harut">github</a></span>
                 </div>
                 <div style="clear:both;"></div>
             </div>
-            <p>Идею мы почерпнули из похожих начинаний NYTimes (проект <a href="http://www.nytimes.com/">Empasis</a>), где слишком сложная механика побудила нас сделать приложение, для работы с которым не требуется чтение документации.</p>
+            <p>This work was inspired by <a href="http://www.nytimes.com/">Empasis</a>)tool of New York Times. The goal was to make an utility that doesn’t require reading documentation to use.</p>
         </div>
         <div class="section" id="license">
-            <h1>ЛИЦЕНЗИЯ</h1>
-            <p>MASHA распространяется по лицензии MIT (группа лицензий для свободного программного обеспечения). Данная лицензия позволяет безвозмездно использовать, изменять, распространять утилиту почти без ограничений.</p>
+            <h1>LICENSE</h1>
+            <p>MASHA is released under the terms of MIT license, which means you can use, modify, redistribute it with almost no restrictions.</p>
         </div>
         
         <div class="section" id="download">
-            <h1>СКАЧАТЬ</h1>
+            <h1>DOWNLOAD</h1>
             <!--a href="#">
                 <span class="blue">MASHA.JS</span> (35Kb)<br/>
                 <span class="block">ver. 0.1</span>
@@ -260,8 +256,8 @@
 
 			<a href="id/Masha-ID.zip">
                 <span class="blue">MASHA_LOGO.ZIP</span> (238Kb)<br/>
-                <span class="block">логотип (eps, ai, psd)</span>
-                <span class="block">© Михаил Жашков</span>
+                <span class="block">logo (eps, ai, psd)</span>
+                <span class="block">© Mikhail Zhashkov</span>
             </a>
 
         </div>
