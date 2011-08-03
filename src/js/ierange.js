@@ -243,6 +243,18 @@ DOMRange.prototype = {
 			return frag;
 		})(new RangeIterator(range));
 	},
+	getTextNodes_: function(node){
+    for(var i in node.childNodes){
+      if(node.childNodes[i].nodeType == 3){
+        arNodes[c] = node.childNodes[i];
+        c++;
+      }else this.getTextNodes(node.childNodes[i]);
+    }
+  },
+  getTextNodes: function(){
+    
+    return this.getTextNodes_(this.startContainer);
+  },
 	deleteContents: function () {
 		// cache range and move anchor points
 		var range = this.cloneRange();
