@@ -21,13 +21,10 @@
     
     <link href='js/sh/styles/shCore.css' rel='stylesheet' type='text/css' />
     <link href='js/sh/styles/shThemeDefault.css' rel='stylesheet' type='text/css' />
-    <script src='js/sh/scripts/XRegExp.js' type='text/javascript'></script>
 
     <script src='js/sh/scripts/shCore.js' type='text/javascript'></script>
-    <script src='js/sh/scripts/shAutoloader.js' type='text/javascript'></script>
     <script src='js/sh/scripts/shBrushXml.js' type='text/javascript'></script>
     <script src='js/sh/scripts/shBrushJScript.js' type='text/javascript'></script>
-    <script src='js/sh/scripts/shBrushCss.js' type='text/javascript'></script>
 </head>
 <body>
 	<div id="upmsg-selectable" class="">
@@ -103,7 +100,7 @@
                 
                 <div class="code">
                     
-                    <pre class="brush: js">
+                    <pre class="brush: js; html-script: true">
                         &lt;!--[IF IE]> 
                             &lt;script type="text/javascript" src="ierange.js">&lt;/script> 
                         &lt;![ENDIF]-->
@@ -268,29 +265,39 @@
         
     </div>
     <div style="clear:both;"></div>
-	<div id="footer">
-		<div class="inner">
-            <img src="img/footerlogo.png" alt="" />
-            <div class="btn">
-				<img src="img/arrow.png" alt="" />
-				<div style="float:right; margin-left: 20px;">
-					<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fmashajs.com%2F&amp;send=false&amp;layout=standard&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:35px;" allowTransparency="true"></iframe>
-					<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-related="iamn0s:Masha developer">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-					<g:plusone size="medium" count="false"></g:plusone>
-					</div>
+		<div id="footer">
+			<div class="inner">
+	            <img src="img/footerlogo.png" alt="" />
+	            <div class="btn">
+					<img src="img/arrow.png" alt="" />
+					<div style="float:right; margin-left: 20px;">
+						<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fmashajs.com%2F&amp;send=false&amp;layout=standard&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:35px;" allowTransparency="true"></iframe>
+						<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-related="iamn0s:Masha developer">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+						<g:plusone size="medium" count="false"></g:plusone>
+						<div id="vk_like"></div>
+						</div>
+				</div>
 			</div>
 		</div>
-	</div>
-	<a href="#" id="txtselect_marker"></a>
-	<script type="text/javascript">
-         SyntaxHighlighter.all()
-    </script>
-	<script type="text/javascript" src="js/masha/js/message.js"></script>
-	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
-	  {lang: 'ru'}
-	</script>
-	
+		<a href="#" id="txtselect_marker"></a>
+		<script type="text/javascript">
+			SyntaxHighlighter.defaults['toolbar'] = false;
+	        SyntaxHighlighter.all()
+	    </script>
+		<script type="text/javascript" src="js/masha/js/message.js"></script>
+		<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+		  {lang: 'en'}
+		</script>
+		<!-- Put this script tag to the <head> of your page -->
+		<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?34"></script>
 
-    
-</body>
+		<script type="text/javascript">
+		  VK.init({apiId: 2430782, onlyWidgets: true});
+		</script>
+		<script type="text/javascript">
+		VK.Widgets.Like("vk_like", {type: "mini"});
+		</script>
+
+
+	</body>
 </html>
