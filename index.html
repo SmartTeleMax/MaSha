@@ -103,24 +103,24 @@
                 
                 <div class="code">
                     
-                    <pre class="brush: html; html-script: true">
+                    <pre class="brush: js; html-script: true">
                         &lt;!--[IF IE]> 
                             &lt;script type="text/javascript" src="ierange.js">&lt;/script> 
                         &lt;![ENDIF]-->
                         &lt;script type="text/javascript" src="masha.js"></script>
                         &lt;link rel="stylesheet" type="text/css" href="masha.css">
                         &lt;script type="text/javascript">
-                        if(window.addEventListener){     
-                            window.addEventListener('load', function(){
-                                // can be called by domready
-                                MaSha.instance = new MaSha();
-                            }, false);
-                        } else {
-                            window.attachEvent('onload', function(){
-                                // can be called by domready
-                                MaSha.instance = new MaSha();
-                            });
-                        }
+                        	if(window.addEventListener){     
+                            	window.addEventListener('load', function(){
+                                	// can be called by domready
+                                	MaSha.instance = new MaSha();
+                            	}, false);
+                        	} else {
+                            	window.attachEvent('onload', function(){
+                                	// can be called by domready
+                                	MaSha.instance = new MaSha();
+                            	});
+                        	}
                         &lt;/script>
                     </pre>
                 </div>
@@ -286,7 +286,8 @@
 	</div>
 	<a href="#" id="txtselect_marker"></a>
 	<script type="text/javascript">
-         SyntaxHighlighter.all()
+		SyntaxHighlighter.defaults['toolbar'] = false;
+        SyntaxHighlighter.all()
     </script>
 	<script type="text/javascript" src="js/masha/js/message.js"></script>
 	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">

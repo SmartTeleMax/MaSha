@@ -47,7 +47,7 @@
   font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important;
   font-weight: normal !important;
   font-style: normal !important;
-  font-size: .98em !important;
+  font-size: 1em !important;
   min-height: inherit !important;
   min-height: auto !important;
 }
@@ -57,7 +57,7 @@
   margin: 1em 0 1em 0 !important;
   position: relative !important;
   /*overflow: auto !important;*/
-  font-size: 1em !important;
+  font-size: 0.95em !important;
 }
 .syntaxhighlighter.source {
   overflow: hidden !important;
