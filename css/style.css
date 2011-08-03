@@ -345,7 +345,7 @@ b.s {
         }
     #footer .btn {
         float: right;
-        width: 330px;
+        width: 342px;
         position: absolute;
         right: 0;
         top: 18px;
@@ -390,9 +390,11 @@ b.s {
     
    
 #vk_like {
-    float:left;
     width: 46px !important;
     overflow:hidden;
+    display: inline-block;
+    position: relative;
+    bottom: 13px;    
     }
 
 #vkwidget1 {
