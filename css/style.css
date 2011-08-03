@@ -393,6 +393,6 @@ b.s {
     float:left;
 }
 
-.like_counter_wrap {
-    display:none !important;
+#vkwidget1 {
+    width: 50px !important;
 }
