@@ -392,3 +392,7 @@ b.s {
 #vk_like {
     float:left;
 }
+
+.like_counter_wrap {
+    display:none !important;
+}
