@@ -159,6 +159,8 @@ DOMRange.prototype = {
 	// private properties
 	_document: null,
 	
+	_textNodes: [],
+	
 	// private methods
 	_refreshProperties: function () {
 		// collapsed attribute
@@ -246,14 +248,15 @@ DOMRange.prototype = {
 	getTextNodes_: function(node){
     for(var i in node.childNodes){
       if(node.childNodes[i].nodeType == 3){
-        arNodes[c] = node.childNodes[i];
+        this._textNodes[c] = node.childNodes[i];
         c++;
       }else this.getTextNodes(node.childNodes[i]);
     }
   },
   getTextNodes: function(){
-    
-    return this.getTextNodes_(this.startContainer);
+    this._textNodes = [];
+    this.getTextNodes_(this.startContainer);
+    return this._textNodes;
   },
 	deleteContents: function () {
 		// cache range and move anchor points
