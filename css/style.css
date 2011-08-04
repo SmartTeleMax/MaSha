@@ -246,6 +246,9 @@ b.s {
         #wraper .authorslist div.harut {
             background: url('../img/facesprite.png') no-repeat -1px -189px;
             }
+        #wraper .authorslist div.kiril {
+            background: url("../img/facesprite.png") no-repeat scroll -1px -261px transparent;
+            }
             
             
             
