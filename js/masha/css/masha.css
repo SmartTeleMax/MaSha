@@ -12,6 +12,7 @@
     -moz-transition: opacity .4s, visibility .1s linear .4s;
     -o-transition: opacity .4s, visibility .1s linear .4s;
     transition: opacity .4s, visibility .1s linear .4s;
+    cursor:pointer;
     }
     #txtselect_marker.show {
         /* XXX make a common css fadeIn/fadeOut classes */
@@ -24,6 +25,13 @@
         }
 
 .user_selection, .user_selection_true {
+    background-color:#fdfaa2; 
+    -moz-box-shadow:0 0 3px 3px #fdfaa2; 
+    -webkit-box-shadow:0 0 3px 3px #fdfaa2; 
+    box-shadow:0 0 3px 3px #fdfaa2;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     background: #fdfaa2;
     padding: 2px 0;
     }
