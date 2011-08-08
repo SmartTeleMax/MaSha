@@ -1,3 +1,10 @@
+::selection {
+  background: #fdfaa2; /* Safari, Chrome, Opera */
+}
+::-moz-selection {
+  background: #fdfaa2; /* FireFox */
+}
+
 #txtselect_marker {
     display: block;
     visibility: hidden;
