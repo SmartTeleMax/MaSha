@@ -1,8 +1,8 @@
 ::selection {
-  background: #fdfaa2; /* Safari, Chrome, Opera */
+  background: #ffe600; /* Safari, Chrome, Opera */
 }
 ::-moz-selection {
-  background: #fdfaa2; /* FireFox */
+  background: #ffe600; /* FireFox */
 }
 
 #txtselect_marker {
