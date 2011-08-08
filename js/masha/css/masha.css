@@ -1,7 +1,7 @@
-::selection {
+#selectable-content::selection {
   background: #ffe600; /* Safari, Chrome, Opera */
 }
-::-moz-selection {
+#selectable-content::-moz-selection {
   background: #ffe600; /* FireFox */
 }
 
@@ -31,17 +31,39 @@
         opacity: 1;
         }
 
+
 .user_selection, .user_selection_true {
+    -webkit-animation-name: 'bganim';
+    -webkit-animation-duration: .5s;
+    animation-name: 'bganim';
+    animation-duration: .5s;
     background-color:#fdfaa2; 
-    -moz-box-shadow:0 0 3px 3px #fdfaa2; 
-    -webkit-box-shadow:0 0 3px 3px #fdfaa2; 
-    box-shadow:0 0 3px 3px #fdfaa2;
+    -moz-box-shadow:0 0 2px 2px #fdfaa2; 
+    -webkit-box-shadow:0 0 2px 2px #fdfaa2; 
+    box-shadow:0 0 2px 2px #fdfaa2;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    background: #fdfaa2;
-    padding: 2px 0;
+    padding: 1px 0;
     }
+    
+    @-webkit-keyframes 'bganim' {
+        from {
+            background-color: #ffe600;
+        }
+        to {
+            background-color: #fdfaa2;
+        }
+    }
+    @keyframes 'bganim' {
+        from {
+            background-color: #ffe600;
+        }
+        to {
+            background-color: #fdfaa2;
+        }	
+    }
+    
 .user_selection a.txtsel_close, .user_selection_true a.txtsel_close {
     display:none;
     }
