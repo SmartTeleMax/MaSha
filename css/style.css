@@ -408,7 +408,9 @@ b.s {
     bottom: 10px;
     display: inline-block;
     height: 25px;
-    overflow: hidden;
     position: relative;
     width: 100px;
-}
+    }
+    .facebook_wrapper iframe {
+        width: 150px !important;
+    }
