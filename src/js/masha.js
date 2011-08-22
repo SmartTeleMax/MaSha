@@ -889,14 +889,15 @@ if (window.jQuery){
 
 // Shortcuts
 function cleanWhitespace(elem) {
+    // Important! Commented since problems with sticking tags (see test cases)
     // XXX Is this needed? According n0s, it's done for fix problems with whitespace nodes in IE
     // XXX Additionaly this will remove nodes with &nbsp; in browsers
-    var node, iter = elementIterator(elem);
+    /*var node, iter = elementIterator(elem);
     while (node = iter()){
         if (node.nodeType == 3 && !/\S/.test(node.nodeValue)) {
             node.parentNode.removeChild(node);
         }
-    }
+    }*/
 }
 
 function extend(obj){

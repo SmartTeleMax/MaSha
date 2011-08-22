@@ -424,6 +424,13 @@
             var html = '<p>Some text of few short words.</p>';
             var sel = new_selection(html, '1:3,1:10');
             assert($('.num0').length == 0, $('.num0').length);
+        },
+        regressionStickingBlocks: function(){
+
+            var html = '<p>word <a href="#">some text with&nbsp;nobr</a> <nobr>nobr-tag</nobr></p>'
+            var sel = new_selection(html, '1:1,1:6');
+
+            assertSelectionEqual('word some text with\xA0nobr nobr-tag');
         }
         // XXX add tests for nbsp for IE
         // XXX selection removing tests!
