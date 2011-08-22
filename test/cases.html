@@ -438,23 +438,23 @@
     }
     $(function(){
         if (!window.console){
-            var cons = $('<div></div>').appendTo(document.body);
+            var cons = $('<pre></pre>').appendTo(document.body);
             window.console = {
                 log: function(){
                   var str = $('<div></div>').appendTo(cons);
                   var html = '';
                   for (var i=0; i<arguments.length;i++){
-                    html += (''+arguments[i]).replace(/\n/g, '<br/>') + ' ';
+                    html += (''+arguments[i])/*.replace(/\n/g, '<br/>')*/ + ' ';
                   }
-                  str.html(html)
+                  str.text(html)
                 },
                 error: function(){
                   var str = $('<div style="color:red"></div>').appendTo(cons);
                   var html = '';
                   for (var i=0; i<arguments.length;i++){
-                    html += (''+arguments[i]).replace(/\n/g, '<br/>') + ' ';
+                    html += (''+arguments[i])/*.replace(/\n/g, '<br/>')*/ + ' ';
                   }
-                  str.html(html)
+                  str.text(html)
                 }
             }
         }
