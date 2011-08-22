@@ -22,7 +22,7 @@ var MaSha = function(options) {
 }
 
 MaSha.default_options = {
-    'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
+    'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
     'selectable': 'selectable-content',
     'marker': 'txtselect_marker',
     'location': window.location,
@@ -463,7 +463,7 @@ MaSha.prototype = {
 
     checkBrackets: function(range){
         this._checkBrackets(range, '(', ')', /\(|\)/g, /\(x*\)/g);
-        this._checkBrackets(range, '«', '»', /\«|\»/g, /«x*»/g);
+        this._checkBrackets(range, "\u00ab", "\u00bb", /\\u00ab|\\u00bb/g, /\u00abx*\u00bb/g);
         // XXX Double brackets?
     },
     _checkBrackets: function(range, ob, cb, match_reg, repl_reg){
