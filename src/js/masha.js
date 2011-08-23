@@ -82,8 +82,10 @@ MaSha.prototype = {
 
             var coord = getPageXY(e); // outside timeout function because of IE
             window.setTimeout(function(){
+                var regexp = new RegExp(this_.options.regexp, 'g');
                 var text = window.getSelection().toString();
-                if (text == '' || !this_.regexp.test(text)) return;
+
+                if (text == '' || !regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
 
                 marker.style.top = coord.y - 33 + 'px';
@@ -673,12 +675,10 @@ MaSha.prototype = {
             var has_blocks = false;
             var block_started = false;
             
-	  //console.log(children)
             var len;
             for (var idx=0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
-	      //console.log(child, nodeType)
                 if (nodeType==3 && !child.nodeValue.match(this_.regexp)) {
                     // ..if it is a textnode that is logically empty, ignore it
                     continue;
