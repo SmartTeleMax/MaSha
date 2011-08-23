@@ -431,7 +431,125 @@
             var sel = new_selection(html, '1:1,1:6');
 
             assertSelectionEqual('word some text with\xA0nobr nobr-tag');
+        },
+        regressionTripleClickNestedChrome: function(){
+            if (! $.browser.webkit && ! $.browser.safari){
+                console.warn('To see correct results, run this test under webkit')
+            }
+            var html = '<p><span>a small </span><span>paragraph</span></p><p>and one more</p>';
+            var sel = new_selection(html);
+        
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0].childNodes[0], 0);
+            range.setEnd(div.childNodes[1], 0);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('a small paragraph');
+            
+        },
+        regressionTripleClickNestedFF: function(){
+            if (! $.browser.mozilla){
+                console.warn('To see correct results, run this test under FireFox')
+            }
+            var html = '<p><span>a small </span><span>paragraph</span></p><p>and one more</p>';
+            var sel = new_selection(html);
+        
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0], 0);
+            range.setEnd(div.childNodes[0], 2);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('a small paragraph');
+        },
+        regressionTripleClickBrChrome: function(){
+            if (! $.browser.webkit && !$.browser.safari){
+                console.warn('To see correct results, run this test under webkit')
+            }
+            var html = '<p>a<br/>very small<br/>paragraph</p>';
+            var sel = new_selection(html);
+        
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0].childNodes[4], 0);
+            range.setEnd(div.childNodes[0], 6);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('very small');
+            
+        },
+        regressionTripleClickBrFF: function(){
+            if (! $.browser.mozilla){
+                console.warn('To see correct results, run this test under FireFox')
+            }
+            var html = '<p>a<br/>very small<br/>paragraph</p>';
+            var sel = new_selection(html);
+        
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0], 3);
+            range.setEnd(div.childNodes[0], 5);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('very small');
+        },
+        regressionTripleClickLastBrChrome: function(){
+            if (! $.browser.webkit && ! $.browser.safari){
+                console.warn('To see correct results, run this test under webkit')
+            }
+            var html = '<p>a<br/>very small<br/>paragraph</p>';
+            var sel = new_selection(html);
+        
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0].childNodes[7], 0);
+            range.setEnd(div.childNodes[0], 8);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('paragraph');
+            
+        },
+        regressionTripleClickLastBrFF: function(){
+            if (! $.browser.mozilla){
+                console.warn('To see correct results, run this test under FireFox')
+            }
+            var html = '<p>a<br/>very small<br/>paragraph</p>';
+            var sel = new_selection(html);
+        
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0], 6);
+            range.setEnd(div.childNodes[0], 8);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('paragraph');
         }
+        // XXX fix tests for IE!!!
         // XXX add tests for nbsp for IE
         // XXX selection removing tests!
         // XXX range_is_selectable tests!

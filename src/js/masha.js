@@ -67,7 +67,7 @@ MaSha.prototype = {
 
         if (!this.selectable) return;
     
-        cleanWhitespace(this.selectable);
+        //cleanWhitespace(this.selectable);
     
         // XXX translate comments
         // enumerate block elements containing a text
@@ -405,18 +405,22 @@ MaSha.prototype = {
             }
             return offset;
         }
+        if (container.nodeType == 1 && offset > 0){
+            // Triple click handling for elements like <br>
+            if(offset < container.childNodes.length){
+                container = container.childNodes[offset];
+                offset = 0;
+            } else {
+                container_txtnodes = textNodes(container); // XXX lastTextNode
+                container = container_txtnodes[container_txtnodes.length-1];
+                offset = container.data.length;
+            }
+        }
 
         if (position == 'start') {
             
             if (container.nodeType == 1 && trim(textContent(container)) != '') {
-	        if(range.startContainer.nodeType == 1) {
-	            container = range.startContainer.childNodes[range.startOffset];
-	            while (container.nodeType != 3) {
-		        container = container.nextSibling;
-	            }
-		} else {
-                    container = firstTextNode(container);
-		}
+                container = firstTextNode(container);
                 offset = 0;
             }
             if (container.nodeType != 3 ||
@@ -435,13 +439,10 @@ MaSha.prototype = {
         
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
-	        container = range.endContainer.childNodes[range.endOffset-1];
-	        //hack to compensate difference between chrome and firefox
-	        while (container.nodeType != 3) {
-		    container = container.previousSibling;
-	        }
-	        //container_txtnodes = textNodes(container); // XXX lastTextNode
-                //container = container_txtnodes[container_txtnodes.length-1];
+                container = container.childNodes[range.endOffset-1];
+
+                container_txtnodes = textNodes(container); // XXX lastTextNode
+                container = container_txtnodes[container_txtnodes.length-1];
 
                 offset = container.data.length;
             }
@@ -888,7 +889,7 @@ if (window.jQuery){
 }
 
 // Shortcuts
-function cleanWhitespace(elem) {
+//function cleanWhitespace(elem) {
     // Important! Commented since problems with sticking tags (see test cases)
     // XXX Is this needed? According n0s, it's done for fix problems with whitespace nodes in IE
     // XXX Additionaly this will remove nodes with &nbsp; in browsers
@@ -898,7 +899,7 @@ function cleanWhitespace(elem) {
             node.parentNode.removeChild(node);
         }
     }*/
-}
+//}
 
 function extend(obj){
     for(var i=1; i<arguments.length; i++){
