@@ -21,14 +21,15 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "02.09.2011-14:46:07"; // filled automatically by hook
+MaSha.version = "02.09.2011-16:42:04"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
     'selectable': 'selectable-content',
     'marker': 'txtselect_marker',
-    'location': window.location,
     'ignored': null,
+    'select_message': null,
+    'location': window.location,
     'onMark': null,
     'onUnmark': null,
     'onHashRead': function(){
@@ -78,6 +79,9 @@ MaSha.prototype = {
 
         if (!this.selectable) return;
     
+        if (this.options.select_message){
+            this.init_message();
+        }
         //cleanWhitespace(this.selectable);
     
         // XXX translate comments
@@ -119,6 +123,9 @@ MaSha.prototype = {
 
             if (this_.options.onMark){
                 this_.options.onMark.call(this_);
+            }
+            if (this_.options.select_message){
+                this_._show_message();
             }
         });
     
@@ -802,8 +809,66 @@ MaSha.prototype = {
                     reg.exec(last_selection.className)[1]);
         }
         return true;
+    },
+
+    // message.js
+    init_message: function() {
+        var this_ = this;
+
+        this.msg = (typeof this.options.select_message == 'string'?
+                    document.getElementById(this.options.select_message):
+                    this.options.select_message);
+        this.close_button = this.get_close_button();
+        this.msg_autoclose = null;
+
+        addEvent(this.close_button, 'click', function(e){
+            preventDefault(e);
+            this_.hide_message();
+            this_.save_message_closed();
+            clearTimeout(this_.msg_autoclose);
+        });
+    },
+
+    get_close_button: function(){
+        // XXX
+        return this.msg.getElementsByTagName('a')[0];
+    },
+    get_message_closed: function(){
+        if (window.localStorage){
+            return !!localStorage.masha_warning;
+        } else {
+            return !!document.cookie.match(/(?:^|;)\s*masha-warning=/)
+        }
+    },
+    save_message_closed: function(){
+        if (window.localStorage){
+            localStorage.masha_warning = 'true';
+        } else {
+            // XXX need to be tested under IE
+            if (!this.get_closed()){
+                document.cookie += '; masha-warning=true';
+            }
+        }
+    },
+    _show_message: function(){
+        var this_ = this;
+        if (this.get_message_closed()) return;
+    
+        this.show_message();
+    
+        clearTimeout(this.msg_autoclose);
+        this.msg_autoclose = setTimeout(function(){
+            this_.hide_message();
+        }, 10000);
+    },
+    show_message: function(){
+        addClass(this.msg, 'show');
+    },
+    hide_message: function(){
+        removeClass(this.msg, 'show');
     }
-};
+}
+
 
     // support browsers and IE, using ierange with Range exposed
     // XXX why this doesn't work without Range exposed
@@ -886,6 +951,7 @@ MaSha.prototype = {
             span.appendChild(textNodes[i]);
         }
     }
+
 
 
 // exposing

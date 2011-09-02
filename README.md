@@ -40,10 +40,11 @@ $(document).ready(function() {
 </script>
 ```
 
-MASHA uses two elements on the page:
+MASHA uses three elements on the page:
 
 * Element that contains selectable text (see also _selectable_ option below), **required**.
 * Button that floats over selected text that acts as selection url getter (see also _marker_ option).
+* Popup that floats when a text is selected and tells user that he can now share a link (see also _select_message_ option).
 
 All options are defined by default, but you can override any of them on Masha object instance creation.
 
@@ -59,6 +60,8 @@ new MaSha({ option: 'value' })
   'selectable': 'selectable-content',
   'marker': 'txtselect_marker',
   'ignored': null,
+  'select_message': null,
+  'location': window.location,
   'onMark': null,
   'onUnmark': null,
   'onHashRead': function(){ &hellip; }
@@ -70,7 +73,9 @@ where
 * 'regexp' — regular expression that describes word.
 * 'selectable' — HTMLElement or its id, that contains selectable text.
 * 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.
-* 'ignored' - Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
+* 'select_message' — HTMLElement or its id with popup that floats when text is selected. If no value provided, the popup is not shown.
+* 'ignored' — Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
+* 'location' — an object used for get url hash from and write it to. The only significant property is location.hash. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
 * 'onMark' — Callback function that fired on text selection.
 * 'onUnmark' — Callback function that fired on text deselection.
 * 'onHashRead' — Function that called on loading of the page with selected fragments. Function that set by default will scroll page to the first selected fragment.

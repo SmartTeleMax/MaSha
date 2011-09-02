@@ -31,12 +31,12 @@
     if (window.addEventListener){
         window.addEventListener('load', function(){
             // can be called by domready
-            MaSha.instance = new MaSha();
+            MaSha.instance = new MaSha({'select_message': 'upmsg-selectable'});
         }, false);
     } else {
         window.attachEvent('onload', function(){
             // can be called by domready
-            MaSha.instance = new MaSha();
+            MaSha.instance = new MaSha({'select_message': 'upmsg-selectable'});
         });
     }
     </script>
@@ -63,6 +63,13 @@
 </span>
 </span>
 </p>
+</div>
+<div id="upmsg-selectable">
+    <div class="upmsg-selectable-inner">
+        <img src="../src/img/textselect/upmsg_arrow.png" alt="">
+        <p>Вы можете отметить интересные вам фрагменты текста, которые будут доступны по уникальной ссылке в адресной строке браузера.</p>
+        <a href="#" class="upmsg_closebtn"></a>
+    </div>
 </div>
 </body>
 </html>
