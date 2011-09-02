@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "02.09.2011-12:10:41"; // filled automatically by hook
+MaSha.version = "02.09.2011-13:28:09"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -68,6 +68,8 @@ MaSha.prototype = {
         var this_ = this;
 
         if (!this.selectable) return;
+
+        this.is_ignored = this.construct_ignored(this.options.ignored);
     
         //cleanWhitespace(this.selectable);
     
@@ -752,8 +754,38 @@ MaSha.prototype = {
         }
     },
 
-    is_ignored: function(node){
-        return this.options.ignored && this.options.ignored(node);
+    construct_ignored: function(selector){
+        if (typeof selector == 'function'){
+            return selector;
+        } else if (typeof selector == 'string'){
+            // supports simple selectors by class, by tag and by id
+            var by_id = [], by_class = [], by_tag = [];
+            var selectors = selector.split(',');
+            for (var i=0; i<selectors.length; i++) {
+              var sel = trim(selectors[i]);
+              if (sel.charAt(0) == '#') { 
+                by_id.push(sel.split('#')[1]);
+              } else if (sel.charAt(0) == '.') { 
+                by_class.push(sel.split('.')[1]); 
+              } else {
+                by_tag.push(sel);
+              }
+            }
+
+            return function(node){
+                for (var i=by_id.length;i--;){
+                    if(node.id == by_id[i]) { return true; }
+                }
+                for (var i=by_class.length;i--;){
+                    if(hasClass(node, by_class[i]) { return true; }
+                }
+                for (var i=by_tag.length;i--;){
+                    if(node.tagName == by_tag[i].toUpperCase()) { return true; }
+                }
+            }
+        } else {
+            return function(){ return false; }
+        }
     },
 
     range_is_selectable: function(){
