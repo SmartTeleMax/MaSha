@@ -21,6 +21,8 @@ var MaSha = function(options) {
     this.init();
 }
 
+MaSha.version = "2869d575c79a0e920f168c41c22c4a417af4e457";
+
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
     'selectable': 'selectable-content',
