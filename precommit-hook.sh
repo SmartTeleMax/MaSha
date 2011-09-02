@@ -9,6 +9,7 @@ if [ "$(git st --porcelain src/js/masha.js | cut -b1)" == "M" ]; then
     git add src/js/masha.js
 
     # packing js
-    curl --data-urlencode js_code@"src/js/masha.js" --data-urlencode compilation_level="SIMPLE_OPTIMIZATIONS" --data-urlencode output_format="text" --data-urlencode output_info="compiled_code"  http://closure-compiler.appspot.com/compile > src/js/masha.min.js
+    echo "packing masha.js..."
+    curl -s --data-urlencode js_code@"src/js/masha.js" --data-urlencode compilation_level="SIMPLE_OPTIMIZATIONS" --data-urlencode output_format="text" --data-urlencode output_info="compiled_code"  http://closure-compiler.appspot.com/compile > src/js/masha.min.js
     git add src/js/masha.min.js
 fi
