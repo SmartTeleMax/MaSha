@@ -85,7 +85,3 @@ If you use mainstream ierange library instead of bundled one please add this lin
 window.DOMRange = DOMRange;
 ```
 
-## See also
-
-[![President of Russia](http://eng.news.kremlin.ru/static/img/eng/logo/rect.gif "President of Russia")](http://eng.kremlin.ru/ "President of Russia")
-
