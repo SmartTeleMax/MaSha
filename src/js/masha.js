@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "02.09.2011-12:10:41"; // filled automatically by hook
+MaSha.version = "02.09.2011-14:24:26"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -57,9 +57,18 @@ MaSha.prototype = {
         this.selectable = (typeof this.options.selectable == 'string'?
                              document.getElementById(this.options.selectable):
                              this.options.selectable);
-        var marker = (typeof this.options.marker == 'string'?
-                      document.getElementById(this.options.marker):
-                      this.options.marker);
+        if (typeof this.options.marker == 'string'){
+            this.marker = document.getElementById(this.options.marker);
+            if (this.marker == null){
+                this.marker = document.createElement('a');
+                this.marker.setAttribute('id', this.options.marker);
+                this.marker.setAttribute('href', '#');
+                document.body.appendChild(this.marker);
+            }
+        } else {
+            this.marker = this.options.marker;
+        }
+
         if (typeof this.options.regexp != 'string'){
             throw 'regexp is set as string'
         }
@@ -75,7 +84,7 @@ MaSha.prototype = {
         // enumerate block elements containing a text
         this.enumerateElements();
     
-        addEvent(document, 'mouseup', function(e) {
+        addEvent(this.selectable, 'mouseup', function(e) {
             /*
              * Show the marker if any text selected
              */
@@ -90,17 +99,17 @@ MaSha.prototype = {
                 if (text == '' || !regexp.test(text)) return;
                 if (!this_.range_is_selectable()) return;
 
-                marker.style.top = coord.y - 33 + 'px';
-                marker.style.left = coord.x + 5 + 'px';
-                addClass(marker, 'show');
+                this_.marker.style.top = coord.y - 33 + 'px';
+                this_.marker.style.left = coord.x + 5 + 'px';
+                addClass(this_.marker, 'show');
             }, 1);
         });
     
     
     
-        addEvent(marker, 'click', function(e){
+        addEvent(this.marker, 'click', function(e){
             preventDefault(e);
-            removeClass(marker, 'show');
+            removeClass(this_.marker, 'show');
             if (!this_.range_is_selectable()){
                 return;
             }
@@ -115,8 +124,8 @@ MaSha.prototype = {
     
         addEvent(document, 'click', function(e){
             var target = e.target || e.srcElement;
-            if (target != marker) {
-                removeClass(marker, 'show');
+            if (target != this_.marker) {
+                removeClass(this_.marker, 'show');
             }
         });
     

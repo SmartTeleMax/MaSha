@@ -5,6 +5,7 @@
     height: 48px;
     background:url(../img/textselect/marker.png) -0px -0px no-repeat;
     position: absolute;
+    cursor: pointer;
     z-index: 1200; /* more than assignment_wrapper_ok */
     opacity: 0;
     -webkit-transition: opacity .4s, visibility .1s linear .4s;

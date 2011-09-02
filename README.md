@@ -40,9 +40,9 @@ $(document).ready(function() {
 </script>
 ```
 
-MASHA requires two elements on the page:
+MASHA uses two elements on the page:
 
-* Element that contains selectable text (see also _selectable_ option below).
+* Element that contains selectable text (see also _selectable_ option below), **required**.
 * Button that floats over selected text that acts as selection url getter (see also _marker_ option).
 
 All options are defined by default, but you can override any of them on Masha object instance creation.
@@ -69,7 +69,7 @@ where
 
 * 'regexp' — regular expression that describes word.
 * 'selectable' — HTMLElement or its id, that contains selectable text.
-* 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection.
+* 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.
 * 'ignored' - Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
 * 'onMark' — Callback function that fired on text selection.
 * 'onUnmark' — Callback function that fired on text deselection.
@@ -77,7 +77,7 @@ where
 
 ## Internet Explorer support
 
-MASHA uses custom bundled variant of **ierange** script to support Internet Explorer.
+MASHA uses custom bundled variant of [ierange](http://code.google.com/p/ierange/) script to support Internet Explorer.
 
 If you use mainstream ierange library instead of bundled one please add this line to end of root function:
 
