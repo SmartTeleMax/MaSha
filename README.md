@@ -21,6 +21,7 @@ To enable MASHA on your page you need to add inside &lt;head/&gt; tag that code:
 <script type="text/javascript" src="masha.js"></script>
 <link rel="stylesheet" type="text/css" href="masha.css">
 <script type="text/javascript">
+// if jQuery is not available
 if (window.addEventListener) {
   window.addEventListener('load', function() {
     // can be called by domready
@@ -32,6 +33,10 @@ if (window.addEventListener) {
     MaSha.instance = new MaSha();
   });
 }
+// if jQuery available:
+$(document).ready(function() {
+  MaSha.instance = new MaSha();
+});
 </script>
 ```
 
