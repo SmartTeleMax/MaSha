@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "02.09.2011-14:24:26"; // filled automatically by hook
+MaSha.version = "02.09.2011-14:46:07"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
