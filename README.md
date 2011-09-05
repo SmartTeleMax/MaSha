@@ -64,7 +64,7 @@ new MaSha({ option: 'value' })
   'location': window.location,
   'onMark': null,
   'onUnmark': null,
-  'onHashRead': function(){ &hellip; }
+  'onHashRead': function(){ … }
 }
 ```
 
