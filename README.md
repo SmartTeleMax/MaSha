@@ -74,7 +74,9 @@ where
 * 'selectable' — HTMLElement or its id, that contains selectable text.
 * 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.
 * 'select_message' — HTMLElement or its id with popup that floats when text is selected. If no value provided, the popup is not shown.
-* 'ignored' — Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
+* 'ignored' — Either function or string.
+  * Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
+  * Comma-separated tag names, classes or ids of ignored elements. For example: *'ul, .ignored-cls, #ignored-id'*.
 * 'location' — an object used for get url hash from and write it to. The only significant property is location.hash. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
 * 'onMark' — Callback function that fired on text selection.
 * 'onUnmark' — Callback function that fired on text deselection.
