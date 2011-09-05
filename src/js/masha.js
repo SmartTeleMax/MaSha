@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "02.09.2011-16:42:04"; // filled automatically by hook
+MaSha.version = "05.09.2011-14:11:11"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -78,6 +78,8 @@ MaSha.prototype = {
         var this_ = this;
 
         if (!this.selectable) return;
+
+        this.is_ignored = this.construct_ignored(this.options.ignored);
     
         if (this.options.select_message){
             this.init_message();
@@ -768,48 +770,38 @@ MaSha.prototype = {
         }
     },
 
-    is_ignored: function(node){
-      if (this.options.ignored) {
-	if (this.options.ignored instanceof Function) {
-	  return this.options.ignored(node);
-	}
+    construct_ignored: function(selector){
+        if (typeof selector == 'function'){
+            return selector;
+        } else if (typeof selector == 'string'){
+            // supports simple selectors by class, by tag and by id
+            var by_id = [], by_class = [], by_tag = [];
+            var selectors = selector.split(',');
+            for (var i=0; i<selectors.length; i++) {
+              var sel = trim(selectors[i]);
+              if (sel.charAt(0) == '#') { 
+                by_id.push(sel.substr(1));
+              } else if (sel.charAt(0) == '.') { 
+                by_class.push(sel.substr(1)); 
+              } else {
+                by_tag.push(sel);
+              }
+            }
 
-	var ignore = this.options.ignored;
-	if ('string' == typeof ignore) {
-	  var ids = this.options.ignored.split(',');
-	  ignore = [];
-	  var count = ids.length;
-	  for (var i=0; i<count; i++){
-	    var id = ids[i].replace(/^\s+|\s+$/g, '');
-	    if (id) ignore.push(id);
-	  }
-	} else {
-	  ignore = (ignore instanceof Array) ? ignore : [ignore];
-	}
-	
-	if (ignore instanceof Array) {
-	  var count = ignore.length;
-	  var result = false; 
-	  for (var i =0; i<count; i++){
-	    
-	    if('string' == typeof ignore[i]) {
-	      result = (document.getElementById(ignore[i]) == node);
-	    } else if (ignore[i] instanceof Array) {
-	      var l = ignore[i].length;
-	      for (var j=0; j<l; j++) {
-		result = (ignore[i][j] == node);
-		if (result) return result
-	      }
-	    } else {
-	      result = (node == ignore[i])
-	    }
-	    if (result) return result
-	  }
-	} else {
-	  throw 'ignored option must be a function or one of following - comma separated string of ids, DOM element or array. Array may comtain id-strings, DOM elements or arrays of DOM elements.'
-	}
-      }
-      return false
+            return function(node){
+                for (var i=by_id.length;i--;){
+                    if(node.id == by_id[i]) { return true; }
+                }
+                for (var i=by_class.length;i--;){
+                    if(hasClass(node, by_class[i])) { return true; }
+                }
+                for (var i=by_tag.length;i--;){
+                    if(node.tagName == by_tag[i].toUpperCase()) { return true; }
+                }
+            }
+        } else {
+            return function(){ return false; }
+        }
     },
 
     range_is_selectable: function(){

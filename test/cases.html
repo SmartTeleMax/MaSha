@@ -98,12 +98,14 @@
 
         return selection;
     }
-    function new_selection(html, hash){
+    function new_selection(html, hash, options){
+        options = options || {};
         hash = hash?'#sel='+hash:'';
         $('#selectable-content, #txtselect_marker').remove();
         $(document.body).append('<div id="selectable-content">' + html + '</div>');
         $(document.body).append('<button id="txtselect_marker">Mark!</button>');
-        return new MaSha({'location': {'hash': hash}});
+        options.location = {'hash': hash};
+        return new MaSha(options);
     }
     function assertHTMLEqual(aim, silent){
         $('.closewrap, .selection_index').remove();
@@ -401,6 +403,25 @@
 
             assertHashEqual(sel, '1:1,1:2');
         },
+
+        is_ignored_string: function(){
+            var html = '<div class="b a"><b>Some</b> <em id="ignore">strange</em> <span class="aa">text.</span></div>';
+            var sel = new_selection(html, '', {ignored: '.a, #ignore, b'});
+
+            this.assert(!sel.is_ignored($(sel.selectable).find('span')[0]), 'not ignored', true);
+            this.assert(sel.is_ignored($(sel.selectable).find('.a')[0]), 'className', true);
+            this.assert(sel.is_ignored($(sel.selectable).find('b')[0]), 'tagName', true);
+            this.assert(sel.is_ignored($(sel.selectable).find('em')[0]), 'id');
+        },
+
+        is_ignored_function: function(){
+            var html = '<div>Some <em id="ignore">strange</em> <span class="aa">text.</span></div>';
+            var sel = new_selection(html, '', {ignored: function(node){ return $(node).is('em'); }});
+
+            this.assert(!sel.is_ignored($(sel.selectable).find('span')[0]), 'not ignored', true);
+            this.assert(sel.is_ignored($(sel.selectable).find('em')[0]), 'ignored');
+        },
+
 
         regressionCommaOutsideTag: function(){
             var html = '<p><b><a>Ivanov</a>:</b> some text</p>';
