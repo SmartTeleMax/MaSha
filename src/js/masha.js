@@ -769,7 +769,47 @@ MaSha.prototype = {
     },
 
     is_ignored: function(node){
-        return this.options.ignored && this.options.ignored(node);
+      if (this.options.ignored) {
+	if (this.options.ignored instanceof Function) {
+	  return this.options.ignored(node);
+	}
+
+	var ignore = this.options.ignored;
+	if ('string' == typeof ignore) {
+	  var ids = this.options.ignored.split(',');
+	  ignore = [];
+	  var count = ids.length;
+	  for (var i=0; i<count; i++){
+	    var id = ids[i].replace(/^\s+|\s+$/g, '');
+	    if (id) ignore.push(id);
+	  }
+	} else {
+	  ignore = (ignore instanceof Array) ? ignore : [ignore];
+	}
+	
+	if (ignore instanceof Array) {
+	  var count = ignore.length;
+	  var result = false; 
+	  for (var i =0; i<count; i++){
+	    
+	    if('string' == typeof ignore[i]) {
+	      result = (document.getElementById(ignore[i]) == node);
+	    } else if (ignore[i] instanceof Array) {
+	      var l = ignore[i].length;
+	      for (var j=0; j<l; j++) {
+		result = (ignore[i][j] == node);
+		if (result) return result
+	      }
+	    } else {
+	      result = (node == ignore[i])
+	    }
+	    if (result) return result
+	  }
+	} else {
+	  throw 'ignored option must be a function or one of following - comma separated string of ids, DOM element or array. Array may comtain id-strings, DOM elements or arrays of DOM elements.'
+	}
+      }
+      return false
     },
 
     range_is_selectable: function(){
