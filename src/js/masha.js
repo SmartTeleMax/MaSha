@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "02.09.2011-13:28:09"; // filled automatically by hook
+MaSha.version = "05.09.2011-14:07:26"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -764,9 +764,9 @@ MaSha.prototype = {
             for (var i=0; i<selectors.length; i++) {
               var sel = trim(selectors[i]);
               if (sel.charAt(0) == '#') { 
-                by_id.push(sel.split('#')[1]);
+                by_id.push(sel.substr(1));
               } else if (sel.charAt(0) == '.') { 
-                by_class.push(sel.split('.')[1]); 
+                by_class.push(sel.substr(1)); 
               } else {
                 by_tag.push(sel);
               }
@@ -777,7 +777,7 @@ MaSha.prototype = {
                     if(node.id == by_id[i]) { return true; }
                 }
                 for (var i=by_class.length;i--;){
-                    if(hasClass(node, by_class[i]) { return true; }
+                    if(hasClass(node, by_class[i])) { return true; }
                 }
                 for (var i=by_tag.length;i--;){
                     if(node.tagName == by_tag[i].toUpperCase()) { return true; }
