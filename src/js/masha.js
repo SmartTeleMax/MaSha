@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "09.09.2011-12:07:42"; // filled automatically by hook
+MaSha.version = "09.09.2011-12:26:58"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -114,20 +114,29 @@ MaSha.prototype = {
             addClass(this_.marker, 'show');
         }
 
-        var touch_timeout;
         function touch(e){
             var touch = e.touches.item(0)
             marker_coord = {x: touch.pageX, y: touch.pageY}
-
-            if(touch_timeout){
-                window.clearTimeout(touch_timeout);
-            }
-            touch_timeout = window.setTimeout(show_marker, 200);
         }
+    
         addEvent(this.selectable, 'touchmove', touch);
         addEvent(this.selectable, 'touchstart', touch);
+        addEvent(this.selectable, 'touchend', function(){
+            window.setTimeout(function(){
+                var s = window.getSelection();
+                if(s.rangeCount){
+                    var rects = s.getRangeAt(0).getClientRects();
+                    var rect = rects[rects.length-1]
+                    if(rect){
+                    marker_coord = {x: rect.left + rect.width + document.body.scrollLeft,
+                                    y: rect.top + rect.height/2 + document.body.scrollTop}
+                    }
+                }
+                show_marker();
+            }, 1);
+        });
 
-        function markerclick(e){
+        function marker_click(e){
             preventDefault(e);
             stopEvent(e);
             removeClass(this_.marker, 'show');
@@ -146,8 +155,8 @@ MaSha.prototype = {
             }
         }
     
-        addEvent(this.marker, 'click', markerclick);
-        addEvent(this.marker, 'touchstart', markerclick);
+        addEvent(this.marker, 'click', marker_click);
+        addEvent(this.marker, 'touchend', marker_click);
 
         addEvent(document, 'click', function(e){
             var target = e.target || e.srcElement;
