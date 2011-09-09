@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "05.09.2011-14:11:11"; // filled automatically by hook
+MaSha.version = "09.09.2011-12:07:42"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -86,10 +86,11 @@ MaSha.prototype = {
         }
         //cleanWhitespace(this.selectable);
     
-        // XXX translate comments
         // enumerate block elements containing a text
         this.enumerateElements();
     
+
+        var marker_coord;
         addEvent(this.selectable, 'mouseup', function(e) {
             /*
              * Show the marker if any text selected
@@ -97,24 +98,38 @@ MaSha.prototype = {
             // XXX it's a question: bind to document or to this.selectable
             // binding to document works better
 
-            var coord = getPageXY(e); // outside timeout function because of IE
-            window.setTimeout(function(){
-                var regexp = new RegExp(this_.options.regexp, 'g');
-                var text = window.getSelection().toString();
-
-                if (text == '' || !regexp.test(text)) return;
-                if (!this_.range_is_selectable()) return;
-
-                this_.marker.style.top = coord.y - 33 + 'px';
-                this_.marker.style.left = coord.x + 5 + 'px';
-                addClass(this_.marker, 'show');
-            }, 1);
+            marker_coord = getPageXY(e); // outside timeout function because of IE
+            window.setTimeout(show_marker, 1);
         });
-    
-    
-    
-        addEvent(this.marker, 'click', function(e){
+
+        function show_marker(){
+            var regexp = new RegExp(this_.options.regexp, 'g');
+            var text = window.getSelection().toString();
+
+            if (text == '' || !regexp.test(text)) return;
+            if (!this_.range_is_selectable()) return;
+
+            this_.marker.style.top = marker_coord.y - 33 + 'px';
+            this_.marker.style.left = marker_coord.x + 5 + 'px';
+            addClass(this_.marker, 'show');
+        }
+
+        var touch_timeout;
+        function touch(e){
+            var touch = e.touches.item(0)
+            marker_coord = {x: touch.pageX, y: touch.pageY}
+
+            if(touch_timeout){
+                window.clearTimeout(touch_timeout);
+            }
+            touch_timeout = window.setTimeout(show_marker, 200);
+        }
+        addEvent(this.selectable, 'touchmove', touch);
+        addEvent(this.selectable, 'touchstart', touch);
+
+        function markerclick(e){
             preventDefault(e);
+            stopEvent(e);
             removeClass(this_.marker, 'show');
             if (!this_.range_is_selectable()){
                 return;
@@ -129,8 +144,11 @@ MaSha.prototype = {
             if (this_.options.select_message){
                 this_._show_message();
             }
-        });
+        }
     
+        addEvent(this.marker, 'click', markerclick);
+        addEvent(this.marker, 'touchstart', markerclick);
+
         addEvent(document, 'click', function(e){
             var target = e.target || e.srcElement;
             if (target != this_.marker) {
@@ -1134,6 +1152,13 @@ function addEvent(elem, type, fn){
 function preventDefault(e){
     if (e.preventDefault) { e.preventDefault(); }
     else { e.returnValue = false }
+}
+function stopEvent(e){
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  } else {
+    e.cancelBubble = true;
+  } 
 }
 function getPageXY(e){
     // from jQuery
