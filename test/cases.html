@@ -81,7 +81,8 @@
         return $(ret);
     }
 
-    function createRange(nodeNum1, pos1, nodeNum2, pos2){
+    function createRange(nodeNum1, pos1, nodeNum2, pos2, click){
+        click = click === undefined? true: click;
         var allnodes = $('#selectable-content').textNodes();
         //console.log(allnodes)
         var selection = window.getSelection();
@@ -94,7 +95,9 @@
         //console.log(range)
 
         selection.addRange(range);
-        document.getElementById('txtselect_marker').click();
+        if(click){
+            document.getElementById('txtselect_marker').click();
+        }
 
         return selection;
     }
@@ -422,6 +425,30 @@
             this.assert(sel.is_ignored($(sel.selectable).find('em')[0]), 'ignored');
         },
 
+        get_range_words: function(){
+            var regexp = new RegExp(MaSha.default_options.regexp, 'g')
+
+            var html = '<div>And Now! Some <em id="ignore">strange</em> <span class="aa">text. Yes.</span></div>';
+            $('#selectable-content, #txtselect_marker').remove();
+            $(document.body).append('<div id="selectable-content">' + html + '</div>');
+            var s = createRange(0, 9, 2, 4, false);
+            var r = s.getRangeAt(0);
+            var iter = r.getWordIterator(regexp);
+            var result = '', word;
+            while (word = iter()){
+                result += word;
+            }
+
+            this.assert(result == 'Somestrangetext', 'incorrect result: ' + result, true);
+
+            var iter = r.getWordIterator(regexp, true);
+            var result = '', word;
+            while (word = iter()){
+                result += word;
+            }
+
+            this.assert(result == 'textstrangeSome', 'incorrect result: ' + result);
+        },
 
         regressionCommaOutsideTag: function(){
             var html = '<p><b><a>Ivanov</a>:</b> some text</p>';

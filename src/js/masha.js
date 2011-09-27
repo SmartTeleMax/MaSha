@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "09.09.2011-12:26:58"; // filled automatically by hook
+MaSha.version = "27.09.2011-15:49:14"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -30,6 +30,7 @@ MaSha.default_options = {
     'ignored': null,
     'select_message': null,
     'location': window.location,
+    'validate': false,
     'onMark': null,
     'onUnmark': null,
     'onHashRead': function(){
@@ -267,8 +268,7 @@ MaSha.prototype = {
 
         while(node && node != first_node){
             node = this.prevNode(node, /.*/)._container;
-            var onei_ = this.wordCount(node);
-            wcount += onei_;
+            wcount += this.wordCount(node);
             //node = node? node.container: null;
         }
 
@@ -329,8 +329,8 @@ MaSha.prototype = {
         if (!hash) return;
     
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
-
-        if(! /^sel\=(?:\d+\:\d+\,\d+\:\d+;)*\d+\:\d+\,\d+\:\d+$/.test(hash)) return;
+        //
+        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)\,\d+\:\d+(?:\:[^:;]*);)*\d+\:\d+(?:\:[^:;]*)\,\d+\:\d+(?:\:[^:;]*)$/.test(hash)) return;
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -340,9 +340,8 @@ MaSha.prototype = {
         var sel = window.getSelection();
         if(sel.rangeCount > 0){ sel.removeAllRanges(); }
 
-        range = this.deserializeRange(serialized);
+        var range = this.deserializeRange(serialized);
         if(range){
-        //    sel.addRange(range);
             this.addSelection(range);
         }
     },
@@ -362,16 +361,61 @@ MaSha.prototype = {
                 var range = document.createRange();
                 range.setStart(start.node, start.offset);
                 range.setEnd(end.node, end.offset);
-                return range;
+                if(!this.options.validate || this.validateRange(range, bits1[2], bits2[2])){
+                    return range;
+                }
             }
         }
-
-
 
         if (window.console && (typeof console['warn'] == 'function')){
             console['warn']('Cannot deserialize range: ' + serialized);
         }
     }, 
+
+    to_latin: function(ch){
+        if (ch){
+            var allowed_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+            var integer = ch.charCodeAt(0) % allowed_chars.length;
+            return allowed_chars.charAt(integer);
+        }
+        return '';
+    },
+
+    validateRange: function(range, sum1, sum2){
+        var this_ = this;
+        function url_validator(sum, words_iterator){
+            for (var i=0; i<3;i++){
+                var part = (words_iterator() || '').charAt(0);
+                if(this_.to_latin(part) != sum.charAt(i)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        var valid = true
+        if (sum1 !== undefined){
+            valid = valid && url_validator(sum1, range.getWordIterator(this.regexp));
+        }
+        if (sum2 !== undefined){
+            valid = valid && url_validator(sum2, range.getWordIterator(this.regexp, true));
+        }
+        return valid;
+    },
+
+    getRangeChecksum: function(range){
+        var this_ = this;
+        function get_sum(words_iterator){
+            var sum = '';
+            for (var i=0; i<3;i++){
+                var part = (words_iterator() || '').charAt(0);
+                sum += this_.to_latin(part);
+            }
+            return sum;
+        }
+        sum1 = get_sum(range.getWordIterator(this.regexp));
+        sum2 = get_sum(range.getWordIterator(this.regexp, true));
+        return [sum1, sum2]
+    },
 
     deserializePosition: function(bits, pos){
          // deserializes №OfBlock:№OfWord pair
@@ -406,6 +450,11 @@ MaSha.prototype = {
     serializeRange: function(range) {
         var start = this.words(range.startContainer, range.startOffset, 'start');
         var end = this.words(range.endContainer, range.endOffset, 'end');
+        if(this.options.validate){
+            var sums = this.getRangeChecksum(range);
+            start += ':' + sums[0];
+            end += ':' + sums[1];
+        }
         return start + "," + end;
     },
 
@@ -970,8 +1019,9 @@ MaSha.prototype = {
         return textNodes
     }
 
-    function elementIterator(parent, cont, end){
-        cont = cont || parent.childNodes[0];
+    function elementIterator(parent, cont, end, reversed){
+        reversed = !!reversed;
+        cont = cont || parent[reversed? 'lastChild' : 'firstChild'];
         var finished = !cont;
         var up = false;
         
@@ -979,9 +1029,9 @@ MaSha.prototype = {
             if (finished) {return null;} 
             var result = cont;
             if (cont.childNodes && cont.childNodes.length && !up){
-                cont = cont.firstChild;
-            } else if (cont.nextSibling){
-                cont = cont.nextSibling;
+                cont = cont[reversed? 'lastChild' : 'firstChild'];
+            } else if (cont[reversed? 'previousSibling' : 'nextSibling']){
+                cont = cont[reversed? 'previousSibling' : 'nextSibling'];
                 up = false;
             } else if (cont.parentNode){
                 cont = cont.parentNode;
@@ -995,8 +1045,47 @@ MaSha.prototype = {
         return next;
     }
 
-    Range.prototype.getElementIterator = function(){
-        return elementIterator(null, this.startContainer, this.endContainer);
+    Range.prototype.getElementIterator = function(reversed){
+        if (reversed) {
+            return elementIterator(null, this.endContainer, this.startContainer, true);
+        } else {
+            return elementIterator(null, this.startContainer, this.endContainer);
+        }
+    }
+    Range.prototype.getWordIterator = function(regexp, reversed){
+        var elem_iter = this.getElementIterator(reversed);
+        var node;
+        var counter_aim = 0, i = 0;
+        var finished = false, match, this_ = this;
+        function next(){
+            if(counter_aim == i && !finished){
+                do{
+                    do{
+                        node = elem_iter();
+                    } while(node && node.nodeType != 3)
+                    finished = !node;
+                    if (!finished){
+                        value = node.nodeValue;
+                        if (node == this_.endContainer){
+                            value = value.substr(0, this_.endOffset);
+                        }
+                        if (node == this_.startContainer){
+                            value = value.substr(this_.startOffset);
+                        }
+                        match = value.match(regexp);
+                    }
+                } while (node && !match);
+                if (match){
+                    counter_aim = reversed? 0: match.length - 1;
+                    i = reversed? match.length - 1: 0;
+                }
+            } else {
+                if (reversed) {i--;} else {i++;}
+            }
+            if (finished) { return null; }
+            return match[i]
+        }
+        return next
     }
 
     Range.prototype.wrapSelection = function(className){

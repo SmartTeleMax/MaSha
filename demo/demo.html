@@ -30,7 +30,8 @@
     <script>
     function init_masha(){
         MaSha.instance = new MaSha({'select_message': 'upmsg-selectable',
-                                    'ignored': '.ignored'});
+                                    'ignored': '.ignored',
+                                    'validate': true});
     }
     if (window.addEventListener){
         window.addEventListener('load', init_masha);
@@ -42,7 +43,7 @@
 </head>
 <body>
 <div id="selectable-content">
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 <div class="ignored" style="float: left; width: 220px; background: #fee; border: 1px solid #f99; padding: 3px; margin: 3px;">
 This text is completely ignored by MaSha. You can't select it because, may be, it's dynamic, or not important, or just site owner don't want you to select it!
