@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "29.09.2011-11:00:04"; // filled automatically by hook
+MaSha.version = "29.09.2011-12:18:53"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -375,11 +375,11 @@ MaSha.prototype = {
 
     validateRange: function(range, sum1, sum2){
         var valid = true
-        if (sum1 !== undefined){
+        if (sum1){
             var sum = this.getPositionChecksum(range.getWordIterator(this.regexp));
             valid = valid && sum1 == sum;
         }
-        if (sum2 !== undefined){
+        if (sum2){
             var sum = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
             valid = valid && sum2 == sum;
         }
