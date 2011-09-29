@@ -21,7 +21,7 @@ var MaSha = function(options) {
     this.init();
 }
 
-MaSha.version = "27.09.2011-15:49:14"; // filled automatically by hook
+MaSha.version = "29.09.2011-11:00:04"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -330,7 +330,8 @@ MaSha.prototype = {
     
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
         //
-        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)\,\d+\:\d+(?:\:[^:;]*);)*\d+\:\d+(?:\:[^:;]*)\,\d+\:\d+(?:\:[^:;]*)$/.test(hash)) return;
+        var pair = ''
+        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return;
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -372,49 +373,33 @@ MaSha.prototype = {
         }
     }, 
 
-    to_latin: function(ch){
-        if (ch){
-            var allowed_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
-            var integer = ch.charCodeAt(0) % allowed_chars.length;
-            return allowed_chars.charAt(integer);
-        }
-        return '';
-    },
-
     validateRange: function(range, sum1, sum2){
-        var this_ = this;
-        function url_validator(sum, words_iterator){
-            for (var i=0; i<3;i++){
-                var part = (words_iterator() || '').charAt(0);
-                if(this_.to_latin(part) != sum.charAt(i)){
-                    return false;
-                }
-            }
-            return true;
-        }
         var valid = true
         if (sum1 !== undefined){
-            valid = valid && url_validator(sum1, range.getWordIterator(this.regexp));
+            var sum = this.getPositionChecksum(range.getWordIterator(this.regexp));
+            valid = valid && sum1 == sum;
         }
         if (sum2 !== undefined){
-            valid = valid && url_validator(sum2, range.getWordIterator(this.regexp, true));
+            var sum = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
+            valid = valid && sum2 == sum;
         }
         return valid;
     },
 
     getRangeChecksum: function(range){
-        var this_ = this;
-        function get_sum(words_iterator){
-            var sum = '';
-            for (var i=0; i<3;i++){
-                var part = (words_iterator() || '').charAt(0);
-                sum += this_.to_latin(part);
-            }
-            return sum;
-        }
-        sum1 = get_sum(range.getWordIterator(this.regexp));
-        sum2 = get_sum(range.getWordIterator(this.regexp, true));
+        sum1 = this.getPositionChecksum(range.getWordIterator(this.regexp));
+        sum2 = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
         return [sum1, sum2]
+    },
+
+    getPositionChecksum: function(words_iterator){
+        /*
+         * Should be impemented by user
+         * We don't want to include validation algorythm, because we 
+         * didn't invent The Best Algorythm Ever yet. :(
+         * And we don't want to force users to use bad algorythms.
+         */
+        return '';
     },
 
     deserializePosition: function(bits, pos){
