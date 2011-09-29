@@ -62,6 +62,7 @@ new MaSha({ option: 'value' })
   'ignored': null,
   'select_message': null,
   'location': window.location,
+  'validate': false,
   'onMark': null,
   'onUnmark': null,
   'onHashRead': function(){ … }
@@ -78,6 +79,7 @@ where
   * Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
   * Comma-separated tag names, classes or ids of ignored elements. For example: *'ul, .ignored-cls, #ignored-id'*.
 * 'location' — an object used for get url hash from and write it to. The only significant property is location.hash. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
+* 'validate' — If true, the checksum of each selection is written in hash and they are validated on page load. Attention! There is no checksum algorithm provided by default and you should provide it to use validation! See 'Validation' section below.
 * 'onMark' — Callback function that fired on text selection.
 * 'onUnmark' — Callback function that fired on text deselection.
 * 'onHashRead' — Function that called on loading of the page with selected fragments. Function that set by default will scroll page to the first selected fragment.
@@ -92,3 +94,19 @@ If you use mainstream ierange library instead of bundled one please add this lin
 window.DOMRange = DOMRange;
 ```
 
+## Validation
+
+Validation algorythm is not included in MaSha by default, because we didn't invent The Best Algorythm Ever yet. And we don't want to force users to use bad (draft) algorythms.
+
+To use validation you should implement `MaSha.prototype.getPositionChecksum` method. This method accepts word sequence iterator (a function returning the next word of sequence on each call or null if words are) and returns a string checksum. The getPositionChecksum method is called twice for each range: one for start position and one for end position (with reversed iterator).
+
+The checksum is included into hash and it is checked on page load. If calculated checksum doesn't one from url, the selection is not restored.
+
+```javascript
+    MaSha.prototype.getPositionChecksum = function(words_iterator){
+        var word1 = words_iterator();
+        var word2 = words_iterator();
+        var sum = makeSomeCalculations(word1, word2);
+        return sum;
+    }
+```
