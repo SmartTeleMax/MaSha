@@ -56,7 +56,7 @@ new MaSha({ option: 'value' })
 
 ```javascript
 {
-  'regexp': new RegExp('[^\\s,;:–.!?<>…\\n\xA0\\*]+', 'ig'),
+  'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
   'selectable': 'selectable-content',
   'marker': 'txtselect_marker',
   'ignored': null,
@@ -70,7 +70,7 @@ new MaSha({ option: 'value' })
 
 where
 
-* 'regexp' — regular expression that describes word.
+* 'regexp' — regular expression that describes word (not compiled, as string).
 * 'selectable' — HTMLElement or its id, that contains selectable text.
 * 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.
 * 'select_message' — HTMLElement or its id with popup that floats when text is selected. If no value provided, the popup is not shown.
