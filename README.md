@@ -80,6 +80,7 @@ where
   * Comma-separated tag names, classes or ids of ignored elements. For example: *'ul, .ignored-cls, #ignored-id'*.
 * 'location' — an object used for get url hash from and write it to. The only significant property is location.hash. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
 * 'validate' — If true, the checksum of each selection is written in hash and they are validated on page load. Attention! There is no checksum algorithm provided by default and you should provide it to use validation! See 'Validation' section below.
+* 'enable_haschange' — If true, hashchange event is handled.
 * 'onMark' — Callback function that fired on text selection.
 * 'onUnmark' — Callback function that fired on text deselection.
 * 'onHashRead' — Function that called on loading of the page with selected fragments. Function that set by default will scroll page to the first selected fragment.
