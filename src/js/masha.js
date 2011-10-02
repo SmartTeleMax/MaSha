@@ -31,11 +31,13 @@ MaSha.default_options = {
     'select_message': null,
     'location': window.location,
     'validate': false,
+    'enable_haschange': true,
     'onMark': null,
     'onUnmark': null,
     'onHashRead': function(){
         var elem = firstWithClass(this.selectable, 'user_selection_true');
-        if(elem) {
+        if(elem && !this.hash_was_read) {
+            this.hash_was_read = true;
             window.setTimeout(function(){
                 var x = 0, y = 0;
                 while(elem){
@@ -165,6 +167,19 @@ MaSha.prototype = {
                 removeClass(this_.marker, 'show');
             }
         });
+
+        if(this.options.enable_haschange){
+            addEvent(window, 'hashchange', function(){
+                if(this_.last_hash != this_.options.location.hash){
+                    var numclasses = [];
+                    for(var k in this_.ranges) {
+                        numclasses.push(k);
+                    }
+                    this_.delete_selections(numclasses);
+                    this_.readHash();
+                }
+            });
+        }
     
         this.readHash();
     },
@@ -304,7 +319,8 @@ MaSha.prototype = {
             hashAr.push(this.ranges[key]);
         }
         // XXX use location.replace?
-        this.options.location.hash = 'sel='+hashAr.join(';');
+        var new_hash = '#sel='+hashAr.join(';');
+        this.last_hash = this.options.location.hash = new_hash;
     },
 
     readHash: function(){
