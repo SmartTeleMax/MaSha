@@ -5,6 +5,7 @@
  * Released under the MIT License
  */
 
+
 (function(){
 
 var LocationHandler = function() {
@@ -1121,9 +1122,8 @@ MaSha.prototype = {
         }
     };
 
-
-
 // exposing
+MaSha.LocationHandler = LocationHandler;
 window.MaSha = MaSha;
 
 if (window.jQuery){
