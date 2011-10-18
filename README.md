@@ -61,7 +61,7 @@ new MaSha({ option: 'value' })
   'marker': 'txtselect_marker',
   'ignored': null,
   'select_message': null,
-  'location': window.location,
+  'location': new LocationHandler(),
   'validate': false,
   'onMark': null,
   'onUnmark': null,
@@ -78,7 +78,7 @@ where
 * 'ignored' — Either function or string.
   * Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
   * Comma-separated tag names, classes or ids of ignored elements. For example: *'ul, .ignored-cls, #ignored-id'*.
-* 'location' — an object used for get url hash from and write it to. The only significant property is location.hash. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
+* 'location' — an object used for get url hash from and write it to. The only significant methods are get_hash, set_hash and add_hashchange. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
 * 'validate' — If true, the checksum of each selection is written in hash and they are validated on page load. Attention! There is no checksum algorithm provided by default and you should provide it to use validation! See 'Validation' section below.
 * 'enable_haschange' — If true, hashchange event is handled.
 * 'onMark' — Callback function that fired on text selection.

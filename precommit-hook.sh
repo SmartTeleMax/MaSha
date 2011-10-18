@@ -2,7 +2,7 @@
 cd $(git rev-parse --show-toplevel)
 
 dt=`date -u +%d.%m.%Y-%H:%M:%S`
-if [ "$(git st --porcelain src/js/masha.js | cut -b1)" == "M" ]; then 
+if [ "$(git status --porcelain src/js/masha.js | cut -b1)" == "M" ]; then 
     # Adding version to js
     out=`sed "s/\\.version = \"[^\"]*\";/\\.version = \"$dt\";/g" src/js/masha.js`
     echo "$out" > src/js/masha.js
