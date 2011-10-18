@@ -31,7 +31,7 @@ var MaSha = function(options) {
     });
 
     this.init();
-}
+};
 
 MaSha.version = "29.09.2011-12:18:53"; // filled automatically by hook
 
@@ -66,7 +66,7 @@ MaSha.default_options = {
       return el.nodeName == 'BR' || inArray(getCompiledStyle(el, 'display'),
                                                ['inline', 'none']) == -1;
     }
-}
+};
 
 MaSha.prototype = {
     init: function(){ // domready
@@ -75,7 +75,7 @@ MaSha.prototype = {
                              this.options.selectable);
         if (typeof this.options.marker == 'string'){
             this.marker = document.getElementById(this.options.marker);
-            if (this.marker == null){
+            if (this.marker === null){
                 this.marker = document.createElement('a');
                 this.marker.setAttribute('id', this.options.marker);
                 this.marker.setAttribute('href', '#');
@@ -86,7 +86,7 @@ MaSha.prototype = {
         }
 
         if (typeof this.options.regexp != 'string'){
-            throw 'regexp is set as string'
+            throw 'regexp is set as string';
         }
         this.regexp = new RegExp(this.options.regexp, 'ig');
 
@@ -130,10 +130,10 @@ MaSha.prototype = {
         }
 
         function touch(e){
-            var touch = e.touches.item(0)
-            marker_coord = {x: touch.pageX, y: touch.pageY}
+            var touch = e.touches.item(0);
+            marker_coord = { x: touch.pageX, y: touch.pageY };
         }
-    
+
         addEvent(this.selectable, 'touchmove', touch);
         addEvent(this.selectable, 'touchstart', touch);
         addEvent(this.selectable, 'touchend', function(){
@@ -141,10 +141,10 @@ MaSha.prototype = {
                 var s = window.getSelection();
                 if(s.rangeCount){
                     var rects = s.getRangeAt(0).getClientRects();
-                    var rect = rects[rects.length-1]
+                    var rect = rects[rects.length - 1];
                     if(rect){
                     marker_coord = {x: rect.left + rect.width + document.body.scrollLeft,
-                                    y: rect.top + rect.height/2 + document.body.scrollTop}
+                                    y: rect.top + rect.height/2 + document.body.scrollTop};
                     }
                 }
                 show_marker();
@@ -158,7 +158,7 @@ MaSha.prototype = {
             if (!this_.range_is_selectable()){
                 return;
             }
-            
+
             this_.addSelection();
             this_.updateHash();
 
@@ -225,15 +225,15 @@ MaSha.prototype = {
     is_internal: function(node){
         while (node.parentNode){
             if (node == this.selectable){
-                return true
+                return true;
             }
-            node = node.parentNode
+            node = node.parentNode;
         }
         return false;
     },
 
     _siblingNode: function(cont, prevnext, firstlast, offs, regexp){
-        var regexp = regexp || this.regexp;
+        regexp = regexp || this.regexp;
         while (cont.parentNode && this.is_internal(cont)){
             while (cont[prevnext + 'Sibling']){
                 cont = cont[prevnext + 'Sibling'];
@@ -247,6 +247,7 @@ MaSha.prototype = {
             }
             cont = cont.parentNode;
         }
+        return null;
     },
 
     prevNode: function(cont, regexp){
@@ -354,12 +355,12 @@ MaSha.prototype = {
 
     splittedHash: function(){
         var hash = this.options.location.get_hash();
-        if (!hash) return;
+        if (!hash) return null;
     
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
         //
-        var pair = ''
-        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return;
+        var pair = '';
+        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -396,19 +397,20 @@ MaSha.prototype = {
             }
         }
 
-        if (window.console && (typeof console['warn'] == 'function')){
-            console['warn']('Cannot deserialize range: ' + serialized);
+        if (window.console && (typeof console.warn == 'function')){
+            console.warn('Cannot deserialize range: ' + serialized);
         }
+        return null;
     }, 
 
     validateRange: function(range, sum1, sum2){
-        var valid = true
+        var valid = true, sum;
         if (sum1){
-            var sum = this.getPositionChecksum(range.getWordIterator(this.regexp));
+            sum = this.getPositionChecksum(range.getWordIterator(this.regexp));
             valid = valid && sum1 == sum;
         }
         if (sum2){
-            var sum = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
+            sum = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
             valid = valid && sum2 == sum;
         }
         return valid;
@@ -417,7 +419,7 @@ MaSha.prototype = {
     getRangeChecksum: function(range){
         sum1 = this.getPositionChecksum(range.getWordIterator(this.regexp));
         sum2 = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
-        return [sum1, sum2]
+        return [sum1, sum2];
     },
 
     getPositionChecksum: function(words_iterator){
@@ -451,7 +453,7 @@ MaSha.prototype = {
 
              }
              // word not found yet, trying next container
-             node = this.nextNode(node, /.*/)
+             node = this.nextNode(node, /.*/);
              node = node? node._container: null;
              if (node && this.isFirstTextNode(node)){
                  node = null;
@@ -487,7 +489,7 @@ MaSha.prototype = {
 
 
     checkPosition: function(range, offset, container, position) {
-        var this_ = this;
+        var this_ = this, newdata;
 
         function is_word(str){
             return str.match(this_.regexp) != null;
@@ -536,7 +538,7 @@ MaSha.prototype = {
             }
             if (container.nodeType != 3 ||
                 container.data.substring(offset).match(this.regexp) == null) {
-                var newdata = this.nextNode(container);
+                newdata = this.nextNode(container);
                 container = newdata._container;
                 offset = newdata._offset;
             }
@@ -560,7 +562,7 @@ MaSha.prototype = {
             
             if (container.nodeType != 3 ||
                 container.data.substring(0, offset).match(this.regexp) == null) {
-                var newdata = this.prevNode(container);
+                newdata = this.prevNode(container);
                 container = newdata._container;
                 offset = newdata._offset;
             }
@@ -582,6 +584,7 @@ MaSha.prototype = {
         // XXX Needs cleanup!
         var text = range.toString();//getTextNodes(range).map(function(x){return x.data;}).join('');
         var brackets = text.match(match_reg);
+        var new_data;
         if (brackets){
             brackets = brackets.join('');
             var l = brackets.length +1;
@@ -592,7 +595,7 @@ MaSha.prototype = {
             if (brackets.charAt(brackets.length-1) == cb &&
                     text.charAt(text.length-1) == cb){
                 if(range.endOffset == 1) {
-                    var new_data = this.prevNode(range.endContainer);
+                    new_data = this.prevNode(range.endContainer);
                     range.setEnd(new_data.container, new_data.offset);
                 } else {
                     range.setEnd(range.endContainer, range.endOffset-1);
@@ -601,7 +604,7 @@ MaSha.prototype = {
             if (brackets.charAt(0) == ob &&
                     text.charAt(0) == ob){
                 if(range.startOffset == range.startContainer.data.length) {
-                    var new_data = this.nextNode(range.endContainer);
+                    new_data = this.nextNode(range.endContainer);
                     range.setStart(new_data.container, new_data.offset);
                 } else {
                     range.setStart(range.startContainer, range.startOffset+1);
@@ -612,15 +615,15 @@ MaSha.prototype = {
     },
 
     checkSentence: function(range){
+        var data, nextAfterRange;
         if(range.endOffset == range.endContainer.data.length) {
-            var data = this.nextNode(range.endContainer, /.*/);
-            if(!data) {return;}
-            var nextAfterRange = data._container.data.charAt(0);
+            data = this.nextNode(range.endContainer, /.*/);
+            if(!data) {return null;}
+            nextAfterRange = data._container.data.charAt(0);
         } else {
-            var data = {_container: range.endContainer, _offset: range.endOffset};
-            var nextAfterRange = range.endContainer.data.charAt(range.endOffset);
+            data = {_container: range.endContainer, _offset: range.endOffset};
+            nextAfterRange = range.endContainer.data.charAt(range.endOffset);
         }
-
 
         if (nextAfterRange.match(/\.|\?|\!/)){
             // sentence end detected
@@ -638,15 +641,15 @@ MaSha.prototype = {
                 return apply();
             }
 
-            var node, iterator = range.getElementIterator()
-            while (node=iterator()){
+            var node, iterator = range.getElementIterator();
+            while ((node=iterator())) {
                 if (node.nodeType == 1 && node.className == 'selection_index'){
                     return apply();
                 }
             }
 
             if (text.charAt(0).match(/[A-Z\u0410-\u042f\u0401]/)){
-                var pre = range.startContainer.data.substring(0, range.startOffset)
+                var pre = range.startContainer.data.substring(0, range.startOffset);
                 if(!pre.match(/\S/)) {
                     var pre_data = this.prevNode(range.startContainer, /\W*/);
                     pre = pre_data._container.data;
@@ -656,15 +659,16 @@ MaSha.prototype = {
                     return apply();
                 }
             }
+            return null;
         }
         
         function apply(){
-            range.setEnd(data._container, data._offset+1)
+            range.setEnd(data._container, data._offset+1);
         }
     },
 
     mergeSelections: function(range){
-        var merges = []
+        var merges = [];
         var iterator = range.getElementIterator();
         var node = iterator();
         var last = node;
@@ -684,12 +688,12 @@ MaSha.prototype = {
             last = node;
             node = iterator();
         }
-        var last = parentWithClass(last, 'user_selection_true');
+        last = parentWithClass(last, 'user_selection_true');
         if (last){
-            var last = /(num\d+)(?:$| )/.exec(last.className)[1];
+            last = /(num\d+)(?:$| )/.exec(last.className)[1];
             var tnodes = textNodes(lastWithClass(this.selectable, last)); // XXX lastTextNode
             var last_node = tnodes[tnodes.length-1];
-            range.setEnd(last_node, last_node.length)
+            range.setEnd(last_node, last_node.length);
         }
         if (merges.length){
             // this breaks selection, so we need to dump a range and restore it after DOM changes
@@ -713,7 +717,7 @@ MaSha.prototype = {
         this.ranges[class_name] = this.serializeRange(range);
 
         range.wrapSelection(class_name+' user_selection_true');
-        this.addSelectionEvents(class_name)
+        this.addSelectionEvents(class_name);
     },
 
     addSelectionEvents: function(class_name) {
@@ -799,7 +803,7 @@ MaSha.prototype = {
                         // XXX prefix all class and id attributes with "masha"
                         index_span.id = 'selection_index' + captureCount;
                         index_span.className = 'selection_index';
-                        child.parentNode.insertBefore(index_span, child)
+                        child.parentNode.insertBefore(index_span, child);
 
                         idx++;
                         this_.blocks[captureCount] = child;
@@ -828,13 +832,13 @@ MaSha.prototype = {
         var prevs = [text_node.previousSibling, text_node.parentNode.previousSibling];
         for (var i=prevs.length;i--;){
             if (prevs[i] && prevs[i].nodeType == 1 && prevs[i].className == 'selection_index'){
-                return true
+                return true;
             }
         }
         return false;
     },
     getFirstTextNode: function(numclass){
-        if(!numclass) { return; }
+        if(!numclass) { return null; }
         var tnode = document.getElementById('selection_index'+numclass);
         if (tnode) {
             if (tnode.nextSibling.nodeType == 1){
@@ -843,6 +847,7 @@ MaSha.prototype = {
                 return tnode.nextSibling;
             }
         }
+        return null;
     },
     getNum: function(cont){
         while (cont.parentNode){
@@ -852,11 +857,12 @@ MaSha.prototype = {
                     cont = cont.lastChild;
                 }
                 if (cont.nodeType == 1 && cont.className == 'selection_index'){
-                    return cont.id.replace('selection_index', '')
+                    return cont.id.replace('selection_index', '');
                 }
             }
             cont = cont.parentNode;
         }
+        return null;
     },
 
     construct_ignored: function(selector){
@@ -878,18 +884,20 @@ MaSha.prototype = {
             }
 
             return function(node){
-                for (var i=by_id.length;i--;){
-                    if(node.id == by_id[i]) { return true; }
+                var i;
+                for (i = by_id.length; i--;){
+                    if (node.id == by_id[i]) { return true; }
                 }
-                for (var i=by_class.length;i--;){
-                    if(hasClass(node, by_class[i])) { return true; }
+                for (i = by_class.length; i--;){
+                    if (hasClass(node, by_class[i])) { return true; }
                 }
-                for (var i=by_tag.length;i--;){
-                    if(node.tagName == by_tag[i].toUpperCase()) { return true; }
+                for (i = by_tag.length; i--;){
+                    if (node.tagName == by_tag[i].toUpperCase()) { return true; }
                 }
-            }
+                return false;
+            };
         } else {
-            return function(){ return false; }
+            return function(){ return false; };
         }
     },
 
@@ -898,7 +906,7 @@ MaSha.prototype = {
         var range = this.getFirstRange();
         if (!range) { return false; }
         var iterator = range.getElementIterator();
-        while (node = iterator()){
+        while ((node = iterator())){
             if (node.nodeType == 3 && node.data.match(this.regexp) != null){
                 // first and last TEXT nodes
                 first_node = first_node || node;
@@ -917,7 +925,7 @@ MaSha.prototype = {
                     if (this.is_ignored(iter_node)){
                         return false;
                     }
-                    iter_node = iter_node.parentNode
+                    iter_node = iter_node.parentNode;
                 }
                 if (iter_node != this.selectable){ return false; }
             }
@@ -958,7 +966,7 @@ MaSha.prototype = {
         if (window.localStorage){
             return !!localStorage.masha_warning;
         } else {
-            return !!document.cookie.match(/(?:^|;)\s*masha-warning=/)
+            return !!document.cookie.match(/(?:^|;)\s*masha-warning=/);
         }
     },
     save_message_closed: function(){
@@ -988,7 +996,7 @@ MaSha.prototype = {
     hide_message: function(){
         removeClass(this.msg, 'show');
     }
-}
+};
 
 
     // support browsers and IE, using ierange with Range exposed
@@ -1016,12 +1024,12 @@ MaSha.prototype = {
         }
         this.setStart(sc, so);
         this.setEnd(ec, eo);
-    }
+    };
 
     Range.prototype.getTextNodes = function() {
         var iterator = this.getElementIterator();
         var textNodes = [], node;
-        while (node = iterator()){
+        while ((node = iterator())){
             // XXX was there a reason to check for empty string?
             // with this check selecting two sibling words separately
             // and then selecting them both in one range doesn't work properly
@@ -1029,8 +1037,8 @@ MaSha.prototype = {
                 textNodes.push(node);
             }
         }
-        return textNodes
-    }
+        return textNodes;
+    };
 
     function elementIterator(parent, cont, end, reversed){
         reversed = !!reversed;
@@ -1052,8 +1060,8 @@ MaSha.prototype = {
                 up = true;
                 next();
             }
-            if (result === end) { finished = true; };
-            return result
+            if (result === end) { finished = true; }
+            return result;
         }
         return next;
     }
@@ -1064,7 +1072,7 @@ MaSha.prototype = {
         } else {
             return elementIterator(null, this.startContainer, this.endContainer);
         }
-    }
+    };
     Range.prototype.getWordIterator = function(regexp, reversed){
         var elem_iter = this.getElementIterator(reversed);
         var node;
@@ -1096,10 +1104,10 @@ MaSha.prototype = {
                 if (reversed) {i--;} else {i++;}
             }
             if (finished) { return null; }
-            return match[i]
+            return match[i];
         }
-        return next
-    }
+        return next;
+    };
 
     Range.prototype.wrapSelection = function(className){
         this.splitBoundaries();
@@ -1111,7 +1119,7 @@ MaSha.prototype = {
             textNodes[i].parentNode.insertBefore(span, textNodes[i]);
             span.appendChild(textNodes[i]);
         }
-    }
+    };
 
 
 
@@ -1119,11 +1127,11 @@ MaSha.prototype = {
 window.MaSha = MaSha;
 
 if (window.jQuery){
-    jQuery.fn.masha = function(options) {
+    window.jQuery.fn.masha = function(options) {
         options = options || {};
         options = extend({'selectable': this[0]}, options);
         return new MaSha(options);
-    }
+    };
 }
 
 // Shortcuts
@@ -1172,36 +1180,39 @@ function textContent(elem){
 }
 
 function parentWithClass(p, cls){
-    while (p && !hasClass(p, cls)){p = p.parentNode}
+    while (p && !hasClass(p, cls)){p = p.parentNode;}
     return p || null;
 }
 function firstWithClass(elem, cls){
     var iter = elementIterator(elem);
-    var node;
-    while (node = iter()){
-        if (node.nodeType == 1 && hasClass(node, cls)) {return node;}
+    var node = null;
+    while ((node = iter())){
+        if (node.nodeType === 1 && hasClass(node, cls)) {return node;}
     }
+    return null;
 }
 function lastWithClass(elem, cls){
     var elems = byClassName(elem, cls);
     if (elems){
-        return elems[elems.length-1]
+        return elems[elems.length-1];
     }
+    return null;
 }
 function firstTextNode(elem){
     var iter = elementIterator(elem);
-    var node;
-    while (node = iter()){
-        if (node.nodeType == 3) {return node}
+    var node = null;
+    while ((node = iter())){
+        if (node.nodeType === 3) {return node;}
     }
+    return node;
 }
 function byClassName(elem, cls){
     if (elem.getElementsByClassName){
-        return elem.getElementsByClassName(cls)
+        return elem.getElementsByClassName(cls);
     } else {
         var ret = [], node;
         var iter = elementIterator(elem);
-        while (node = iter()){
+        while ((node = iter())){
             if (node.nodeType == 1 && hasClass(node, cls)) {
                 ret.push(node);
             }
@@ -1212,8 +1223,8 @@ function byClassName(elem, cls){
 function textNodes(elem) {
     var ret = [], node;
     var iter = elementIterator(elem);
-    while (node = iter()){
-        if (node.nodeType == 3) {
+    while ((node = iter())){
+        if (node.nodeType === 3) {
             ret.push(node);
         }
     }
@@ -1232,7 +1243,7 @@ function addClass(elem, cls){
     // don't use for classes with non-literal symbols
     var reg = _classRegExp(cls);
     if (!reg.test(elem.className)){
-        elem.className = elem.className + ' ' + cls
+        elem.className = elem.className + ' ' + cls;
     }
 }
 function removeClass(elem, cls){
@@ -1262,7 +1273,7 @@ function addEvent(elem, type, fn){
 }
 function preventDefault(e){
     if (e.preventDefault) { e.preventDefault(); }
-    else { e.returnValue = false }
+    else { e.returnValue = false; }
 }
 function stopEvent(e){
   if (e.stopPropagation) {
@@ -1278,9 +1289,9 @@ function getPageXY(e){
         var doc = document.documentElement, body = document.body;
         var x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
         var y = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
-        return {x: x, y: y}
+        return {x: x, y: y};
     }
-    return {x: e.pageX, y: e.pageY}
+    return {x: e.pageX, y: e.pageY};
 }
 
 })();
