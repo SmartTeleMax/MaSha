@@ -397,8 +397,8 @@ MaSha.prototype = {
             }
         }
 
-        if (window.console && (typeof console.warn == 'function')){
-            console.warn('Cannot deserialize range: ' + serialized);
+        if (window.console && (typeof window.console.warn == 'function')){
+            window.console.warn('Cannot deserialize range: ' + serialized);
         }
         return null;
     }, 
