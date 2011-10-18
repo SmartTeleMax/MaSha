@@ -7,9 +7,21 @@
 
 (function(){
 
+var LocationHandler = function() {
+    this.set_hash = function(hash) {
+        window.location.hash = hash;
+    };
+    this.get_hash = function() {
+        return window.location.hash;
+    };
+    this.add_hashchange = function(delegate) {
+        addEvent(window, 'hashchange', delegate);
+    };
+};
+
 var MaSha = function(options) {
     this.options = extend({}, MaSha.default_options, options);
-    
+
     extend(this, {
         counter: 0,
         savedSel: [],
@@ -29,7 +41,7 @@ MaSha.default_options = {
     'marker': 'txtselect_marker',
     'ignored': null,
     'select_message': null,
-    'location': window.location,
+    'location': new LocationHandler(),
     'validate': false,
     'enable_haschange': true,
     'onMark': null,
@@ -169,8 +181,8 @@ MaSha.prototype = {
         });
 
         if(this.options.enable_haschange){
-            addEvent(window, 'hashchange', function(){
-                if(this_.last_hash != this_.options.location.hash){
+            this.options.location.add_hashchange(function(){
+                if(this_.last_hash != this_.options.location.get_hash()){
                     var numclasses = [];
                     for(var k in this_.ranges) {
                         numclasses.push(k);
@@ -180,7 +192,7 @@ MaSha.prototype = {
                 }
             });
         }
-    
+
         this.readHash();
     },
 
@@ -318,9 +330,9 @@ MaSha.prototype = {
         for (key in this.ranges) { 
             hashAr.push(this.ranges[key]);
         }
-        // XXX use location.replace?
         var new_hash = '#sel='+hashAr.join(';');
-        this.last_hash = this.options.location.hash = new_hash;
+        this.last_hash = new_hash;
+        this.options.location.set_hash(new_hash);
     },
 
     readHash: function(){
@@ -341,7 +353,7 @@ MaSha.prototype = {
     },
 
     splittedHash: function(){
-        var hash = this.options.location.hash;
+        var hash = this.options.location.get_hash();
         if (!hash) return;
     
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
