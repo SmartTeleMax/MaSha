@@ -74,7 +74,7 @@ where
 * 'regexp' — regular expression that describes word (not compiled, as string).
 * 'selectable' — HTMLElement or its id, that contains selectable text.
 * 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.
-* 'select_message' — HTMLElement or its id with popup that floats when text is selected. If no value provided, the popup is not shown.
+* 'select_message' — HTMLElement or its id with popup that floats when text is selected. If closed once, popup will be never displayed again in this browser (localStorage or cookies are used). If no value provided, the popup is not shown.
 * 'ignored' — Either function or string.
   * Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
   * Comma-separated tag names, classes or ids of ignored elements. For example: *'ul, .ignored-cls, #ignored-id'*.
