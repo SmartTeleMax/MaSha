@@ -84,6 +84,8 @@
         #upmsg-selectable .upmsg-selectable-inner p {
             color:white;
             font-size:12px;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
             margin-left:63px;
             margin-top:17px;
             text-align:left;
