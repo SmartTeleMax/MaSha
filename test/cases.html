@@ -107,7 +107,11 @@
         $('#selectable-content, #txtselect_marker').remove();
         $(document.body).append('<div id="selectable-content">' + html + '</div>');
         $(document.body).append('<button id="txtselect_marker">Mark!</button>');
-        options.location = {'hash': hash};
+        options.location = {
+            add_hashchange: function(){},
+            set_hash: function(x){ hash = x.replace('#', ''); },
+            get_hash: function(){ return hash; }
+        };
         return new MaSha(options);
     }
     function assertHTMLEqual(aim, silent){
@@ -149,7 +153,7 @@
     }
     function assertHashEqual(sel, hash, silent){
         var test = arguments.callee.caller.name_;//toString();
-        var got_hash = sel.options.location.hash.replace('sel=', '');
+        var got_hash = sel.options.location.get_hash().replace('sel=', '');
         if(got_hash == hash) {
             if (!silent){
                 console.log(test + ' ok');
