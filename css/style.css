@@ -168,13 +168,19 @@ b.s {
             padding: 36px 0 36px 0;
             margin-bottom: 25px;
             }
+            #wraper ul.text,
             #wraper ol {
                 font-size: 13px;
                 padding: 0;
                 margin:0 0 0 35px;
                 }
+                #wraper ul.text li,
                 #wraper ol li {
                     margin-bottom: 32px;
+                    }
+                #wraper ul.nomargins li,
+                #wraper ol.nomargins li{
+                    margin-bottom: 5px;
                     }
         #wraper .pluginlist {
             padding-top: 13px;
