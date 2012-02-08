@@ -122,16 +122,18 @@
                 </div>
 
 
-                <p>Для работы MASHA необходимо наличие в HTML двух элементов:</p>
+                <p>Для работы MASHA может потребоваться наличие в HTML следующих элементов:</p>
                     <ol>
-                	    <li>Элемент, содержащий текст, который можно выделять (cм. настройку "selectable" ниже).</li>
-                	    <li>Кнопка, появляющаяся при выделении текста мышкой, при нажатии на которую подсвечивается текст и меняется адресная строка браузера (cм. настройку "marker" ниже).</li>
+
+                	    <li>Элемент, содержащий текст, который можно выделять (cм. настройку <em>selectable</em> ниже), <strong>обязательно</strong>.</li>
+                	    <li>Кнопка, появляющаяся при выделении текста мышкой, при нажатии на которую подсвечивается текст и меняется адресная строка браузера (cм. настройку <em>marker</em> ниже).</li>
+                        <li>Всплывающий элемент с пояснительным текстом (см. настройку <em>select_message</em>).</li>
                 	</ol>
                 <p>При активации MASHA вы можете воспользоваться настройками по умолчанию или переопределить их по своему усмотрению:</p>
                 <div class="code">
             
                     <pre class="brush: js">
-                        new MaSha({...}) 
+                        new MaSha({  option: 'value' }) 
                     </pre>
             
                 </div>
@@ -140,10 +142,13 @@
                     
                     <pre class="brush: js">
                         {
-                          'regexp': new RegExp('[^\\s,;:–.!?&lt;&gt;…\\n\xA0\\*]+', 'ig'),
+                          'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
                           'selectable': 'selectable-content',
                           'marker': 'txtselect_marker',
                           'ignored': null,
+                          'select_message': null,
+                          'location': new LocationHandler(),
+                          'validate': false,
                           'onMark': null,
                           'onUnmark': null,
                           'onHashRead': function(){ … }
@@ -151,21 +156,27 @@
                     </pre>
                     
                 </div>
-                <p>Здесь:</br>
-                <strong>'regexp'</strong> — регулярное выражение, соответствующее слову;
-                <br/>
-                <strong>'selectable'</strong> — html-элемент или id элемента, содержащего текст, который можно выделять;
-                <br/>
-                <strong>'marker'</strong> — html-элемент или id элемента с иконкой маркера, который появляется при выделении текста;
-                <br/>
-                <strong>'ignored'</strong> - функция-фильтр, позволяющая запретить выделение в элементах, находящихся внутри 'selectable', принимает в качестве аргумента html-элемент, возращает true/false, true означает запрет на выделение;
-                <br/>
-                <strong>'onMark'</strong> — callback, вызывается при выделении текста;
-                <br/>
-                <strong>'onUnmark'</strong> — callback, вызывается при снятии выделения;
-                <br/>
-                <strong>'onHashRead'</strong> — функция, вызывающаяся при загрузке страницы с метками, по умолчанию задана функция, проскроливающая страницу до первого выделенного фрагмента.
-                </p>
+                <p>where</br>
+
+                <ul class="text nomargins">
+                    <li><strong>'regexp'</strong> — регулярное выражение, соответствующее слову (не компилированное, в виде строки);</li>
+                    <li><strong>'selectable'</strong> — html-элемент или id элемента, содержащего текст, который можно выделять;</li>
+                    <li><strong>'marker'</strong> — html-элемент или id элемента с иконкой маркера, который появляется при выделении текста. Если элемент не найден, то создается элемент &lt;a/&gt;;</li>
+                    <li><strong>'select_message'</strong> —  html-элемент или id элемента с пояснительным текстом, всплывающего при выделении текста. После закрытия элемент никогда не будет показан на сайте в текущем браузере (флаг хранится в localStorage или cookies). По-умолчанию, отключено;</li>
+                    <li><strong>'ignored'</strong> — функция или строка:
+
+                    <ul>
+                        <li>Функция, принимающая html-элемент и указывающая, должны ли игнорироваться выделения текста в нём. Возвращает true, если выделение игнорируется, иначе &ndash; false.</li>
+                        <li>Разделённые запятыми названия html-тегов, классов или id. Например: <em style="white-space: nowrap">'ul, .ignored-cls, #ignored-id'</em>.</li>
+                    </ul>
+                    </li>
+                    <li><strong>'location'</strong> — объект, используемый для получения URL из адресной строки. Должен реализовывать методы <em>get_hash</em>, <em>set_hash</em> и <em>add_hashchange</em>. Может быть переопределён, например, для того, чтобы выводить URL не в адресной строке, а во всплывающем элементе или чтобы управлять изменением адресной строки вручную (для совместимости с другими компонентами);</li>
+                    <li><strong>'validate'</strong> — если true, в адресную строку включается проверочная сумма для каждого выделения, которая проверяется при загрузке страницы. Внимание! По-умолчанию, функция вычисления контрольной суммы не включена в MaSha. См. раздел <a href="#validation">«Валидация»</a>.</li>
+                    <li><strong>'enable_haschange'</strong> — If true, hashchange event is handled;</li>
+                    <li><strong>'onMark'</strong> —  callback, вызывается при выделении текста;</li>
+                    <li><strong>'onUnmark'</strong> — callback, вызывается при снятии выделения;</li>
+                    <li><strong>'onHashRead'</strong> —  функция, вызывающаяся при загрузке страницы с метками, по умолчанию задана функция, проскроливающая страницу до первого выделенного фрагмента;</li>
+                </ul>
         </div>
         <div class="section">
             <h1>Поддержка Internet Explorer </h1>
@@ -173,6 +184,26 @@
             <div class="code">
                 <pre class="brush: js">
                     window.DOMRange = DOMRange;
+                </pre>
+            </div>
+        </div>
+        <div class="section" id="validation">
+            <h1>Валидация</h1>
+
+            <p>В некоторых случаях изменения на странице (удаление или добавление слов или параграфов) могут вызвать нежелательное изменение выделенного фрагмента. Чтобы избежать этого можно воспользоваться механизмом валидации.</p>
+
+            <p>Чтобы воспользоваться валидацией, необходимо реализовать метод <em>MaSha.prototype.getPositionChecksum</em>. Этот метод принимает итератор последовательности слов выделения (функция, при каждом вызове возвращающая следующее слово или null, если слов больше нет) и возвращает строковое значение проверочной суммы. Метод <em>getPositionChecksum</em> вызывается дважды для каждого выделения: в прямом и обратном порядке.</p>
+
+            <p>Алгоритм вычисления проверочной суммы не включен в MaSha по-умолчанию, потому что разработчики пока не смогли придумать Лучший Алгоритм На Свете и решили не навязывать пользователям свой несовершенный вариант. Если Вас не смущает несовершенство алгоритма, можете использовать наш:</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    MaSha.prototype.getPositionChecksum = function(words_iterator){
+                        var word1 = words_iterator();
+                        var word2 = words_iterator();
+                        var sum = makeSomeCalculations(word1, word2);
+                        return sum;
+                    }
                 </pre>
             </div>
         </div>
@@ -245,13 +276,13 @@
             <h1>СКАЧАТЬ</h1>
             <!--a href="#">
                 <span class="blue">MASHA.JS</span> (35Kb)<br/>
-                <span class="block">ver. 0.1</span>
+                <span class="block">ver. 0.2</span>
                 <span class="block">ierange</span>
             </a-->
             
-            <a href="https://github.com/SmartTeleMax/MaSha/zipball/master">
+            <a href="https://github.com/SmartTeleMax/MaSha/zipball/v0.2">
                 <span class="blue">MASHA_ALL.ZIP</span> (202Kb)<br/>
-                <span class="block">ver. 0.1</span>
+                <span class="block">ver. 0.2</span>
                 <span class="block">js + css + image</span>
             </a>
 

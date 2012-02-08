@@ -53,9 +53,9 @@
             <div class="section" id="masha">
                 <h1>MASHA</h1>
                 
-                <p>MASHA (short for Mark &amp; Share) is a JavaScript utility allowing you to mark interesting parts of web page content and share it. Just select text (paragraphs, sentences, words) on MASHA powered page and copy generated URL from location bar. Try it on this page!</p>
+                <p>MASHA (short for Mark &amp; Share) is a JavaScript utility allowing you to mark interesting parts of web page content and share it. Just select text (paragraphs, sentences, words) on MASHA powered page and copy generated URL from location bar. Opening of that url will open the page with same content and restored marks. Try it on this page!</p>
 
-                <p>This utility was first developed for the official site of the President of Russia, where it was successfully launched. Since then we got a lot of questions “What is it?”, “Can I use it on my site?”, so we decided to bring development to public.</p>
+                <p>This feature was developed for official site of President of Russia. After some months of active use it was published under MIT license.</p>
                 
             </div>
             <div class="section" id="projects">
@@ -86,7 +86,8 @@
             </div>
             <div class="section" id="usage">
                 <h1>USAGE</h1>
-                <p>MASHA is implemented in pure JavaScript and does’t need any third party libraries to work (except the ierange library, provided with MASHA to support Internet Explorer). To enable MASHA put the following code in the &lt;head&gt;&lt;/head&gt;:</p>
+                <p>MASHA has been written in clean JavaScript and does not have any framework dependencies (except bundled ierange library that included to support Internet Explorer browser).</p>
+                <p>To enable MASHA on your page you need to add inside &lt;head&gt;&lt;/head&gt; tag that code:</p>
                 
                 <div class="code">
                     
@@ -97,6 +98,7 @@
                         &lt;script type="text/javascript" src="masha.js">&lt;/script>
                         &lt;link rel="stylesheet" type="text/css" href="masha.css">
                         &lt;script type="text/javascript">
+                        // if jQuery is not available
                         if(window.addEventListener){     
                             window.addEventListener('load', function(){
                                 // can be called by domready
@@ -108,21 +110,26 @@
                                 MaSha.instance = new MaSha();
                             });
                         }
+                        // if jQuery available:
+                        $(document).ready(function() {
+                            MaSha.instance = new MaSha();
+                        });
                         &lt;/script>
                     </pre>
                 </div>
 
 
-                <p>MASHA requires the following HTML elements on the page to work:</p>
+                <p>MASHA uses three elements on the page:</p>
                     <ol>
-                	    <li>element with text to select (see ‘selectable’ option below),</li>
-                	    <li>button appearing when some text is selected with mouse (see ‘marker’ option below).</li>
+                        <li>Element that contains selectable text (see also <em>selectable</em> option below), <strong>required</strong>.</li>
+                        <li>Button that floats over selected text that acts as selection url getter (see also <em>marker</em> option).</li>
+                        <li>Popup that floats when a text is selected and tells user that he can now share a link (see also <em>select_message</em> option).</li>
                 	</ol>
-                <p>You can use MASHA with default settings or pass configuration object to constructor:</p>
+                <p>All options are defined by default, but you can override any of them on Masha object instance creation.</p>
                 <div class="code">
             
                     <pre class="brush: js">
-                        new MaSha({...}) 
+                        new MaSha({  option: 'value' }) 
                     </pre>
             
                 </div>
@@ -131,10 +138,13 @@
                     
                     <pre class="brush: js">
                         {
-                          'regexp': new RegExp('[^\\s,;:–.!?&lt;&gt;…\\n\xA0\\*]+', 'ig'),
+                          'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
                           'selectable': 'selectable-content',
                           'marker': 'txtselect_marker',
                           'ignored': null,
+                          'select_message': null,
+                          'location': new LocationHandler(),
+                          'validate': false,
                           'onMark': null,
                           'onUnmark': null,
                           'onHashRead': function(){ … }
@@ -142,31 +152,63 @@
                     </pre>
                     
                 </div>
-                <p>Where</br>
-                <strong>'regexp'</strong> — regular expression to determine words (as minimal selectable item),
-                <br/>
-                <strong>'selectable'</strong> — HTML-element (or id of it) determining selectable area,
-                <br/>
-                <strong>'marker'</strong> — HTML-element (or id of it) of marker icon appearing when some text is selected with mouse,
-                <br/>
-                <strong>'ignored'</strong> — predicate function of HTML element argument returning true to forbid selection in some elements inside selectable area and false otherwise,
-                <br/>
-                <strong>'onMark'</strong> — callback function called when user click on marker,
-                <br/>
-                <strong>'onUnmark'</strong> — callback function called when user deletes mark,
-                <br/>
-                <strong>'onHashRead'</strong> — function called when page is loaded and marks are restored (by default scrolls to first marked fragment).
-                </p>
+                <p>where</p>
+
+                <ul class="text nomargins">
+                    <li><strong>'regexp'</strong> — regular expression that describes word (not compiled, as string).</li>
+                    <li><strong>'selectable'</strong> — HTMLElement or its id, that contains selectable text.</li>
+                    <li><strong>'marker'</strong> — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.</li>
+                    <li><strong>'select_message'</strong> — HTMLElement or its id with popup that floats when text is selected. If closed once, popup will be never displayed again in this browser (localStorage or cookies are used). If no value provided, the popup is not shown.</li>
+                    <li><strong>'ignored'</strong> — Either function or string.
+
+                    <ul>
+                        <li>Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.</li>
+                        <li>Comma-separated tag names, classes or ids of ignored elements. For example: <em>'ul, .ignored-cls, #ignored-id'</em>.</li>
+                    </ul>
+                    </li>
+                    <li><strong>'location'</strong> — an object used for get url hash from and write it to. The only significant methods are get_hash, set_hash and add_hashchange. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.</li>
+                    <li><strong>'validate'</strong> — If true, the checksum of each selection is written in hash and they are validated on page load. Attention! There is no checksum algorithm provided by default and you should provide it to use validation! See 'Validation' section below.</li>
+                    <li><strong>'enable_haschange'</strong> — If true, hashchange event is handled.</li>
+                    <li><strong>'onMark'</strong> — Callback function that fired on text selection.</li>
+                    <li><strong>'onUnmark'</strong> — Callback function that fired on text deselection.</li>
+                    <li><strong>'onHashRead'</strong> — Function that called on loading of the page with selected fragments. Function that set by default will scroll page to the first selected fragment.</li>
+                </ul>
         </div>
         <div class="section">
             <h1>Internet Explorer support</h1>
-            <p>The ierange library is used for support Internet Explorer. Necessary version is a bit different from <a href="http://code.google.com/p/ierange/">original</a>. You can use ierange distributed with MASHA or add the following line to ierange’s top-level function:</p>
+            <p>MASHA uses custom bundled variant of <a href="http://code.google.com/p/ierange/">ierange</a> script to support Internet Explorer.</p>
+
+            <p>If you use mainstream ierange library instead of bundled one please add this line to end of root function:</p>
             <div class="code">
                 <pre class="brush: js">
                     window.DOMRange = DOMRange;
                 </pre>
             </div>
         </div>
+
+        <div class="section">
+            <h1>Validation</h1>
+
+            <p>Some changes on the page (paragraph and words additions or deletions) may cause unwanted selection changes. To ensure that selection is not broken, use validation feature.</p>
+
+            <p>To use validation you should implement <em>MaSha.prototype.getPositionChecksum</em> method. This method accepts word sequence iterator (a function returning the next word of sequence on each call or null if finished) and returns a string checksum. The <em>getPositionChecksum</em> method is called twice for each range: one for start position and one for end position (with reversed iterator).</p>
+
+            <p>The checksum is included into hash and it is checked on page load. If calculated checksum doesn't one from url, the selection is not restored.</p>
+
+            <p>Checksum algorythm is not included in MaSha by default, because we didn't invent The Best Algorythm Ever yet. And we don't want to force users to use bad (draft) algorythms, but you can use our algorythm.</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    MaSha.prototype.getPositionChecksum = function(words_iterator){
+                        var word1 = words_iterator();
+                        var word2 = words_iterator();
+                        var sum = makeSomeCalculations(word1, word2);
+                        return sum;
+                    }
+                </pre>
+            </div>
+        </div>
+
         <div class="section" id="plugins">
             <h1>PLUGINS</h1>
             <div class="pluginlist">
@@ -240,9 +282,9 @@
                 <span class="block">ierange</span>
             </a-->
             
-            <a href="https://github.com/SmartTeleMax/MaSha/zipball/master">
+            <a href="https://github.com/SmartTeleMax/MaSha/zipball/v0.2">
                 <span class="blue">MASHA_ALL.ZIP</span> (202Kb)<br/>
-                <span class="block">ver. 0.1</span>
+                <span class="block">ver. 0.2</span>
                 <span class="block">js + css + image</span>
             </a>
 
