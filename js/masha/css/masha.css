@@ -89,14 +89,15 @@
     left: 0;
     height: 57px;
     width: 100%;
-    display:none;
+    visibility: hidden;
     background: url(../img/textselect/upmsg_bg.png) repeat-x;
     z-index: 9999;
     overflow:hidden;
+    -webkit-transition: top .4s, visibility .1s linear .4s;
+    -moz-transition: top .4s, visibility .1s linear .4s;
+    -o-transition: top .4s, visibility .1s linear .4s;
+    transition: top .4s, visibility .1s linear .4s;
     }
-    #upmsg-selectable.show {
-        display: block;
-        }
     #upmsg-selectable .upmsg-selectable-inner {
         width: 928px;
         height: auto;
@@ -124,5 +125,12 @@
             right: 0;
             width: 19px;
             }
-
-                
+    #upmsg-selectable.show {
+        visibility: visible;
+        -webkit-transition: top .4s, visibility 0s;
+        -moz-transition: top .4s, visibility 0s;
+        -o-transition: top .4s, visibility 0s;
+        transition: top .4s, visibility 0s;
+        top: 0;
+        }
+ 
