@@ -361,7 +361,7 @@ MaSha.prototype = {
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
         //
         var pair = '';
-        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
+        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -378,7 +378,7 @@ MaSha.prototype = {
     },
 
     deserializeRange: function(serialized){
-        var result = /^([^,]+),([^,]+)$/.exec(serialized);
+        var result = /^([0-9:]+)(?:,|%2C)([0-9:]+)$/.exec(serialized);
         var bits1 = result[1].split(":");
         var bits2 = result[2].split(":");
         // XXX this if is ugly
