@@ -1321,7 +1321,7 @@ function getPageXY(e){
     },
     add_hashchange: MaSha.LocationHandler.prototype.add_hashchange,
     get_hash_part: function() {
-        var parts = window.location.hash.replace(/^#\|?/, '').split('|');
+        var parts = window.location.hash.replace(/^#\|?/, '').split(/\||%7C/);
         var self_part = null;
         for (var i=0; i< parts.length; i++){
           if (parts[i].substr(0, this.prefix.length + 1) == this.prefix + '='){
