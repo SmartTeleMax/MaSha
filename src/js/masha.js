@@ -8,16 +8,18 @@
 
 (function(){
 
-var LocationHandler = function() {
-    this.set_hash = function(hash) {
+var LocationHandler = function() {}
+
+LocationHandler.prototype = {
+    set_hash: function(hash) {
         window.location.hash = hash;
-    };
-    this.get_hash = function() {
+    },
+    get_hash: function() {
         return window.location.hash;
-    };
-    this.add_hashchange = function(delegate) {
+    },
+    add_hashchange: function(delegate) {
         addEvent(window, 'hashchange', delegate);
-    };
+    }
 };
 
 var MaSha = function(options) {
@@ -1294,4 +1296,66 @@ function getPageXY(e){
     return {x: e.pageX, y: e.pageY};
 }
 
+  /* MaSha Multi */
+  // XXX here on in separate file?
+
+  var MultiLocationHandler = function(prefix) {
+    this.prefix = prefix;
+  };
+
+  MultiLocationHandler.prototype = {
+    set_hash: function(hash) {
+        hash = hash.replace('sel', this.prefix).replace(/^#/, '');
+
+        if (hash.length == this.prefix.length + 1){ hash = '' }
+
+        var old_hash = this.get_hash_part();
+        var full_hash = window.location.hash.replace(/^#\|?/, '');
+        if (old_hash){
+            var new_hash = window.location.hash.replace(old_hash, hash);
+        } else {
+            var new_hash = window.location.hash + '|' + hash;
+        }
+        new_hash = '#' + new_hash.replace('||', '').replace(/^#?\|?|\|$/g, '');
+        window.location.hash = new_hash;
+    },
+    add_hashchange: MaSha.LocationHandler.prototype.add_hashchange,
+    get_hash_part: function() {
+        var parts = window.location.hash.replace(/^#\|?/, '').split('|');
+        var self_part = null;
+        for (var i=0; i< parts.length; i++){
+          if (parts[i].substr(0, this.prefix.length + 1) == this.prefix + '='){
+            return parts[i];
+          }
+        }
+        return '';
+    },
+    get_hash: function() {
+        return this.get_hash_part().replace(this.prefix, 'sel');
+    }
+  };
+
+
+  var MultiMaSha = function(elements, get_prefix){
+
+    get_prefix = get_prefix || function(element){
+      return element.id;
+    }
+ 
+
+    for (var i=0; i< elements.length; i++){
+      var element = elements[i];
+      var prefix = get_prefix(element);
+
+      if (prefix) {
+        
+        new MaSha({
+          'selectable': element,
+          'location': new MultiLocationHandler(prefix)
+        });
+      }
+    }
+  }
+
+  window.MultiMaSha = MultiMaSha;
 })();
