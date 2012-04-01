@@ -781,7 +781,7 @@ MaSha.prototype = {
         // marks first text node in each visual block element:
         // inserts a span with special class and ID before it
         var node = this.selectable;
-        var captureCount=0;
+        MaSha.captureCount = MaSha.captureCount || 0;
         var this_ = this;
 
         enumerate(node);
@@ -801,15 +801,15 @@ MaSha.prototype = {
                 } else if (nodeType==3) {
                     if (!block_started){
                         // remember the block
-                        captureCount++;
+                        MaSha.captureCount++;
                         var index_span = document.createElement('span');
                         // XXX prefix all class and id attributes with "masha"
-                        index_span.id = 'selection_index' + captureCount;
+                        index_span.id = 'selection_index' + MaSha.captureCount;
                         index_span.className = 'selection_index';
                         child.parentNode.insertBefore(index_span, child);
 
                         idx++;
-                        this_.blocks[captureCount] = child;
+                        this_.blocks[MaSha.captureCount] = child;
                         has_blocks = block_started = true;
                     }
                 } else if (nodeType==1) {
