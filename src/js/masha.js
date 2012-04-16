@@ -36,7 +36,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = ""; // filled automatically by hook
+MaSha.version = "16.04.2012-15:11:17"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -109,17 +109,6 @@ MaSha.prototype = {
     
 
         var marker_coord;
-        addEvent(this.selectable, 'mouseup', function(e) {
-            /*
-             * Show the marker if any text selected
-             */
-            // XXX it's a question: bind to document or to this.selectable
-            // binding to document works better
-
-            marker_coord = getPageXY(e); // outside timeout function because of IE
-            window.setTimeout(show_marker, 1);
-        });
-
         function show_marker(){
             var regexp = new RegExp(this_.options.regexp, 'g');
             var text = window.getSelection().toString();
@@ -131,28 +120,33 @@ MaSha.prototype = {
             this_.marker.style.left = marker_coord.x + 5 + 'px';
             addClass(this_.marker, 'show');
         }
+        var has_touch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch; // from modernizr
 
-        function touch(e){
-            var touch = e.touches.item(0);
-            marker_coord = { x: touch.pageX, y: touch.pageY };
-        }
+        if(!has_touch){
+            addEvent(this.selectable, 'mouseup', function(e) {
+                /*
+                 * Show the marker if any text selected
+                 */
 
-        addEvent(this.selectable, 'touchmove', touch);
-        addEvent(this.selectable, 'touchstart', touch);
-        addEvent(this.selectable, 'touchend', function(){
-            window.setTimeout(function(){
-                var s = window.getSelection();
-                if(s.rangeCount){
-                    var rects = s.getRangeAt(0).getClientRects();
-                    var rect = rects[rects.length - 1];
-                    if(rect){
-                    marker_coord = {x: rect.left + rect.width + document.body.scrollLeft,
-                                    y: rect.top + rect.height/2 + document.body.scrollTop};
+                marker_coord = getPageXY(e); // outside timeout function because of IE
+                window.setTimeout(show_marker, 1);
+            });
+        } else {
+            addEvent(this.selectable, 'touchend', function(){
+                window.setTimeout(function(){
+                    var s = window.getSelection();
+                    if(s.rangeCount){
+                        var rects = s.getRangeAt(0).getClientRects();
+                        var rect = rects[rects.length - 1];
+                        if(rect){
+                        marker_coord = {x: rect.left + rect.width + document.body.scrollLeft,
+                                        y: rect.top + rect.height/2 + document.body.scrollTop};
+                        }
                     }
-                }
-                show_marker();
-            }, 1);
-        });
+                    show_marker();
+                }, 1);
+            });
+        }
 
         function marker_click(e){
             preventDefault(e);
