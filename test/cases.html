@@ -112,6 +112,7 @@
             set_hash: function(x){ hash = x.replace('#', ''); },
             get_hash: function(){ return hash; }
         };
+        MaSha.captureCount = 0;
         return new MaSha(options);
     }
     function assertHTMLEqual(aim, silent){
