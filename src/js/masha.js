@@ -36,7 +36,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "16.04.2012-15:11:17"; // filled automatically by hook
+MaSha.version = "16.04.2012-15:43:13"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -521,9 +521,12 @@ MaSha.prototype = {
                 container = container.childNodes[offset];
                 offset = 0;
             } else {
+                // XXX what is the case for this code?
                 container_txtnodes = textNodes(container); // XXX lastTextNode
-                container = container_txtnodes[container_txtnodes.length-1];
-                offset = container.data.length;
+                if (container_txtnodes.length){ // this if fixes regressionSelectionStartsAtImage test
+                    container = container_txtnodes[container_txtnodes.length-1];
+                    offset = container.data.length;
+                }
             }
         }
 

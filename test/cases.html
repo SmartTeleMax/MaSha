@@ -601,6 +601,22 @@
             document.getElementById('txtselect_marker').click();
 
             assertSelectionEqual('paragraph');
+        },
+        regressionSelectionStartsAtImage: function(){
+            var html = '<p><img src=""></p><p>some text in<br/>paragraph</p>';
+            var sel = new_selection(html);
+
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            var div = document.getElementById('selectable-content');
+            range.setStart(div.childNodes[0], 1);
+            range.setEnd(div.childNodes[1].childNodes[1], 9);
+            selection.addRange(range);
+            document.getElementById('txtselect_marker').click();
+
+            assertSelectionEqual('some text');
         }
         // XXX fix tests for IE!!!
         // XXX add tests for nbsp for IE
