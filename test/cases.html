@@ -617,6 +617,11 @@
             document.getElementById('txtselect_marker').click();
 
             assertSelectionEqual('some text');
+        },
+        regressionEncodedColon: function(){
+            var html = '<p>Some text of few short words.</p>';
+            var sel = new_selection(html, '1:3%2C1:4');
+            assertSelectionEqual('of few');
         }
         // XXX fix tests for IE!!!
         // XXX add tests for nbsp for IE
