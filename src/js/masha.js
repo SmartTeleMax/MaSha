@@ -8,16 +8,18 @@
 
 (function(){
 
-var LocationHandler = function() {
-    this.set_hash = function(hash) {
+var LocationHandler = function() {}
+
+LocationHandler.prototype = {
+    set_hash: function(hash) {
         window.location.hash = hash;
-    };
-    this.get_hash = function() {
+    },
+    get_hash: function() {
         return window.location.hash;
-    };
-    this.add_hashchange = function(delegate) {
+    },
+    add_hashchange: function(delegate) {
         addEvent(window, 'hashchange', delegate);
-    };
+    }
 };
 
 var MaSha = function(options) {
@@ -34,7 +36,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "29.09.2011-12:18:53"; // filled automatically by hook
+MaSha.version = "16.04.2012-15:43:13"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -107,17 +109,6 @@ MaSha.prototype = {
     
 
         var marker_coord;
-        addEvent(this.selectable, 'mouseup', function(e) {
-            /*
-             * Show the marker if any text selected
-             */
-            // XXX it's a question: bind to document or to this.selectable
-            // binding to document works better
-
-            marker_coord = getPageXY(e); // outside timeout function because of IE
-            window.setTimeout(show_marker, 1);
-        });
-
         function show_marker(){
             var regexp = new RegExp(this_.options.regexp, 'g');
             var text = window.getSelection().toString();
@@ -129,28 +120,33 @@ MaSha.prototype = {
             this_.marker.style.left = marker_coord.x + 5 + 'px';
             addClass(this_.marker, 'show');
         }
+        var has_touch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch; // from modernizr
 
-        function touch(e){
-            var touch = e.touches.item(0);
-            marker_coord = { x: touch.pageX, y: touch.pageY };
-        }
+        if(!has_touch){
+            addEvent(this.selectable, 'mouseup', function(e) {
+                /*
+                 * Show the marker if any text selected
+                 */
 
-        addEvent(this.selectable, 'touchmove', touch);
-        addEvent(this.selectable, 'touchstart', touch);
-        addEvent(this.selectable, 'touchend', function(){
-            window.setTimeout(function(){
-                var s = window.getSelection();
-                if(s.rangeCount){
-                    var rects = s.getRangeAt(0).getClientRects();
-                    var rect = rects[rects.length - 1];
-                    if(rect){
-                    marker_coord = {x: rect.left + rect.width + document.body.scrollLeft,
-                                    y: rect.top + rect.height/2 + document.body.scrollTop};
+                marker_coord = getPageXY(e); // outside timeout function because of IE
+                window.setTimeout(show_marker, 1);
+            });
+        } else {
+            addEvent(this.selectable, 'touchend', function(){
+                window.setTimeout(function(){
+                    var s = window.getSelection();
+                    if(s.rangeCount){
+                        var rects = s.getRangeAt(0).getClientRects();
+                        var rect = rects[rects.length - 1];
+                        if(rect){
+                        marker_coord = {x: rect.left + rect.width + document.body.scrollLeft,
+                                        y: rect.top + rect.height/2 + document.body.scrollTop};
+                        }
                     }
-                }
-                show_marker();
-            }, 1);
-        });
+                    show_marker();
+                }, 1);
+            });
+        }
 
         function marker_click(e){
             preventDefault(e);
@@ -361,7 +357,7 @@ MaSha.prototype = {
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
         //
         var pair = '';
-        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
+        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -378,7 +374,7 @@ MaSha.prototype = {
     },
 
     deserializeRange: function(serialized){
-        var result = /^([^,]+),([^,]+)$/.exec(serialized);
+        var result = /^([0-9:]+)(?:,|%2C)([0-9:]+)$/.exec(serialized);
         var bits1 = result[1].split(":");
         var bits2 = result[2].split(":");
         // XXX this if is ugly
@@ -525,9 +521,12 @@ MaSha.prototype = {
                 container = container.childNodes[offset];
                 offset = 0;
             } else {
+                // XXX what is the case for this code?
                 container_txtnodes = textNodes(container); // XXX lastTextNode
-                container = container_txtnodes[container_txtnodes.length-1];
-                offset = container.data.length;
+                if (container_txtnodes.length){ // this if fixes regressionSelectionStartsAtImage test
+                    container = container_txtnodes[container_txtnodes.length-1];
+                    offset = container.data.length;
+                }
             }
         }
 
@@ -779,7 +778,7 @@ MaSha.prototype = {
         // marks first text node in each visual block element:
         // inserts a span with special class and ID before it
         var node = this.selectable;
-        var captureCount=0;
+        MaSha.captureCount = MaSha.captureCount || 0;
         var this_ = this;
 
         enumerate(node);
@@ -799,15 +798,15 @@ MaSha.prototype = {
                 } else if (nodeType==3) {
                     if (!block_started){
                         // remember the block
-                        captureCount++;
+                        MaSha.captureCount++;
                         var index_span = document.createElement('span');
                         // XXX prefix all class and id attributes with "masha"
-                        index_span.id = 'selection_index' + captureCount;
+                        index_span.id = 'selection_index' + MaSha.captureCount;
                         index_span.className = 'selection_index';
                         child.parentNode.insertBefore(index_span, child);
 
                         idx++;
-                        this_.blocks[captureCount] = child;
+                        this_.blocks[MaSha.captureCount] = child;
                         has_blocks = block_started = true;
                     }
                 } else if (nodeType==1) {
@@ -1294,4 +1293,66 @@ function getPageXY(e){
     return {x: e.pageX, y: e.pageY};
 }
 
+  /* MaSha Multi */
+  // XXX here on in separate file?
+
+  var MultiLocationHandler = function(prefix) {
+    this.prefix = prefix;
+  };
+
+  MultiLocationHandler.prototype = {
+    set_hash: function(hash) {
+        hash = hash.replace('sel', this.prefix).replace(/^#/, '');
+
+        if (hash.length == this.prefix.length + 1){ hash = '' }
+
+        var old_hash = this.get_hash_part();
+        var full_hash = window.location.hash.replace(/^#\|?/, '');
+        if (old_hash){
+            var new_hash = window.location.hash.replace(old_hash, hash);
+        } else {
+            var new_hash = window.location.hash + '|' + hash;
+        }
+        new_hash = '#' + new_hash.replace('||', '').replace(/^#?\|?|\|$/g, '');
+        window.location.hash = new_hash;
+    },
+    add_hashchange: MaSha.LocationHandler.prototype.add_hashchange,
+    get_hash_part: function() {
+        var parts = window.location.hash.replace(/^#\|?/, '').split(/\||%7C/);
+        var self_part = null;
+        for (var i=0; i< parts.length; i++){
+          if (parts[i].substr(0, this.prefix.length + 1) == this.prefix + '='){
+            return parts[i];
+          }
+        }
+        return '';
+    },
+    get_hash: function() {
+        return this.get_hash_part().replace(this.prefix, 'sel');
+    }
+  };
+
+
+  var MultiMaSha = function(elements, get_prefix){
+
+    get_prefix = get_prefix || function(element){
+      return element.id;
+    }
+ 
+
+    for (var i=0; i< elements.length; i++){
+      var element = elements[i];
+      var prefix = get_prefix(element);
+
+      if (prefix) {
+        
+        new MaSha({
+          'selectable': element,
+          'location': new MultiLocationHandler(prefix)
+        });
+      }
+    }
+  }
+
+  window.MultiMaSha = MultiMaSha;
 })();
