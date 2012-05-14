@@ -146,7 +146,7 @@
                     
                     <pre class="brush: js">
                         {
-                          'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',
+                          'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',<!--'-->
                           'selectable': 'selectable-content',
                           'marker': 'txtselect_marker',
                           'ignored': null,
@@ -211,6 +211,26 @@
                 </pre>
             </div>
         </div>
+        <div class="section" id="validation">
+            <h1>MaSha и форумные движки</h1>
+
+            <p>MaSha поддерживает работу со страницами с несколькими текстовыми блоками, такими как форумные движки. В этом случае для каждого блока текста создается собственный экземпляр MaSha, отдельно ведется нумерация параграфов и строк. Подобное поведение реализуется с помощью объекта <em>MultiMasha</em>, конструктор которого принимает два параметра:</p>
+                <ul class="text nomargins">
+                    <li><strong>'elements'</strong> — массив html-элементов — блоков текста;</li>
+                    <li><strong>'get_prefix'</strong> — функция, принимающая в качестве аргумента html-элемент — блок текста, возвращающая идентификатор этого элемента, который будет использоваться для ссылки на него в URL. По-умолчанию, возвращает <em>id</em> элемента.</li>
+                </ul>
+            <p>Пример использования:</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    var posts = document.querySelectorAll('.post-text');
+                    new MultiMaSha(posts, function(element){
+                        return element.id.split('-')[1];
+                    });
+                </pre>
+            </div>
+        </div>
+
         <div class="section" id="plugins">
             <h1>ПЛАГИНЫ</h1>
             <div class="pluginlist">

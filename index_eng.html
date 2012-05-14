@@ -209,6 +209,26 @@
             </div>
         </div>
 
+        <div class="section" id="validation">
+            <h1>MaSha & forums</h1>
+
+            <p>MaSha supports pages with multiple text blocks, including forum threads. In this case, for each text block own MaSha instance is created, and each text block has separate paragraph and text numeration. This behavior is implemented by <em>MultiMasha</em>, a constructor accepting two parameters:</p>
+                <ul class="text nomargins">
+                    <li><strong>'elements'</strong> — an array of html-elements corresponding text blocks;</li>
+                    <li><strong>'get_prefix'</strong> — function accepting html-element from the array and returning it's identifier to be used in URL. Return element's <em>id</em> by default.</li>
+                </ul>
+            <p>Example of usage:</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    var posts = document.querySelectorAll('.post-text');
+                    new MultiMaSha(posts, function(element){
+                        return element.id.split('-')[1];
+                    });
+                </pre>
+            </div>
+        </div>
+
         <div class="section" id="plugins">
             <h1>PLUGINS</h1>
             <div class="pluginlist">
