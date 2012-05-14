@@ -111,3 +111,19 @@ The checksum is included into hash and it is checked on page load. If calculated
         return sum;
     }
 ```
+
+## MultiMaSha
+
+MaSha supports pages with multiple text blocks, including forum threads. In this case, for each text block own MaSha instance is created, and each text block has separate paragraph and text numeration. This behavior is implemented by _MultiMasha_, a constructor accepting two parameters:
+
+* 'elements' — an array of html-elements corresponding text blocks;
+* 'get_prefix' — function accepting html-element from the array and returning it's identifier to be used in URL. Return element's _id_ by default.
+
+Example of usage:
+
+```javascript
+    var posts = document.querySelectorAll('.post-text');
+    new MultiMaSha(posts, function(element){
+        return element.id.split('-')[1];
+    });
+```
