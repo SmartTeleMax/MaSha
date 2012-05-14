@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>Masha simple demo.</title>
+	<meta name="title" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+    
+    <!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script-->
+    <!--script type="text/javascript" src="jquery-1.3.2.js"></script-->
+    <!--[IF IE]>
+    <script type="text/javascript" src="../src/js/ierange.js"></script>
+    <![ENDIF]-->
+    <script type="text/javascript" src="../src/js/masha.js"></script>
+    <script type="text/javascript" src="validation.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="../src/css/masha.css">
+    <style>
+    
+    html, body {
+        height: 100%;
+        padding:0;
+        margin:0;
+    }
+    .user_selection_true{
+        background: #afa;
+    }
+    .post-footer{
+        border-top: 1px solid #ccc;
+        padding-top: 5px;
+    }
+    ul.ads{
+        list-style: none;
+
+        }
+    ul.ads li{
+        float: left;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #afa;
+        }
+    .date{
+        float: right;
+        }
+    </style>
+
+    <script>
+    function init_masha(){
+        var posts = document.querySelectorAll('.post');
+        new MultiMaSha(posts, function(el){
+            return el.id;
+        }, {
+            'validate': true
+        })
+    }
+
+    window.addEventListener('load', init_masha, false);
+    </script>
+    
+</head>
+<body>
+<h1>Our super Forum!</h1>
+
+<table style="max-width: 1000px">
+<tr>
+  <td style="white-space: pre-wrap; width: 200px;">
+  <strong>Admin</strong>
+  Group: Administrators
+  Messages: 200
+  Registered: 15 July 04
+  Gender:Male
+  </td>
+  <td>
+    <div class="date">Posted at: 14:35</div>
+    <div class="post" id='post1'>
+      <p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+    <div class="post-footer">I am the god of this forum.</div>
+  </td>
+</tr>
+<tr>
+  <td style="white-space: pre-wrap">
+  <strong>User</strong>
+  Group: Users
+  Messages: 150
+  Registered: 15 July 05
+  Gender: Male
+  </td>
+  <td>
+    <div class="date">Posted at: 15:00</div>
+    <div class="post" id='post2'>
+      <p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+    <div class="post-footer">All people are stupid. <small>Except me</small></div>
+  </td>
+</tr>
+<tr>
+  <td colspan="2">
+  <ul class="ads">
+    <li style="border: none">Ads by Goondex:</li>
+    <li>ZDAR Masha High Cream</li>
+    <li>GAETANO CAZZOLA MASHA</li>
+    <li>Masha Vitesse VS-1054</li>
+    <li>MaSha: The best js tool ever!</li>
+  </ul>
+  </td>
+</tr>
+<tr>
+  <td style="white-space: pre-wrap">
+  <strong>Useress</strong>
+  Group: Newbies
+  Messages: 3
+  Registered: 15 July 11
+  Gender: Female
+  </td>
+  <td>
+    <div class="date">Posted at: 15:05</div>
+    <div class="post" id='post3'>
+      <p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+    <div class="post-footer"><strong>StArS aRe ShInInG fOr Me</strong></div>
+  </td>
+</tr>
+<table>
+
+<div id="upmsg-selectable">
+    <div class="upmsg-selectable-inner">
+        <img src="../src/img/textselect/upmsg_arrow.png" alt="">
+        <p>Вы можете отметить интересные вам фрагменты текста, которые будут доступны по уникальной ссылке в адресной строке браузера.</p>
+        <a href="#" class="upmsg_closebtn"></a>
+    </div>
+</div>
+</body>
+</html>

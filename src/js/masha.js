@@ -36,7 +36,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "16.04.2012-15:43:13"; // filled automatically by hook
+MaSha.version = "14.05.2012-15:16:27"; // filled automatically by hook
 
 MaSha.default_options = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -374,7 +374,7 @@ MaSha.prototype = {
     },
 
     deserializeRange: function(serialized){
-        var result = /^([0-9:]+)(?:,|%2C)([0-9:]+)$/.exec(serialized);
+        var result = /^([0-9A-Za-z:]+)(?:,|%2C)([0-9A-Za-z:]+)$/.exec(serialized);
         var bits1 = result[1].split(":");
         var bits2 = result[2].split(":");
         // XXX this if is ugly
@@ -1333,7 +1333,8 @@ function getPageXY(e){
   };
 
 
-  var MultiMaSha = function(elements, get_prefix){
+  var MultiMaSha = function(elements, get_prefix, options){
+
 
     get_prefix = get_prefix || function(element){
       return element.id;
@@ -1345,11 +1346,12 @@ function getPageXY(e){
       var prefix = get_prefix(element);
 
       if (prefix) {
-        
-        new MaSha({
+        var init_options = extend({}, options || {}, {
           'selectable': element,
           'location': new MultiLocationHandler(prefix)
         });
+        
+        new MaSha(init_options);
       }
     }
   }
