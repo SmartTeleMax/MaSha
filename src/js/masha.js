@@ -40,7 +40,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "15.05.2012-13:21:00"; // filled automatically by hook
+MaSha.version = "15.05.2012-15:38:50"; // filled automatically by hook
 
 MaSha.defaultOptions = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -450,12 +450,25 @@ MaSha.prototype = {
 
     getPositionChecksum: function(wordsIterator){
         /*
-         * Should be impemented by user
-         * We don't want to include validation algorythm, because we 
-         * didn't invent The Best Algorythm Ever yet. :(
-         * And we don't want to force users to use bad algorythms.
+         * Used in validation. This method accepts word sequence iterator (a function returning 
+         * the next word of sequence on each call or null if words are) and returns a string checksum. 
+         * The getPositionChecksum method is called twice for each range: one for start position and 
+         * one for end position (with reversed iterator).
+         * 
+         * The checksum is included into hash and it is checked on page load. If calculated checksum 
+         * doesn't one from url, the selection is not restored.
          */
-        return '';
+        var sum = '';
+        for (var i=0; i<3;i++){
+            var part = (wordsIterator() || '').charAt(0);
+            if (part){
+                var allowedChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+                var integer = part.charCodeAt(0) % allowedChars.length;
+                part = allowedChars.charAt(integer);
+            }
+            sum += part;
+        }
+        return sum;
     },
 
     deserializePosition: function(bits, pos){
