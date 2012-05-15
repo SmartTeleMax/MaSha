@@ -123,7 +123,7 @@
                     <ol>
                         <li>Element that contains selectable text (see also <em>selectable</em> option below), <strong>required</strong>.</li>
                         <li>Button that floats over selected text that acts as selection url getter (see also <em>marker</em> option).</li>
-                        <li>Popup that floats when a text is selected and tells user that he can now share a link (see also <em>select_message</em> option).</li>
+                        <li>Popup that floats when a text is selected and tells user that he can now share a link (see also <em>selectMessage</em> option).</li>
                 	</ol>
                 <p>All options are defined by default, but you can override any of them on Masha object instance creation.</p>
                 <div class="code">
@@ -142,7 +142,7 @@
                           'selectable': 'selectable-content',
                           'marker': 'txtselect_marker',
                           'ignored': null,
-                          'select_message': null,
+                          'selectMessage': null,
                           'location': new LocationHandler(),
                           'validate': false,
                           'onMark': null,
@@ -158,7 +158,7 @@
                     <li><strong>'regexp'</strong> — regular expression that describes word (not compiled, as string).</li>
                     <li><strong>'selectable'</strong> — HTMLElement or its id, that contains selectable text.</li>
                     <li><strong>'marker'</strong> — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.</li>
-                    <li><strong>'select_message'</strong> — HTMLElement or its id with popup that floats when text is selected. If closed once, popup will be never displayed again in this browser (localStorage or cookies are used). If no value provided, the popup is not shown.</li>
+                    <li><strong>'selectMessage'</strong> — HTMLElement or its id with popup that floats when text is selected. If closed once, popup will be never displayed again in this browser (localStorage or cookies are used). If no value provided, the popup is not shown.</li>
                     <li><strong>'ignored'</strong> — Either function or string.
 
                     <ul>
@@ -166,9 +166,9 @@
                         <li>Comma-separated tag names, classes or ids of ignored elements. For example: <em>'ul, .ignored-cls, #ignored-id'</em>.</li>
                     </ul>
                     </li>
-                    <li><strong>'location'</strong> — an object used for get url hash from and write it to. The only significant methods are get_hash, set_hash and add_hashchange. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.</li>
+                    <li><strong>'location'</strong> — an object used for get url hash from and write it to. The only significant methods are getHash, setHash and addHashchange. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.</li>
                     <li><strong>'validate'</strong> — If true, the checksum of each selection is written in hash and they are validated on page load. Attention! There is no checksum algorithm provided by default and you should provide it to use validation! See 'Validation' section below.</li>
-                    <li><strong>'enable_haschange'</strong> — If true, hashchange event is handled.</li>
+                    <li><strong>'enableHaschange'</strong> — If true, hashchange event is handled.</li>
                     <li><strong>'onMark'</strong> — Callback function that fired on text selection.</li>
                     <li><strong>'onUnmark'</strong> — Callback function that fired on text deselection.</li>
                     <li><strong>'onHashRead'</strong> — Function that called on loading of the page with selected fragments. Function that set by default will scroll page to the first selected fragment.</li>
@@ -199,9 +199,9 @@
 
             <div class="code">
                 <pre class="brush: js">
-                    MaSha.prototype.getPositionChecksum = function(words_iterator){
-                        var word1 = words_iterator();
-                        var word2 = words_iterator();
+                    MaSha.prototype.getPositionChecksum = function(wordsIterator){
+                        var word1 = wordsIterator();
+                        var word2 = wordsIterator();
                         var sum = makeSomeCalculations(word1, word2);
                         return sum;
                     }
@@ -215,7 +215,8 @@
             <p>MaSha supports pages with multiple text blocks, including forum threads. In this case, for each text block own MaSha instance is created, and each text block has separate paragraph and text numeration. This behavior is implemented by <em>MultiMasha</em>, a constructor accepting two parameters:</p>
                 <ul class="text nomargins">
                     <li><strong>'elements'</strong> — an array of html-elements corresponding text blocks;</li>
-                    <li><strong>'get_prefix'</strong> — function accepting html-element from the array and returning it's identifier to be used in URL. Return element's <em>id</em> by default.</li>
+                    <li><strong>'getPrefix'</strong> — function accepting html-element from the array and returning it's identifier to be used in URL. Return element's <em>id</em> by default.</li>
+                    <li><strong>'options'</strong> — options of MaSha object.</li>
                 </ul>
             <p>Example of usage:</p>
 
