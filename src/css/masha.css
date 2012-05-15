@@ -1,11 +1,8 @@
+#marker-bar,
 #txtselect_marker {
     display: block;
     visibility: hidden;
-    width: 48px;
-    height: 48px;
-    background:url(../img/textselect/marker.png) -0px -0px no-repeat;
     position: absolute;
-    cursor: pointer;
     z-index: 1200; /* more than assignment_wrapper_ok */
     opacity: 0;
     -webkit-transition: opacity .4s, visibility .1s linear .4s;
@@ -13,9 +10,23 @@
     -o-transition: opacity .4s, visibility .1s linear .4s;
     transition: opacity .4s, visibility .1s linear .4s;
     }
+#txtselect_marker {
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    background:url(../img/textselect/marker.png) -0px -0px no-repeat;
+    }
+#marker-bar{
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+    }
     #txtselect_marker:hover {
         background-position: -0px -48px;
         }
+    #marker-bar.show,
     #txtselect_marker.show {
         /* XXX make a common css fadeIn/fadeOut classes */
         visibility: visible;
@@ -24,6 +35,15 @@
         -o-transition: opacity .4s, visibility 0s;
         transition: opacity .4s, visibility 0s;
         opacity: 1;
+        }
+    #marker-bar span{
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        background: #aaa;
+        display: block;
+        margin: 0 5px;
+        float: left
         }
 
 .user_selection, .user_selection_true {

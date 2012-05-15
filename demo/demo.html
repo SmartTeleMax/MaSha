@@ -32,7 +32,8 @@
     function init_masha(){
         MaSha.instance = new MaSha({'select_message': 'upmsg-selectable',
                                     'ignored': '.ignored',
-                                    'validate': true});
+                                    'validate': true,
+                                    'marker': 'marker-bar'});
     }
     if (window.addEventListener){
         window.addEventListener('load', init_masha, false);
@@ -74,5 +75,11 @@ This text is completely ignored by MaSha. You can't select it because, may be, i
         <a href="#" class="upmsg_closebtn"></a>
     </div>
 </div>
+<a id="marker-bar" href="#" class="masha-marker-bar">
+  <span class="masha-marker" title="mark"></span>
+  <span class="twitter masha-social" data-pattern="http://twitter.com/share?url={url}" title="tweet"></span>
+  <span class="facebook masha-social" data-pattern="http://www.facebook.com/share.php?u={url}" title="facebook"></span>
+  <span class="vk masha-social" data-pattern="http://vk.com/share.php?url={url}" title="vk"></span>
+</a>
 </body>
 </html>

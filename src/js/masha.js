@@ -40,7 +40,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "14.05.2012-17:28:34"; // filled automatically by hook
+MaSha.version = "15.05.2012-13:21:00"; // filled automatically by hook
 
 MaSha.defaultOptions = {
     'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
@@ -158,6 +158,14 @@ MaSha.prototype = {
         function markerClick(e){
             preventDefault(e);
             stopEvent(e);
+
+            var target = (e.target || e.srcElement);
+
+            if (hasClass(this, 'masha-marker-bar')){
+              if (!hasClass(target, 'masha-social') && !hasClass(target, 'masha-marker')){
+                return;
+              }
+            }
             removeClass(this_.marker, 'show');
             if (!this_.rangeIsSelectable()){
                 return;
@@ -171,6 +179,14 @@ MaSha.prototype = {
             }
             if (this_.options.selectMessage){
                 this_._showMessage();
+            }
+
+            if (hasClass(target, 'masha-social') ){
+              var pattern = target.getAttribute('data-pattern');
+              if (pattern){
+                var new_url = pattern.replace('{url}', encodeURIComponent(window.location.toString()));
+                this_.openShareWindow(new_url);
+              }
             }
         }
     
@@ -198,6 +214,9 @@ MaSha.prototype = {
         }
 
         this.readHash();
+    },
+    openShareWindow: function(url){
+        window.open(url, '', 'status=no,toolbar=no,menubar=no,width=800,height=400');
     },
     getMarkerCoords: function(marker, markerCoord){
         return {'x': markerCoord.x + 5, 'y':markerCoord.y - 33};
@@ -993,11 +1012,11 @@ MaSha.prototype = {
         var this_ = this;
         if (this.getMessageClosed()) return;
     
-        this.show_message();
+        this.showMessage();
     
         clearTimeout(this.msg_autoclose);
         this.msg_autoclose = setTimeout(function(){
-            this_.hide_message();
+            this_.hideMessage();
         }, 10000);
     },
     showMessage: function(){
