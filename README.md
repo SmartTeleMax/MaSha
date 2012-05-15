@@ -60,9 +60,10 @@ new MaSha({ option: 'value' })
   'selectable': 'selectable-content',
   'marker': 'txtselect_marker',
   'ignored': null,
-  'select_message': null,
+  'selectMessage': null,
   'location': new LocationHandler(),
   'validate': false,
+  'enableHaschange': true,
   'onMark': null,
   'onUnmark': null,
   'onHashRead': function(){ … }
@@ -74,13 +75,13 @@ where
 * 'regexp' — regular expression that describes word (not compiled, as string).
 * 'selectable' — HTMLElement or its id, that contains selectable text.
 * 'marker' — HTMLElement or its id, that contains marker icon to be displayed on text selection. If element with given id is not found, an &lt;a/&gt; element is created.
-* 'select_message' — HTMLElement or its id with popup that floats when text is selected. If closed once, popup will be never displayed again in this browser (localStorage or cookies are used). If no value provided, the popup is not shown.
+* 'selectMessage' — HTMLElement or its id with popup that floats when text is selected. If closed once, popup will be never displayed again in this browser (localStorage or cookies are used). If no value provided, the popup is not shown.
 * 'ignored' — Either function or string.
   * Filter function, that allows to ignore specified HTMLElement as selection target. Should return true if element must be ignored; otherwise false.
   * Comma-separated tag names, classes or ids of ignored elements. For example: *'ul, .ignored-cls, #ignored-id'*.
-* 'location' — an object used for get url hash from and write it to. The only significant methods are get_hash, set_hash and add_hashchange. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
+* 'location' — an object used for get url hash from and write it to. The only significant methods are getHash, setHash and addHashchange. You can redefine, for example, to write URL not in address bar but into a custom popup, or for handle address bar URL manually.
 * 'validate' — If true, the checksum of each selection is written in hash and they are validated on page load. Attention! There is no checksum algorithm provided by default and you should provide it to use validation! See 'Validation' section below.
-* 'enable_haschange' — If true, hashchange event is handled.
+* 'enableHaschange' — If true, hashchange event is handled.
 * 'onMark' — Callback function that fired on text selection.
 * 'onUnmark' — Callback function that fired on text deselection.
 * 'onHashRead' — Function that called on loading of the page with selected fragments. Function that set by default will scroll page to the first selected fragment.
@@ -104,9 +105,9 @@ To use validation you should implement `MaSha.prototype.getPositionChecksum` met
 The checksum is included into hash and it is checked on page load. If calculated checksum doesn't one from url, the selection is not restored.
 
 ```javascript
-    MaSha.prototype.getPositionChecksum = function(words_iterator){
-        var word1 = words_iterator();
-        var word2 = words_iterator();
+    MaSha.prototype.getPositionChecksum = function(wordsIterator){
+        var word1 = wordsIterator();
+        var word2 = wordsIterator();
         var sum = makeSomeCalculations(word1, word2);
         return sum;
     }
@@ -114,10 +115,11 @@ The checksum is included into hash and it is checked on page load. If calculated
 
 ## MultiMaSha
 
-MaSha supports pages with multiple text blocks, including forum threads. In this case, for each text block own MaSha instance is created, and each text block has separate paragraph and text numeration. This behavior is implemented by _MultiMasha_, a constructor accepting two parameters:
+MaSha supports pages with multiple text blocks, including forum threads. In this case, for each text block own MaSha instance is created, and each text block has separate paragraph and text numeration. This behavior is implemented by _MultiMasha_, a constructor accepting three parameters:
 
 * 'elements' — an array of html-elements corresponding text blocks;
-* 'get_prefix' — function accepting html-element from the array and returning it's identifier to be used in URL. Return element's _id_ by default.
+* 'getPrefix' — function accepting html-element from the array and returning it's identifier to be used in URL. Return element's _id_ by default;
+* 'options' — options of MaSha object.
 
 Example of usage:
 
@@ -125,5 +127,7 @@ Example of usage:
     var posts = document.querySelectorAll('.post-text');
     new MultiMaSha(posts, function(element){
         return element.id.split('-')[1];
+    }, {
+        'validate': true
     });
 ```
