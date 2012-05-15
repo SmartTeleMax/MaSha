@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>Masha simple demo.</title>
+	<meta name="title" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+    
+    <!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script-->
+    <!--script type="text/javascript" src="jquery-1.3.2.js"></script-->
+    <!--[IF IE]>
+    <script type="text/javascript" src="../src/js/ierange.js"></script>
+    <![ENDIF]-->
+    <script type="text/javascript" src="../src/js/masha.js"></script>
+    <script type="text/javascript" src="validation.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="../src/css/masha.css">
+    <style>
+    
+    body {
+        padding: 30px;
+        border-radius: 0 0 10px 10px;
+        margin: 0;
+        width: 700px; margin: auto; box-shadow: 0 0 5px #ccc
+    }
+    .user_selection_true{
+        background: #afa;
+    }
+    </style>
+
+    <script>
+    function init_masha(){
+        MaSha.instance = new MaSha({'select_message': 'upmsg-selectable',
+                                    'validate': true,
+                                    'marker': 'marker-bar'});
+    }
+    if (window.addEventListener){
+        window.addEventListener('load', init_masha, false);
+    } else {
+        window.attachEvent('onload', init_masha);
+    }
+    </script>
+    
+</head>
+<body style="">
+<div id="selectable-content">
+<p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+<div id="upmsg-selectable">
+    <div class="upmsg-selectable-inner">
+        <img src="../src/img/textselect/upmsg_arrow.png" alt="">
+        <p>Вы можете отметить интересные вам фрагменты текста, которые будут доступны по уникальной ссылке в адресной строке браузера.</p>
+        <a href="#" class="upmsg_closebtn"></a>
+    </div>
+</div>
+<a id="marker-bar" href="#" class="masha-marker-bar">
+  <span class="masha-marker" title="mark"></span>
+  <span class="twitter masha-social" data-pattern="http://twitter.com/share?url={url}" title="tweet"></span>
+  <span class="facebook masha-social" data-pattern="http://www.facebook.com/share.php?u={url}" title="facebook"></span>
+  <span class="vk masha-social" data-pattern="http://vk.com/share.php?url={url}" title="vk"></span>
+</a>
+</body>
+</html>
