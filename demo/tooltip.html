@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>Masha: social links tooltip demo</title>
+	<meta name="title" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+    <!--script type="text/javascript" src="jquery-1.3.2.js"></script-->
+    <!--[IF IE]>
+    <script type="text/javascript" src="../src/js/ierange.js"></script>
+    <![ENDIF]-->
+    <script type="text/javascript" src="../src/js/masha.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="../src/css/masha.css">
+    <style>
+    
+    body {
+        padding: 30px;
+        border-radius: 0 0 10px 10px;
+        margin: 0;
+        width: 1000px; margin: auto; box-shadow: 0 0 5px #ccc
+    }
+    .user_selection_true{
+        background: #afa;
+    }
+#share-popup {
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  position: absolute;
+  width: 414px;
+  line-height: 1.4;
+  visibility: hidden;
+  z-index: 100;
+  font-size: 10px;
+  padding: 10px 0;
+  opacity: 0;
+    -webkit-transition: opacity .4s, visibility .1s linear .4s;
+    -moz-transition: opacity .4s, visibility .1s linear .4s;
+    -o-transition: opacity .4s, visibility .1s linear .4s;
+    transition: opacity .4s, visibility .1s linear .4s;
+    }
+    #share-popup.show {
+        visibility: visible;
+        opacity: 1;
+        -webkit-transition: opacity .4s, visibility 0s;
+        -moz-transition: opacity .4s, visibility 0s;
+        -o-transition: opacity .4s, visibility 0s;
+        transition: opacity .4s, visibility 0s;
+        opacity: 1;
+        }
+    #share-popup .social {
+      padding: 0 0 10px 17px;
+      height: 40px;
+    }
+    #share-popup .social p {
+      padding-bottom: 10px;
+      margin: 0;
+      font-weight: bold;
+    }
+    #share-popup .social ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    #share-popup .social ul li {
+      float: left;
+      margin-right: 20px;
+      padding-top: 2px;
+      position: relative;
+    }
+    #share-popup .social ul a {
+      text-decoration: none;
+      font-size: 11px;
+      display: inline-block;
+      color: #aaa;
+      padding-left: 25px;
+      }
+    #share-popup .social ul a:hover {
+      text-decoration: underline;
+      color: #ea3e26;
+      }
+    #share-popup .social a span{
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        background: url(../src/img/textselect/social-icons.png) 20px 20px no-repeat;
+        position: absolute;
+        left: 0;
+        top: 0;
+        }
+        #share-popup .social .tw span{
+            background-position: 0 -20px;
+            }
+        #share-popup .social .tw:hover span{
+            background-position: 0 0;
+            }
+        #share-popup .social .fb span{
+            background-position: -20px -20px;
+            }
+        #share-popup .social .fb:hover span {
+            background-position: -20px 0;
+            }
+        #share-popup .social .vk span{
+            background-position: -40px -20px;
+            }
+        #share-popup .social .vk:hover span {
+            background-position: -40px 0;
+            }
+
+    #share-popup .link {
+      clear: both;
+      border-top: 1px solid #d9d9d9;
+      padding: 10px 5px 0 10px;
+      line-height: 1.2;
+      overflow: hidden;
+      margin: 0 7px;
+    }
+    #share-popup .link p {
+      font-weight: bold;
+      padding: 0 0 3px 0;
+      margin: 0;
+    }
+    #share-popup .link span {
+      color: #999;
+      display: block;
+      padding-top: 3px;
+    }
+    #share-popup .link a {
+      display: block;
+    }
+    </style>
+
+    <script>
+    $(function(){
+       var timeoutHover = null;
+       $("#share-popup").hover(
+         function(){
+           window.clearTimeout(timeout_hover)
+         },
+         function(){
+           timeout_hover=window.setTimeout(function(){
+               hideSharePopup();
+            },2000);
+         }
+       );
+       MaSha.instance=new MaSha({
+         selectable:$("#selectable-content")[0],
+         onMark:function(){
+             updateSharePopupContent();
+             showSharePopup($(".num"+ (this.counter-1), $(this.selectable))[0])
+         },
+         onUnmark: function(){
+           "undefined"!=typeof hideSharePopup && hideSharePopup("",!0);
+           updateSharePopupContent()
+         }
+       });
+       updateSharePopupContent();
+    });
+
+    var shareLinkedTextIndex=null;
+    function updateSharePopupContent(){
+        $("#share-popup .link a").html(location+"<ins></ins>").attr("href",location);
+        var b=encodeURI($("h1").text())
+        var a=encodeURIComponent(location);
+        $("#share-popup .social .tw").attr("href","http://twitter.com/share?url="+a+"&text="+b);
+        $("#share-popup .social .fb").attr("href","http://www.facebook.com/share.php?u="+a);
+        $("#share-popup .social .vk").attr("href","http://vkontakte.ru/share.php?url="+a);
+        $("#share-popup .social .gp").attr("href","https://m.google.com/app/plus/x/?v=compose&content="+ b);
+        $("#share-popup .social .gp").attr("onclick","window.open('https://m.google.com/app/plus/x/?v=compose&content="+b+" - "+a+"','gplusshare','width=450,height=300,left='+(screen.availWidth/2-225)+',top='+(screen.availHeight/2-150)+'');return false;")
+    };
+    function showSharePopup(b){
+        a=$(b).offset();
+        $("#share-popup").addClass('show').css({
+            left:a.left+5+$("#share-popup").width()>=$(window).width()?$(window).width()-$("#share-popup").width()-15:a.left+5,
+            top:a.top-$("#share-popup").height()-25
+        });
+    };
+    function hideSharePopup(b,a){
+        $("#share-popup").removeClass('show');
+    };
+    </script>
+    
+</head>
+<body>
+<div style="padding: 40px 0">
+    <h1>Social links tooltip</h1>
+</div>
+<div id="selectable-content">
+<p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p><span style="color: #325">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span><span> Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</span></p> <!--XXX add to tests!-->
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Lorem ipsum dolor sit amet, <br/>consectetur adipisicing elit,<br/> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br/> Ut enim ad minim veniam, quis nostrud exercitation ullamco<br/> laboris nisi ut aliquip ex ea commodo consequat.<br/> Duis aute irure dolor in reprehenderit in voluptate velit<br/> esse cillum dolore eu fugiat nulla pariatur.<br/> Excepteur sint occaecat cupidatat non proident,<br/> sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>
+
+<span>
+
+<!--For testing whitespace nodes in IE-->
+
+<span>,, Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</span>
+</span>
+</p>
+</div>
+<div id="share-popup">
+  <div class="social">
+    <p>Поделиться ссылкой на выделенное</p>
+    <ul>
+      <li><a href="#" class="tw"><span></span>Twitter</a></li>
+      <li><a href="#" class="fb"><span></span>Facebook</a></li>
+      <li><a href="#" class="vk"><span></span>Вконтакте</a></li>
+      <li><a href="#" class="gp"><span></span>Google+</a></li>
+    </ul>
+  </div>
+  <div class="link">
+    <p>Прямая ссылка:</p>
+    <a href=""><ins></ins></a>
+    <span>Нажмите правой клавишей мыши и выберите «Копировать ссылку»</span>
+  </div>
+</div>
+</body>
+</html>

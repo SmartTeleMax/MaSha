@@ -54,28 +54,28 @@
             color: #ea3e26;
             border-color: #ea3e26;
             }
-    #marker-bar .masha-social{
+    .masha-social{
         cursor: pointer;
         width: 20px;
         height: 20px;
         background: url(../img/textselect/social-icons.png) 20px 20px no-repeat;
         }
-        #marker-bar span.twitter{
+        .masha-social.twitter{
             background-position: 0 -20px;
             }
-        #marker-bar span.twitter:hover {
+        .masha-social.twitter:hover {
             background-position: 0 0;
             }
-        #marker-bar span.facebook{
+        .masha-social.facebook{
             background-position: -20px -20px;
             }
-        #marker-bar span.facebook:hover {
+        .masha-social.facebook:hover {
             background-position: -20px 0;
             }
-        #marker-bar span.vk{
+        .masha-social.vk{
             background-position: -40px -20px;
             }
-        #marker-bar span.vk:hover {
+        .masha-social.vk:hover {
             background-position: -40px 0;
             }
 
