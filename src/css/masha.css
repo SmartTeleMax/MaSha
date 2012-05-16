@@ -20,7 +20,7 @@
     border: 1px solid #ccc;
     border-radius: 15px;
     background: #fff;
-    padding: 10px;
+    padding: 5px 10px;
     cursor: default;
     }
     #txtselect_marker:hover {
@@ -36,15 +36,47 @@
         transition: opacity .4s, visibility 0s;
         opacity: 1;
         }
-    #marker-bar span{
+    #marker-bar .masha-social,
+    #marker-bar .masha-marker{
         cursor: pointer;
-        width: 16px;
-        height: 16px;
-        background: #aaa;
         display: block;
         margin: 0 5px;
-        float: left
+        float: left;
         }
+    #marker-bar .masha-marker{
+        line-height: 1em;
+        color: #aaa;
+        border-bottom: 1px dotted #aaa;
+        margin-right: 10px;
+        }
+        #marker-bar .masha-marker:hover {
+            color: #ea3e26;
+            border-color: #ea3e26;
+            }
+    #marker-bar .masha-social{
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        background: url(../img/textselect/social-icons.png) 20px 20px no-repeat;
+        }
+        #marker-bar span.twitter{
+            background-position: 0 -20px;
+            }
+        #marker-bar span.twitter:hover {
+            background-position: 0 0;
+            }
+        #marker-bar span.facebook{
+            background-position: -20px -20px;
+            }
+        #marker-bar span.facebook:hover {
+            background-position: -20px 0;
+            }
+        #marker-bar span.vk{
+            background-position: -40px -20px;
+            }
+        #marker-bar span.vk:hover {
+            background-position: -40px 0;
+            }
 
 .user_selection, .user_selection_true {
     background: #c4f47d;
