@@ -78,6 +78,12 @@
         .masha-social.vk:hover {
             background-position: -40px 0;
             }
+        .masha-social.gplus{
+            background-position: -60px -20px;
+            }
+        .masha-social.gplus:hover {
+            background-position: -60px 0;
+            }
 
 .user_selection, .user_selection_true {
     background: #c4f47d;
