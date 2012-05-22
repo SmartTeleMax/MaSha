@@ -23,6 +23,8 @@ LocationHandler.prototype = {
 };
 
 var MaSha = function(options) {
+    options = options || {};
+
     if ('select_message' in options){ options.selectMessage = options.select_message}
     if ('enable_haschange' in options){ options.enableHaschange = options.enable_haschange}
     if ('is_block' in options){ options.isBlock = options.is_block}
@@ -40,7 +42,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "22.05.2012-11:50:03"; // filled automatically by hook
+MaSha.version = "22.05.2012-12:05:07"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -258,7 +260,6 @@ MaSha.prototype = {
 
     // XXX sort methods logically
     deleteSelections: function(numclasses){
-        var ranges = [];
         for(var i=numclasses.length; i--;){
             var numclass = numclasses[i];
             var spans = byClassName(this.selectable, numclass);
@@ -266,7 +267,6 @@ MaSha.prototype = {
             closewrap.parentNode.removeChild(closewrap);
 
             this.removeTextSelection(spans);
-            ranges.push(this.ranges[numclass]);
             delete this.ranges[numclass];
         }
     },
