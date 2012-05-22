@@ -42,7 +42,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "22.05.2012-12:05:07"; // filled automatically by hook
+MaSha.version = "22.05.2012-12:08:33"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -126,7 +126,7 @@ MaSha.prototype = {
 
                 var markerCoord = getPageXY(e); // outside timeout function because of IE
                 window.setTimeout(function(){
-                    this.showMarker(markerCoord);
+                    this_.showMarker(markerCoord);
                 }, 1);
             });
         } else {
@@ -140,7 +140,7 @@ MaSha.prototype = {
                         var markerCoord = {x: rect.left + rect.width + document.body.scrollLeft,
                                            y: rect.top + rect.height/2 + document.body.scrollTop};
                         }
-                        this.showMarker(markerCoord);
+                        this_.showMarker(markerCoord);
                     }
                 }, 1);
             });
