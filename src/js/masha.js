@@ -1504,5 +1504,6 @@ var bind = function(func, context) {
     return self;
   };
 };
+$M.bind = bind;
 
 })();
