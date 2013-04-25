@@ -113,8 +113,6 @@ MaSha.prototype = {
     
         // enumerate block elements containing a text
         this.enumerateElements();
-    
-
 
         var hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch; // from modernizr
 
@@ -1272,6 +1270,9 @@ window.MultiMaSha = MultiMaSha;
  * Shortcuts
  */
 
+var $M = MaSha.$M = {};
+// XXX collect all auxillary methods in $M
+
 function extend(obj){
     for(var i=1; i<arguments.length; i++){
         for (key in arguments[i]){
@@ -1280,6 +1281,7 @@ function extend(obj){
     }
     return obj;
 }
+$M.extend = extend;
 
 function trim(text) {
     return (text || "").replace(/^\s+|\s+$/g, "");
@@ -1345,6 +1347,8 @@ function byClassName(elem, cls){
         return ret;
     }
 }
+$M.byClassName = byClassName;
+
 function textNodes(elem) {
     var ret = [], node;
     var iter = elementIterator(elem);
@@ -1371,6 +1375,7 @@ function addClass(elem, cls){
         elem.className = elem.className + ' ' + cls;
     }
 }
+$M.addClass = addClass;
 function removeClass(elem, cls){
     // XXX attention! NOT UNIVERSAL!
     // don't use for classes with non-literal symbols
@@ -1379,6 +1384,7 @@ function removeClass(elem, cls){
         elem.className = trim(elem.className.replace(reg, '$1'));
     }
 }
+$M.removeClass = removeClass;
 
 function inArray(elem, array) {
     // from jQuery
@@ -1396,6 +1402,8 @@ function addEvent(elem, type, fn){
         elem.attachEvent("on" + type, fn);
     }    
 }
+$M.addEvent = addEvent;
+
 function preventDefault(e){
     if (e.preventDefault) { e.preventDefault(); }
     else { e.returnValue = false; }
