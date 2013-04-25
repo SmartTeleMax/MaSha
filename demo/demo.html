@@ -26,6 +26,11 @@
     .user_selection_true{
         background: #afa;
     }
+    #toggle-masha{
+        position:fixed;
+        bottom: 50px;
+        right: 50px;
+        }
     </style>
 
     <script>
@@ -39,10 +44,21 @@
     } else {
         window.attachEvent('onload', init_masha);
     }
+    function toggleMaSha(){
+        if(MaSha.instance){
+            MaSha.instance.destroy();
+            delete MaSha.instance;
+            document.getElementById('toggle-masha').innerHTML = 'Enable MaSha';
+        } else {
+            init_masha();
+            document.getElementById('toggle-masha').innerHTML = 'Destroy MaSha';
+        }
+    }
     </script>
     
 </head>
 <body>
+<button onclick="toggleMaSha()" id="toggle-masha">Destroy MaSha</button>
 <div id="selectable-content">
 <p>Lorem ipsum do<b>l</b>or sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
