@@ -170,7 +170,7 @@
 
     var shareLinkedTextIndex=null;
     function updateSharePopupContent(){
-        $("#share-popup .link a").text(location).append("<ins>").attr("href",location);
+        $("#share-popup .link a").text(location.toString()).append("<ins>").attr("href",location);
         var b=encodeURI($("h1").text())
         var a=encodeURIComponent(location);
         $("#share-popup .social .tw").attr("href","http://twitter.com/share?url="+a+"&text="+b);
