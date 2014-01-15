@@ -18,7 +18,13 @@ LocationHandler.prototype = {
         return window.location.hash;
     },
     addHashchange: function(delegate) {
+        this.callback = delegate;
         addEvent(window, 'hashchange', delegate);
+    },
+    destroy: function(){
+        if (this.callback){
+            removeEvent(window, 'hashchange', this.callback);
+        }
     }
 };
 
@@ -42,7 +48,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "22.05.2012-12:08:33"; // filled automatically by hook
+MaSha.version = "25.04.2013-09:55:11"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -113,99 +119,141 @@ MaSha.prototype = {
     
         // enumerate block elements containing a text
         this.enumerateElements();
-    
-
 
         var hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch; // from modernizr
 
         if(!hasTouch){
-            addEvent(this.selectable, 'mouseup', function(e) {
-                /*
-                 * Show the marker if any text selected
-                 */
-
-                var markerCoord = getPageXY(e); // outside timeout function because of IE
-                window.setTimeout(function(){
-                    this_.showMarker(markerCoord);
-                }, 1);
-            });
+            this.mouseUp = bind(this.mouseUp, this);
+            addEvent(this.selectable, 'mouseup', this.mouseUp);
         } else {
-            addEvent(this.selectable, 'touchend', function(){
-                window.setTimeout(function(){
-                    var s = window.getSelection();
-                    if(s.rangeCount){
-                        var rects = s.getRangeAt(0).getClientRects();
-                        var rect = rects[rects.length - 1];
-                        if(rect){
-                        var markerCoord = {x: rect.left + rect.width + document.body.scrollLeft,
-                                           y: rect.top + rect.height/2 + document.body.scrollTop};
-                        }
-                        this_.showMarker(markerCoord);
-                    }
-                }, 1);
-            });
+            this.touchEnd = bind(this.touchEnd, this);
+            addEvent(this.selectable, 'touchend', this.touchEnd);
         }
 
-        function markerClick(e){
-            preventDefault(e);
-            stopEvent(e);
+        this.markerClick = bind(this.markerClick, this);
+        addEvent(this.marker, 'click', this.markerClick);
+        addEvent(this.marker, 'touchend', this.markerClick);
 
-            var target = (e.target || e.srcElement);
-
-            if (hasClass(this, 'masha-marker-bar')){
-                if (!hasClass(target, 'masha-social') && !hasClass(target, 'masha-marker')){
-                    return;
-                }
-            }
-            removeClass(this_.marker, 'show');
-            if (!this_.rangeIsSelectable()){
-                return;
-            }
-
-            this_.addSelection();
-            this_.updateHash();
-
-            if (this_.options.onMark){
-                this_.options.onMark.call(this_);
-            }
-            if (this_.options.selectMessage){
-                this_._showMessage();
-            }
-
-            if (hasClass(target, 'masha-social') ){
-                var pattern = target.getAttribute('data-pattern');
-                if (pattern){
-                    var new_url = pattern.replace('{url}', encodeURIComponent(window.location.toString()));
-                    this_.openShareWindow(new_url);
-                }
-            }
-        }
-    
-        addEvent(this.marker, 'click', markerClick);
-        addEvent(this.marker, 'touchend', markerClick);
-
-        addEvent(document, 'click', function(e){
-            var target = e.target || e.srcElement;
-            if (target != this_.marker) {
-                removeClass(this_.marker, 'show');
-            }
-        });
+        this.hideMarker = bind(this.hideMarker, this);
+        addEvent(document, 'click', this.hideMarker);
 
         if(this.options.enableHaschange){
-            this.options.location.addHashchange(function(){
-                if(this_.lastHash != this_.options.location.getHash()){
-                    var numclasses = [];
-                    for(var k in this_.ranges) {
-                        numclasses.push(k);
-                    }
-                    this_.deleteSelections(numclasses);
-                    this_.readHash();
-                }
-            });
+            this.hashChange = bind(this.hashChange, this);
+            this.options.location.addHashchange(this.hashChange)
         }
 
         this.readHash();
     },
+
+    destroy: function(){
+        removeClass(this.marker, 'show')
+        if(this.options.selectMessage){
+            this.hideMessage();
+        }
+
+        removeEvent(this.selectable, 'mouseup', this.mouseUp);
+        removeEvent(this.selectable, 'touchEnd', this.touchEnd);
+        removeEvent(this.marker, 'click', this.markerClick);
+        removeEvent(this.marker, 'touchend', this.markerClick);
+        removeEvent(document, 'click', this.hideMarker);
+        this.options.location.destroy();
+
+        var spans = byClassName(this.selectable, 'user_selection_true');
+        this.removeTextSelection(spans);
+        var closes = byClassName(this.selectable, 'closewrap');
+        for (var i=closes.length; i--;){
+            closes[i].parentNode.removeChild(closes[i]);
+        }
+        var indices = byClassName(this.selectable, 'masha_index');
+        for (var i=indices.length; i--;){
+            indices[i].parentNode.removeChild(indices[i]);
+        }
+
+    },
+
+    /*
+     * Event handlers
+     */
+
+    mouseUp: function(e){
+        /*
+         * Show the marker if any text selected
+         */
+
+        var markerCoord = getPageXY(e); // outside timeout function because of IE
+        window.setTimeout(bind(function(){
+            this.showMarker(markerCoord);
+        }, this), 1);
+    },
+
+    touchEnd: function(){
+        window.setTimeout(bind(function(){
+            var s = window.getSelection();
+            if(s.rangeCount){
+                var rects = s.getRangeAt(0).getClientRects();
+                var rect = rects[rects.length - 1];
+                if(rect){
+                var markerCoord = {x: rect.left + rect.width + document.body.scrollLeft,
+                                   y: rect.top + rect.height/2 + document.body.scrollTop};
+                }
+                this.showMarker(markerCoord);
+            }
+        }, this), 1);
+    },
+
+    hashChange: function(){
+        if(this.lastHash != this.options.location.getHash()){
+             var numclasses = [];
+             for(var k in this.ranges) {
+                 numclasses.push(k);
+             }
+             this.deleteSelections(numclasses);
+             this.readHash();
+        }   
+    },
+
+    hideMarker: function(e){
+        var target = e.target || e.srcElement;
+        if (target != this.marker) {
+            removeClass(this.marker, 'show');
+        }
+    },
+
+    markerClick: function(e){
+        preventDefault(e);
+        stopEvent(e);
+
+        var target = (e.target || e.srcElement);
+
+        if (hasClass(this.marker, 'masha-marker-bar')){
+            if (!hasClass(target, 'masha-social') && !hasClass(target, 'masha-marker')){
+                return;
+            }
+        }
+        removeClass(this.marker, 'show');
+        if (!this.rangeIsSelectable()){
+            return;
+        }
+
+        this.addSelection();
+        this.updateHash();
+
+        if (this.options.onMark){
+            this.options.onMark.call(this);
+        }
+        if (this.options.selectMessage){
+            this._showMessage();
+        }
+
+        if (hasClass(target, 'masha-social') ){
+            var pattern = target.getAttribute('data-pattern');
+            if (pattern){
+                var new_url = pattern.replace('{url}', encodeURIComponent(window.location.toString()));
+                this.openShareWindow(new_url);
+            }
+        }
+    },
+ 
 
     /*
      * Interface functions, safe to redefine
@@ -689,13 +737,13 @@ MaSha.prototype = {
             if (range.startOffset == 0 &&
                 range.startContainer.previousSibling &&
                 range.startContainer.previousSibling.nodeType == 1 &&
-                range.startContainer.previousSibling.className == 'selection_index'){
+                hasClass(range.startContainer.previousSibling, 'masha_index')){
                 return apply();
             }
 
             var node, iterator = range.getElementIterator();
             while ((node=iterator())) {
-                if (node.nodeType == 1 && node.className == 'selection_index'){
+                if (node.nodeType == 1 && hasClass(node, 'masha_index')){
                     return apply();
                 }
             }
@@ -773,7 +821,7 @@ MaSha.prototype = {
     },
 
     addSelectionEvents: function(class_name) {
-        var timeout_hover=false;
+        var timeoutHover=false;
         var this_ = this;
 
         var wrappers = byClassName(this.selectable, class_name);
@@ -782,7 +830,7 @@ MaSha.prototype = {
                 for (var i=wrappers.length;i--;){
                     addClass(wrappers[i], 'hover');
                 }
-                window.clearTimeout(timeout_hover);
+                window.clearTimeout(timeoutHover);
             });
             addEvent(wrappers[i], 'mouseout', function(e){
                 // mouseleave
@@ -791,7 +839,7 @@ MaSha.prototype = {
                     t = t.parentNode;
                 }
                 if (!t || t.className != this.className){
-                    timeout_hover = window.setTimeout(function(){ 
+                    timeoutHover = window.setTimeout(function(){ 
                         for (var i=wrappers.length;i--;){
                             removeClass(wrappers[i], 'hover');
                         }
@@ -830,7 +878,7 @@ MaSha.prototype = {
         // marks first text node in each visual block element:
         // inserts a span with special class and ID before it
         var node = this.selectable;
-        MaSha.captureCount = MaSha.captureCount || 0;
+        this.captureCount = this.captureCount || 0;
         var this_ = this;
 
         enumerate(node);
@@ -850,15 +898,15 @@ MaSha.prototype = {
                 } else if (nodeType==3) {
                     if (!blockStarted){
                         // remember the block
-                        MaSha.captureCount++;
+                        this_.captureCount++;
                         var index_span = document.createElement('span');
                         // XXX prefix all class and id attributes with "masha"
-                        index_span.id = 'selection_index' + MaSha.captureCount;
-                        index_span.className = 'selection_index';
+                        index_span.className = 'masha_index masha_index' + this_.captureCount;
+                        index_span.setAttribute('rel', this_.captureCount);
                         child.parentNode.insertBefore(index_span, child);
 
                         idx++;
-                        this_.blocks[MaSha.captureCount] = child;
+                        this_.blocks[this_.captureCount] = child;
                         hasBlocks = blockStarted = true;
                     }
                 } else if (nodeType==1) {
@@ -883,7 +931,7 @@ MaSha.prototype = {
     isFirstTextNode: function(textNode){
         var prevs = [textNode.previousSibling, textNode.parentNode.previousSibling];
         for (var i=prevs.length;i--;){
-            if (prevs[i] && prevs[i].nodeType == 1 && prevs[i].className == 'selection_index'){
+            if (prevs[i] && prevs[i].nodeType == 1 && prevs[i].className == 'masha_index'){
                 return true;
             }
         }
@@ -891,7 +939,7 @@ MaSha.prototype = {
     },
     getFirstTextNode: function(numclass){
         if(!numclass) { return null; }
-        var tnode = document.getElementById('selection_index'+numclass);
+        var tnode = byClassName(this.selectable, 'masha_index'+numclass)[0];
         if (tnode) {
             if (tnode.nextSibling.nodeType == 1){
                 return tnode.nextSibling.childNodes[0];
@@ -908,8 +956,8 @@ MaSha.prototype = {
                 while (cont.nodeType == 1 && cont.childNodes.length){
                     cont = cont.lastChild;
                 }
-                if (cont.nodeType == 1 && cont.className == 'selection_index'){
-                    return cont.id.replace('selection_index', '');
+                if (cont.nodeType == 1 && hasClass(cont, 'masha_index')){
+                    return cont.getAttribute('rel');
                 }
             }
             cont = cont.parentNode;
@@ -995,6 +1043,7 @@ MaSha.prototype = {
     /*
      * message.js - popup message
      */
+
     initMessage: function() {
         var this_ = this;
 
@@ -1004,14 +1053,17 @@ MaSha.prototype = {
         this.close_button = this.getCloseButton();
         this.msg_autoclose = null;
 
-        addEvent(this.close_button, 'click', function(e){
-            preventDefault(e);
-            this_.hideMessage();
-            this_.saveMessageClosed();
-            clearTimeout(this_.msg_autoclose);
-        });
+        this.closeMessage = bind(this.closeMessage, this);
+        addEvent(this.close_button, 'click', this.closeMessage);
     },
 
+    closeMessage: function(e){
+        preventDefault(e);
+        this.hideMessage();
+        this.saveMessageClosed();
+        clearTimeout(this_.msg_autoclose);
+    }
+,
     /* 
      * message.js pubplic methods, safe to redefine
      */
@@ -1272,6 +1324,9 @@ window.MultiMaSha = MultiMaSha;
  * Shortcuts
  */
 
+var $M = MaSha.$M = {};
+// XXX collect all auxillary methods in $M
+
 function extend(obj){
     for(var i=1; i<arguments.length; i++){
         for (key in arguments[i]){
@@ -1280,6 +1335,7 @@ function extend(obj){
     }
     return obj;
 }
+$M.extend = extend;
 
 function trim(text) {
     return (text || "").replace(/^\s+|\s+$/g, "");
@@ -1345,6 +1401,8 @@ function byClassName(elem, cls){
         return ret;
     }
 }
+$M.byClassName = byClassName;
+
 function textNodes(elem) {
     var ret = [], node;
     var iter = elementIterator(elem);
@@ -1371,6 +1429,7 @@ function addClass(elem, cls){
         elem.className = elem.className + ' ' + cls;
     }
 }
+$M.addClass = addClass;
 function removeClass(elem, cls){
     // XXX attention! NOT UNIVERSAL!
     // don't use for classes with non-literal symbols
@@ -1379,6 +1438,7 @@ function removeClass(elem, cls){
         elem.className = trim(elem.className.replace(reg, '$1'));
     }
 }
+$M.removeClass = removeClass;
 
 function inArray(elem, array) {
     // from jQuery
@@ -1396,6 +1456,17 @@ function addEvent(elem, type, fn){
         elem.attachEvent("on" + type, fn);
     }    
 }
+$M.addEvent = addEvent;
+
+function removeEvent(elem, type, fn){
+    if (elem.removeEventListener) {
+        elem.removeEventListener(type, fn, false);
+    } else if (elem.detachEvent) {
+        elem.detachEvent("on" + type, fn);
+    }    
+}
+$M.removeEvent = removeEvent;
+
 function preventDefault(e){
     if (e.preventDefault) { e.preventDefault(); }
     else { e.returnValue = false; }
@@ -1415,5 +1486,24 @@ function getPageXY(e){
     }
     return {x: e.pageX, y: e.pageY};
 }
+
+var nativeBind = Function.prototype.bind;
+var slice = Array.prototype.slice;
+
+var bind = function(func, context) {
+  var args, bound;
+  if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+  args = slice.call(arguments, 2);
+  return bound = function() {
+    if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));
+    ctor.prototype = func.prototype;
+    var self = new ctor;
+    ctor.prototype = null;
+    var result = func.apply(self, args.concat(slice.call(arguments)));
+    if (Object(result) === result) return result;
+    return self;
+  };
+};
+$M.bind = bind;
 
 })();
