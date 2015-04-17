@@ -39,16 +39,14 @@ var MaSha = function(options) {
 
     extend(this, {
         counter: 0,
-        savedSel: [],
         ranges: {},
-        childs: [],
         blocks: {}
     });
 
     this.init();
 };
 
-MaSha.version = "25.04.2013-09:55:11"; // filled automatically by hook
+MaSha.version = "17.04.2015-17:31:08"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
