@@ -270,7 +270,6 @@ DOMRange.prototype = {
 		// extract and surround contents
 		var content = this.extractContents();
 		this.insertNode(newNode);
-	console.log(this);
 		newNode.appendChild(content);
 		this.selectNode(newNode);
 	},
