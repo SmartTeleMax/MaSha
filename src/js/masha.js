@@ -104,8 +104,6 @@ MaSha.prototype = {
         }
         this.regexp = new RegExp(this.options.regexp, 'ig');
 
-        var this_ = this;
-
         if (!this.selectable) return;
 
         this.isIgnored = this.constructIgnored(this.options.ignored);
@@ -433,7 +431,7 @@ MaSha.prototype = {
     updateHash: function(){
         var hashAr = [];
         
-        for (key in this.ranges) { 
+        for (var key in this.ranges) { 
             hashAr.push(this.ranges[key]);
         }
         var newHash = '#sel='+hashAr.join(';');
@@ -463,8 +461,7 @@ MaSha.prototype = {
         if (!hash) return null;
     
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
-        //
-        var pair = '';
+
         if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
 
         hash = hash.substring(4, hash.length);
@@ -522,21 +519,20 @@ MaSha.prototype = {
     },
 
     getRangeChecksum: function(range){
-        sum1 = this.getPositionChecksum(range.getWordIterator(this.regexp));
-        sum2 = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
-        return [sum1, sum2];
+        return [this.getPositionChecksum(range.getWordIterator(this.regexp)),
+                this.getPositionChecksum(range.getWordIterator(this.regexp, true))];
     },
 
     deserializePosition: function(bits, pos){
-         // deserializes №OfBlock:№OfWord pair
+         // deserializes #OfBlock:#OfWord pair
          // getting block
          var node = this.blocks[parseInt(bits[0], 10)];
 
-         var pos_text;
-         var offset, stepCount = 0, exit = false;
+         var offset, stepCount = 0;
          // getting word in all text nodes
          while (node) {
-             var re = new RegExp(this.options.regexp, 'ig');
+             var re = new RegExp(this.options.regexp, 'ig'),
+                 myArray;
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
                  if (stepCount == bits[1]) {
@@ -597,7 +593,6 @@ MaSha.prototype = {
         function stepBack(container, offset, condition) {
             // correcting selection stepping back and including symbols
             // that match a given condition
-            var init_offset = offset;
             while (offset > 0 && condition(container.data.charAt(offset-1))){
                 offset--;
             }
@@ -607,7 +602,6 @@ MaSha.prototype = {
         function stepForward(container, offset, condition) {
             // correcting selection stepping forward and including symbols
             // that match a given condition
-            var init_offset = offset;
             while (offset < container.data.length && condition(container.data.charAt(offset))){
                 offset++;
             }
@@ -886,7 +880,6 @@ MaSha.prototype = {
             var hasBlocks = false;
             var blockStarted = false;
             
-            var len;
             for (var idx=0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
@@ -1043,8 +1036,6 @@ MaSha.prototype = {
      */
 
     initMessage: function() {
-        var this_ = this;
-
         this.msg = (typeof this.options.selectMessage == 'string'?
                     document.getElementById(this.options.selectMessage):
                     this.options.selectMessage);
@@ -1203,7 +1194,7 @@ Range.prototype.getWordIterator = function(regexp, reversed){
                 } while(node && node.nodeType != 3)
                 finished = !node;
                 if (!finished){
-                    value = node.nodeValue;
+                    var value = node.nodeValue;
                     if (node == this_.endContainer){
                         value = value.substr(0, this_.endOffset);
                     }
@@ -1253,20 +1244,19 @@ MultiLocationHandler.prototype = {
 
         if (hash.length == this.prefix.length + 1){ hash = '' }
 
-        var old_hash = this.getHashPart();
-        var full_hash = window.location.hash.replace(/^#\|?/, '');
+        var old_hash = this.getHashPart(),
+            new_hash;
         if (old_hash){
-            var newHash = window.location.hash.replace(old_hash, hash);
+            new_hash = window.location.hash.replace(old_hash, hash);
         } else {
-            var newHash = window.location.hash + '|' + hash;
+            new_hash = window.location.hash + '|' + hash;
         }
-        newHash = '#' + newHash.replace('||', '').replace(/^#?\|?|\|$/g, '');
-        window.location.hash = newHash;
+        new_hash = '#' + new_hash.replace('||', '').replace(/^#?\|?|\|$/g, '');
+        window.location.hash = new_hash;
     },
     addHashchange: MaSha.LocationHandler.prototype.addHashchange,
     getHashPart: function() {
         var parts = window.location.hash.replace(/^#\|?/, '').split(/\||%7C/);
-        var self_part = null;
         for (var i=0; i< parts.length; i++){
             if (parts[i].substr(0, this.prefix.length + 1) == this.prefix + '='){
                 return parts[i];
@@ -1327,7 +1317,7 @@ var $M = MaSha.$M = {};
 
 function extend(obj){
     for(var i=1; i<arguments.length; i++){
-        for (key in arguments[i]){
+        for (var key in arguments[i]){
             obj[key] = arguments[i][key];
         }
     }
