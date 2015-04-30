@@ -1489,17 +1489,11 @@ var nativeBind = Function.prototype.bind;
 var slice = Array.prototype.slice;
 
 var bind = function(func, context) {
-  var args, bound;
+  // Based on Underscore (see http://stackoverflow.com/q/23341577/168352)
   if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-  args = slice.call(arguments, 2);
-  return bound = function() {
-    if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));
-    ctor.prototype = func.prototype;
-    var self = new ctor;
-    ctor.prototype = null;
-    var result = func.apply(self, args.concat(slice.call(arguments)));
-    if (Object(result) === result) return result;
-    return self;
+  var args = slice.call(arguments, 2);
+  return function() {
+    return func.apply(context, args.concat(slice.call(arguments)));
   };
 };
 $M.bind = bind;
