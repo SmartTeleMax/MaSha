@@ -1059,7 +1059,7 @@ MaSha.prototype = {
         preventDefault(e);
         this.hideMessage();
         this.saveMessageClosed();
-        clearTimeout(this_.msg_autoclose);
+        clearTimeout(this.msg_autoclose);
     }
 ,
     /* 
