@@ -8,7 +8,7 @@
 
 (function(){
 
-var LocationHandler = function() {}
+var LocationHandler = function() {};
 
 LocationHandler.prototype = {
     setHash: function(hash) {
@@ -31,9 +31,9 @@ LocationHandler.prototype = {
 var MaSha = function(options) {
     options = options || {};
 
-    if ('select_message' in options){ options.selectMessage = options.select_message}
-    if ('enable_haschange' in options){ options.enableHaschange = options.enable_haschange}
-    if ('is_block' in options){ options.isBlock = options.is_block}
+    if ('select_message' in options) options.selectMessage = options.select_message;
+    if ('enable_haschange' in options) options.enableHaschange = options.enable_haschange;
+    if ('is_block' in options) options.isBlock = options.is_block;
 
     this.options = extend({}, MaSha.defaultOptions, options);
 
@@ -46,7 +46,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "17.04.2015-17:31:08"; // filled automatically by hook
+MaSha.version = "12.05.2015-15:58:01"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -135,14 +135,14 @@ MaSha.prototype = {
 
         if(this.options.enableHaschange){
             this.hashChange = bind(this.hashChange, this);
-            this.options.location.addHashchange(this.hashChange)
+            this.options.location.addHashchange(this.hashChange);
         }
 
         this.readHash();
     },
 
     destroy: function(){
-        removeClass(this.marker, 'show')
+        removeClass(this.marker, 'show');
         if(this.options.selectMessage){
             this.hideMessage();
         }
@@ -156,12 +156,12 @@ MaSha.prototype = {
 
         var spans = byClassName(this.selectable, 'user_selection_true');
         this.removeTextSelection(spans);
-        var closes = byClassName(this.selectable, 'closewrap');
-        for (var i=closes.length; i--;){
+        var i, closes = byClassName(this.selectable, 'closewrap');
+        for (i=closes.length; i--;){
             closes[i].parentNode.removeChild(closes[i]);
         }
         var indices = byClassName(this.selectable, 'masha_index');
-        for (var i=indices.length; i--;){
+        for (i=indices.length; i--;){
             indices[i].parentNode.removeChild(indices[i]);
         }
 
@@ -187,12 +187,11 @@ MaSha.prototype = {
             var s = window.getSelection();
             if(s.rangeCount){
                 var rects = s.getRangeAt(0).getClientRects();
-                var rect = rects[rects.length - 1];
-                if(rect){
-                var markerCoord = {x: rect.left + rect.width + document.body.scrollLeft,
-                                   y: rect.top + rect.height/2 + document.body.scrollTop};
+                if(rects.length){
+                    var rect = rects[rects.length-1], body = document.body;
+                    this.showMarker({x: rect.left + rect.width + body.scrollLeft,
+                                     y: rect.top + rect.height/2 + body.scrollTop});
                 }
-                this.showMarker(markerCoord);
             }
         }, this), 1);
     },
@@ -369,7 +368,7 @@ MaSha.prototype = {
         } else if (node.childNodes && node.childNodes.length){ // Child element
             // counting words in element node with nested text nodes
             var alltxtNodes = textNodes(node);
-            for (i=alltxtNodes.length; i--;) {
+            for (var i=alltxtNodes.length; i--;) {
                 _wcount += alltxtNodes[i].nodeValue.match(this.regexp).length;
             }
         }
@@ -1051,8 +1050,8 @@ MaSha.prototype = {
         this.hideMessage();
         this.saveMessageClosed();
         clearTimeout(this.msg_autoclose);
-    }
-,
+    },
+
     /* 
      * message.js pubplic methods, safe to redefine
      */
@@ -1191,7 +1190,7 @@ Range.prototype.getWordIterator = function(regexp, reversed){
             do{
                 do{
                     node = elem_iter();
-                } while(node && node.nodeType != 3)
+                } while(node && node.nodeType != 3);
                 finished = !node;
                 if (!finished){
                     var value = node.nodeValue;
@@ -1242,7 +1241,7 @@ MultiLocationHandler.prototype = {
     setHash: function(hash) {
         hash = hash.replace('sel', this.prefix).replace(/^#/, '');
 
-        if (hash.length == this.prefix.length + 1){ hash = '' }
+        if (hash.length == this.prefix.length + 1) hash = '';
 
         var old_hash = this.getHashPart(),
             new_hash;
@@ -1272,9 +1271,7 @@ MultiLocationHandler.prototype = {
 
 var MultiMaSha = function(elements, getPrefix, options){
 
-  getPrefix = getPrefix || function(element){
-      return element.id;
-  }
+  getPrefix = getPrefix || function(element){return element.id;};
 
   for (var i=0; i< elements.length; i++){
       var element = elements[i];
@@ -1289,7 +1286,7 @@ var MultiMaSha = function(elements, getPrefix, options){
           new MaSha(initOptions);
       }
   }
-}
+};
 
 
 /*
