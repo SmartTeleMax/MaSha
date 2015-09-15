@@ -1,6 +1,6 @@
 /*
- * Mark and share text 
- * 
+ * Mark and share text
+ *
  * by SmartTeleMax team
  * Released under the MIT License
  */
@@ -46,7 +46,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "12.05.2015-15:58:01"; // filled automatically by hook
+MaSha.version = "15.09.2015-17:09:43"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -71,7 +71,7 @@ MaSha.defaultOptions = {
                     y += elem.offsetTop;
                     elem = elem.offsetParent;
                 }
-         
+
                 window.scrollTo(x,y-150);
             }, 1);
         }
@@ -107,12 +107,12 @@ MaSha.prototype = {
         if (!this.selectable) return;
 
         this.isIgnored = this.constructIgnored(this.options.ignored);
-    
+
         if (this.options.selectMessage){
             this.initMessage();
         }
         //cleanWhitespace(this.selectable);
-    
+
         // enumerate block elements containing a text
         this.enumerateElements();
 
@@ -204,7 +204,7 @@ MaSha.prototype = {
              }
              this.deleteSelections(numclasses);
              this.readHash();
-        }   
+        }
     },
 
     hideMarker: function(e){
@@ -248,7 +248,7 @@ MaSha.prototype = {
             }
         }
     },
- 
+
 
     /*
      * Interface functions, safe to redefine
@@ -261,12 +261,12 @@ MaSha.prototype = {
     },
     getPositionChecksum: function(wordsIterator){
         /*
-         * Used in validation. This method accepts word sequence iterator (a function returning 
-         * the next word of sequence on each call or null if words are) and returns a string checksum. 
-         * The getPositionChecksum method is called twice for each range: one for start position and 
+         * Used in validation. This method accepts word sequence iterator (a function returning
+         * the next word of sequence on each call or null if words are) and returns a string checksum.
+         * The getPositionChecksum method is called twice for each range: one for start position and
          * one for end position (with reversed iterator).
-         * 
-         * The checksum is included into hash and it is checked on page load. If calculated checksum 
+         *
+         * The checksum is included into hash and it is checked on page load. If calculated checksum
          * doesn't one from url, the selection is not restored.
          */
         var sum = '';
@@ -342,7 +342,7 @@ MaSha.prototype = {
                 while (cont.nodeType == 1 && cont.childNodes.length){
                     cont = cont[firstlast + 'Child'];
                 }
-                if(cont.nodeType == 3 && 
+                if(cont.nodeType == 3 &&
                    (cont.data.match(regexp) != null)){
                     return {_container: cont, _offset: offs * cont.data.length};
                 }
@@ -377,18 +377,18 @@ MaSha.prototype = {
 
     words: function(container, offset, pos){
         // counting words in container from/untill offset position
-    
+
         if (container.nodeType == 1) {
             container = firstTextNode(container);
         }
-        //get content part, that isn't included in selection, 
+        //get content part, that isn't included in selection,
         //split it with regexp and count words in it
         var wcount = container.data.substring(0, offset).match(this.regexp);
-        
-        if (wcount != null) { 
-            if (pos=='start') wcount = wcount.length+1; 
+
+        if (wcount != null) {
+            if (pos=='start') wcount = wcount.length+1;
             if (pos=='end') wcount = wcount.length;
-        } else { 
+        } else {
             wcount = 1;
         }
 
@@ -425,12 +425,12 @@ MaSha.prototype = {
             }
         }
         return _count;
-    }, 
+    },
 
     updateHash: function(){
         var hashAr = [];
-        
-        for (var key in this.ranges) { 
+
+        for (var key in this.ranges) {
             hashAr.push(this.ranges[key]);
         }
         var newHash = '#sel='+hashAr.join(';');
@@ -444,7 +444,7 @@ MaSha.prototype = {
          */
         var hashAr = this.splittedHash();
         if (!hashAr){ return; }
-    
+
         for (var i=0; i < hashAr.length; i++) {
             this.deserializeSelection(hashAr[i]);
         }
@@ -458,7 +458,7 @@ MaSha.prototype = {
     splittedHash: function(){
         var hash = this.options.location.getHash();
         if (!hash) return null;
-    
+
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
 
         if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
@@ -502,7 +502,7 @@ MaSha.prototype = {
             window.console.warn('Cannot deserialize range: ' + serialized);
         }
         return null;
-    }, 
+    },
 
     validateRange: function(range, sum1, sum2){
         var valid = true, sum;
@@ -597,7 +597,7 @@ MaSha.prototype = {
             }
             return offset;
         }
-        
+
         function stepForward(container, offset, condition) {
             // correcting selection stepping forward and including symbols
             // that match a given condition
@@ -622,7 +622,7 @@ MaSha.prototype = {
         }
 
         if (position == 'start') {
-            
+
             if (container.nodeType == 1 && trim(textContent(container)) != '') {
                 container = firstTextNode(container);
                 offset = 0;
@@ -637,10 +637,10 @@ MaSha.prototype = {
             // Important! Shorten the selection first and then extend it!
             offset = stepForward(container, offset, isNotWord);
             offset = stepBack(container, offset, isWord);
-            
+
             range.setStart(container, offset);
         }
-        
+
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
                 container = container.childNodes[range.endOffset-1];
@@ -650,14 +650,14 @@ MaSha.prototype = {
 
                 offset = container.data.length;
             }
-            
+
             if (container.nodeType != 3 ||
                 container.data.substring(0, offset).match(this.regexp) == null) {
                 newdata = this.prevNode(container);
                 container = newdata._container;
                 offset = newdata._offset;
             }
-            
+
             // Important! Shorten the selection first and then extend it!
             offset = stepBack(container, offset, isNotWord);
             offset = stepForward(container, offset, isWord);
@@ -752,7 +752,7 @@ MaSha.prototype = {
             }
             return null;
         }
-        
+
         function apply(){
             range.setEnd(data._container, data._offset+1);
         }
@@ -830,7 +830,7 @@ MaSha.prototype = {
                     t = t.parentNode;
                 }
                 if (!t || t.className != this.className){
-                    timeoutHover = window.setTimeout(function(){ 
+                    timeoutHover = window.setTimeout(function(){
                         for (var i=wrappers.length;i--;){
                             removeClass(wrappers[i], 'hover');
                         }
@@ -849,13 +849,13 @@ MaSha.prototype = {
             preventDefault(e);
             this_.deleteSelections([class_name]);
             this_.updateHash();
-            
+
             if (this_.options.onUnmark){
                 this_.options.onUnmark.call(this_);
             }
         });
         wrappers[wrappers.length-1].appendChild(closer_span);
-    
+
         this.counter++;
         window.getSelection().removeAllRanges();
     },
@@ -878,7 +878,7 @@ MaSha.prototype = {
             var children = node.childNodes;
             var hasBlocks = false;
             var blockStarted = false;
-            
+
             for (var idx=0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
@@ -903,7 +903,7 @@ MaSha.prototype = {
                     // XXX check if this is correct
                     if (!this_.isIgnored(child)){
                         var isBlock = this_.options.isBlock(child);
-		      
+
                         if (isBlock){
                             var childHasBlocks = enumerate(child);
                             hasBlocks = hasBlocks || childHasBlocks;
@@ -964,10 +964,10 @@ MaSha.prototype = {
             var selectors = selector.split(',');
             for (var i=0; i<selectors.length; i++) {
               var sel = trim(selectors[i]);
-              if (sel.charAt(0) == '#') { 
+              if (sel.charAt(0) == '#') {
                 by_id.push(sel.substr(1));
-              } else if (sel.charAt(0) == '.') { 
-                by_class.push(sel.substr(1)); 
+              } else if (sel.charAt(0) == '.') {
+                by_class.push(sel.substr(1));
               } else {
                 by_tag.push(sel);
               }
@@ -1006,7 +1006,7 @@ MaSha.prototype = {
             // it for it's parent.
             node = (first && node.nodeType == 3)? node.parentNode : node;
             first = false;
-            
+
             if (node.nodeType == 1){
                 // Checking element nodes. Check if the element node and all it's parents
                 // till selectable are not ignored
@@ -1024,7 +1024,7 @@ MaSha.prototype = {
         var last_selection = parentWithClass(lastNode, 'user_selection_true');
         if (first_selection && last_selection){
             var reg = /(?:^| )(num\d+)(?:$| )/;
-            return (reg.exec(first_selection.className)[1] != 
+            return (reg.exec(first_selection.className)[1] !=
                     reg.exec(last_selection.className)[1]);
         }
         return true;
@@ -1052,7 +1052,7 @@ MaSha.prototype = {
         clearTimeout(this.msg_autoclose);
     },
 
-    /* 
+    /*
      * message.js pubplic methods, safe to redefine
      */
 
@@ -1091,9 +1091,9 @@ MaSha.prototype = {
     _showMessage: function(){
         var this_ = this;
         if (this.getMessageClosed()) return;
-    
+
         this.showMessage();
-    
+
         clearTimeout(this.msg_autoclose);
         this.msg_autoclose = setTimeout(function(){
             this_.hideMessage();
@@ -1152,9 +1152,9 @@ function elementIterator(parent, cont, end, reversed){
     cont = cont || parent[reversed? 'lastChild' : 'firstChild'];
     var finished = !cont;
     var up = false;
-    
+
     function next(){
-        if (finished) {return null;} 
+        if (finished) {return null;}
         var result = cont;
         if (cont.childNodes && cont.childNodes.length && !up){
             cont = cont[reversed? 'lastChild' : 'firstChild'];
@@ -1228,8 +1228,8 @@ Range.prototype.wrapSelection = function(className){
     }
 };
 
-/* 
- * MaSha Multi 
+/*
+ * MaSha Multi
  */
 // XXX here on in separate file?
 
@@ -1282,7 +1282,7 @@ var MultiMaSha = function(elements, getPrefix, options){
               'selectable': element,
               'location': new MultiLocationHandler(prefix)
           });
-          
+
           new MaSha(initOptions);
       }
   }
@@ -1439,7 +1439,7 @@ function addEvent(elem, type, fn){
         elem.addEventListener(type, fn, false);
     } else if (elem.attachEvent) {
         elem.attachEvent("on" + type, fn);
-    }    
+    }
 }
 $M.addEvent = addEvent;
 
@@ -1448,7 +1448,7 @@ function removeEvent(elem, type, fn){
         elem.removeEventListener(type, fn, false);
     } else if (elem.detachEvent) {
         elem.detachEvent("on" + type, fn);
-    }    
+    }
 }
 $M.removeEvent = removeEvent;
 
@@ -1457,8 +1457,8 @@ function preventDefault(e){
     else { e.returnValue = false; }
 }
 function stopEvent(e){
-    if (e.stopPropagation) { e.stopPropagation(); } 
-    else { e.cancelBubble = true; } 
+    if (e.stopPropagation) { e.stopPropagation(); }
+    else { e.cancelBubble = true; }
 }
 function getPageXY(e){
     // from jQuery
