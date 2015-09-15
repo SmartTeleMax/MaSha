@@ -46,7 +46,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "15.09.2015-17:17:37"; // filled automatically by hook
+MaSha.version = "15.09.2015-17:20:09"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -62,11 +62,11 @@ MaSha.defaultOptions = {
     'onUnmark': null,
     'onHashRead': function() {
         var elem = firstWithClass(this.selectable, 'user_selection_true');
-        if(elem && !this.hashWasRead) {
+        if (elem && !this.hashWasRead) {
             this.hashWasRead = true;
             window.setTimeout(function() {
                 var x = 0, y = 0;
-                while(elem) {
+                while (elem) {
                     x += elem.offsetLeft;
                     y += elem.offsetTop;
                     elem = elem.offsetParent;
@@ -118,7 +118,7 @@ MaSha.prototype = {
 
         var hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch; // from modernizr
 
-        if(!hasTouch) {
+        if (!hasTouch) {
             this.mouseUp = bind(this.mouseUp, this);
             addEvent(this.selectable, 'mouseup', this.mouseUp);
         } else {
@@ -133,7 +133,7 @@ MaSha.prototype = {
         this.hideMarker = bind(this.hideMarker, this);
         addEvent(document, 'click', this.hideMarker);
 
-        if(this.options.enableHaschange) {
+        if (this.options.enableHaschange) {
             this.hashChange = bind(this.hashChange, this);
             this.options.location.addHashchange(this.hashChange);
         }
@@ -143,7 +143,7 @@ MaSha.prototype = {
 
     destroy: function() {
         removeClass(this.marker, 'show');
-        if(this.options.selectMessage) {
+        if (this.options.selectMessage) {
             this.hideMessage();
         }
 
@@ -185,9 +185,9 @@ MaSha.prototype = {
     touchEnd: function() {
         window.setTimeout(bind(function() {
             var s = window.getSelection();
-            if(s.rangeCount) {
+            if (s.rangeCount) {
                 var rects = s.getRangeAt(0).getClientRects();
-                if(rects.length) {
+                if (rects.length) {
                     var rect = rects[rects.length-1], body = document.body;
                     this.showMarker({x: rect.left + rect.width + body.scrollLeft,
                                      y: rect.top + rect.height/2 + body.scrollTop});
@@ -197,9 +197,9 @@ MaSha.prototype = {
     },
 
     hashChange: function() {
-        if(this.lastHash != this.options.location.getHash()) {
+        if (this.lastHash != this.options.location.getHash()) {
              var numclasses = [];
-             for(var k in this.ranges) {
+             for (var k in this.ranges) {
                  numclasses.push(k);
              }
              this.deleteSelections(numclasses);
@@ -303,7 +303,7 @@ MaSha.prototype = {
 
     // XXX sort methods logically
     deleteSelections: function(numclasses) {
-        for(var i=numclasses.length; i--;) {
+        for (var i=numclasses.length; i--;) {
             var numclass = numclasses[i];
             var spans = byClassName(this.selectable, numclass);
             var closewrap = firstWithClass(spans[spans.length-1], 'closewrap');
@@ -342,7 +342,7 @@ MaSha.prototype = {
                 while (cont.nodeType == 1 && cont.childNodes.length) {
                     cont = cont[firstlast + 'Child'];
                 }
-                if(cont.nodeType == 3 &&
+                if (cont.nodeType == 3 &&
                    (cont.data.match(regexp) != null)) {
                     return {_container: cont, _offset: offs * cont.data.length};
                 }
@@ -396,7 +396,7 @@ MaSha.prototype = {
         var selectionIndex = this.getNum(container);
         var firstNode = this.getFirstTextNode(selectionIndex);
 
-        while(node && node != firstNode) {
+        while (node && node != firstNode) {
             node = this.prevNode(node, /.*/)._container;
             wcount += this.wordCount(node);
             //node = node? node.container: null;
@@ -461,7 +461,7 @@ MaSha.prototype = {
 
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
 
-        if(! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
+        if (! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -469,10 +469,10 @@ MaSha.prototype = {
 
     deserializeSelection: function(serialized) {
         var sel = window.getSelection();
-        if(sel.rangeCount > 0) { sel.removeAllRanges(); }
+        if (sel.rangeCount > 0) { sel.removeAllRanges(); }
 
         var range = this.deserializeRange(serialized);
-        if(range) {
+        if (range) {
             this.addSelection(range);
         }
     },
@@ -482,7 +482,7 @@ MaSha.prototype = {
         var bits1 = result[1].split(":");
         var bits2 = result[2].split(":");
         // XXX this if is ugly
-        if(parseInt(bits1[0], 10) < parseInt(bits2[0], 10) ||
+        if (parseInt(bits1[0], 10) < parseInt(bits2[0], 10) ||
            (bits1[0] == bits2[0] && parseInt(bits1[1], 10) <= parseInt(bits2[1], 10))) {
 
             var start = this.deserializePosition(bits1, 'start'),
@@ -492,7 +492,7 @@ MaSha.prototype = {
                 var range = document.createRange();
                 range.setStart(start.node, start.offset);
                 range.setEnd(end.node, end.offset);
-                if(!this.options.validate || this.validateRange(range, bits1[2], bits2[2])) {
+                if (!this.options.validate || this.validateRange(range, bits1[2], bits2[2])) {
                     return range;
                 }
             }
@@ -555,7 +555,7 @@ MaSha.prototype = {
     serializeRange: function(range) {
         var start = this.words(range.startContainer, range.startOffset, 'start');
         var end = this.words(range.endContainer, range.endOffset, 'end');
-        if(this.options.validate) {
+        if (this.options.validate) {
             var sums = this.getRangeChecksum(range);
             start += ':' + sums[0];
             end += ':' + sums[1];
@@ -608,7 +608,7 @@ MaSha.prototype = {
         }
         if (container.nodeType == 1 && offset > 0) {
             // Triple click handling for elements like <br>
-            if(offset < container.childNodes.length) {
+            if (offset < container.childNodes.length) {
                 container = container.childNodes[offset];
                 offset = 0;
             } else {
@@ -679,13 +679,13 @@ MaSha.prototype = {
         if (brackets) {
             brackets = brackets.join('');
             var l = brackets.length +1;
-            while(brackets.length < l) {
+            while (brackets.length < l) {
                 l = brackets.length;
                 brackets = brackets.replace(repl_reg, 'x');
             }
             if (brackets.charAt(brackets.length-1) == cb &&
                     text.charAt(text.length-1) == cb) {
-                if(range.endOffset == 1) {
+                if (range.endOffset == 1) {
                     new_data = this.prevNode(range.endContainer);
                     range.setEnd(new_data.container, new_data.offset);
                 } else {
@@ -694,7 +694,7 @@ MaSha.prototype = {
             }
             if (brackets.charAt(0) == ob &&
                     text.charAt(0) == ob) {
-                if(range.startOffset == range.startContainer.data.length) {
+                if (range.startOffset == range.startContainer.data.length) {
                     new_data = this.nextNode(range.endContainer);
                     range.setStart(new_data.container, new_data.offset);
                 } else {
@@ -707,9 +707,9 @@ MaSha.prototype = {
 
     checkSentence: function(range) {
         var data, nextAfterRange;
-        if(range.endOffset == range.endContainer.data.length) {
+        if (range.endOffset == range.endContainer.data.length) {
             data = this.nextNode(range.endContainer, /.*/);
-            if(!data) {return null;}
+            if (!data) {return null;}
             nextAfterRange = data._container.data.charAt(0);
         } else {
             data = {_container: range.endContainer, _offset: range.endOffset};
@@ -741,7 +741,7 @@ MaSha.prototype = {
 
             if (text.charAt(0).match(/[A-Z\u0410-\u042f\u0401]/)) {
                 var pre = range.startContainer.data.substring(0, range.startOffset);
-                if(!pre.match(/\S/)) {
+                if (!pre.match(/\S/)) {
                     var pre_data = this.prevNode(range.startContainer, /\W*/);
                     pre = pre_data._container.data;
                 }
@@ -928,7 +928,7 @@ MaSha.prototype = {
         return false;
     },
     getFirstTextNode: function(numclass) {
-        if(!numclass) { return null; }
+        if (!numclass) { return null; }
         var tnode = byClassName(this.selectable, 'masha_index'+numclass)[0];
         if (tnode) {
             if (tnode.nextSibling.nodeType == 1) {
@@ -1186,11 +1186,11 @@ Range.prototype.getWordIterator = function(regexp, reversed) {
     var counter_aim = 0, i = 0;
     var finished = false, match, this_ = this;
     function next() {
-        if(counter_aim == i && !finished) {
+        if (counter_aim == i && !finished) {
             do{
                 do{
                     node = elem_iter();
-                } while(node && node.nodeType != 3);
+                } while (node && node.nodeType != 3);
                 finished = !node;
                 if (!finished) {
                     var value = node.nodeValue;
@@ -1313,7 +1313,7 @@ var $M = MaSha.$M = {};
 // XXX collect all auxillary methods in $M
 
 function extend(obj) {
-    for(var i=1; i<arguments.length; i++) {
+    for (var i=1; i<arguments.length; i++) {
         for (var key in arguments[i]) {
             obj[key] = arguments[i][key];
         }
@@ -1329,10 +1329,10 @@ function trim(text) {
 function getCompiledStyle(elem, strCssRule) {
     // copypasted from Internets
     var strValue = "";
-    if(document.defaultView && document.defaultView.getComputedStyle) {
+    if (document.defaultView && document.defaultView.getComputedStyle) {
         strValue = document.defaultView.getComputedStyle(elem, "").getPropertyValue(strCssRule);
     }
-    else if(elem.currentStyle) {
+    else if (elem.currentStyle) {
         strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
             return p1.toUpperCase();
         });
