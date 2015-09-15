@@ -1149,7 +1149,7 @@ Range.prototype.getTextNodes = function() {
 
 function elementIterator(parent, cont, end, reversed) {
     reversed = !!reversed;
-    cont = cont || parent[reversed? 'lastChild' : 'firstChild'];
+    cont = cont || parent[reversed ? 'lastChild' : 'firstChild'];
     var finished = !cont;
     var up = false;
 
