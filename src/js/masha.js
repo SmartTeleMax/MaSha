@@ -46,7 +46,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "15.09.2015-17:26:31"; // filled automatically by hook
+MaSha.version = "15.09.2015-17:34:42"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -72,7 +72,7 @@ MaSha.defaultOptions = {
                     elem = elem.offsetParent;
                 }
 
-                window.scrollTo(x,y-150);
+                window.scrollTo(x,y - 150);
             }, 1);
         }
     },
@@ -156,12 +156,12 @@ MaSha.prototype = {
 
         var spans = byClassName(this.selectable, 'user_selection_true');
         this.removeTextSelection(spans);
-        var i, closes = byClassName(this.selectable, 'closewrap');
-        for (i=closes.length; i--;) {
+        var closes = byClassName(this.selectable, 'closewrap');
+        for (var i = closes.length; i--;) {
             closes[i].parentNode.removeChild(closes[i]);
         }
         var indices = byClassName(this.selectable, 'masha_index');
-        for (i=indices.length; i--;) {
+        for (var i = indices.length; i--;) {
             indices[i].parentNode.removeChild(indices[i]);
         }
 
@@ -188,7 +188,7 @@ MaSha.prototype = {
             if (s.rangeCount) {
                 var rects = s.getRangeAt(0).getClientRects();
                 if (rects.length) {
-                    var rect = rects[rects.length-1], body = document.body;
+                    var rect = rects[rects.length - 1], body = document.body;
                     this.showMarker({x: rect.left + rect.width + body.scrollLeft,
                                      y: rect.top + rect.height/2 + body.scrollTop});
                 }
@@ -270,7 +270,7 @@ MaSha.prototype = {
          * doesn't one from url, the selection is not restored.
          */
         var sum = '';
-        for (var i=0; i<3;i++) {
+        for (var i = 0; i < 3; i++) {
             var part = (wordsIterator() || '').charAt(0);
             if (part) {
                 var allowedChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
@@ -303,10 +303,10 @@ MaSha.prototype = {
 
     // XXX sort methods logically
     deleteSelections: function(numclasses) {
-        for (var i=numclasses.length; i--;) {
+        for (var i = numclasses.length; i--;) {
             var numclass = numclasses[i];
             var spans = byClassName(this.selectable, numclass);
-            var closewrap = firstWithClass(spans[spans.length-1], 'closewrap');
+            var closewrap = firstWithClass(spans[spans.length - 1], 'closewrap');
             closewrap.parentNode.removeChild(closewrap);
 
             this.removeTextSelection(spans);
@@ -315,9 +315,9 @@ MaSha.prototype = {
     },
 
     removeTextSelection: function(spans) {
-        for (var i=spans.length; i--;) {
+        for (var i = spans.length; i--;) {
             var span = spans[i];
-            for (var j=0; j<span.childNodes.length;j++) {
+            for (var j = 0; j < span.childNodes.length; j++) {
                 span.parentNode.insertBefore(span.childNodes[j], span);
             }
             span.parentNode.removeChild(span);
@@ -368,7 +368,7 @@ MaSha.prototype = {
         } else if (node.childNodes && node.childNodes.length) { // Child element
             // counting words in element node with nested text nodes
             var alltxtNodes = textNodes(node);
-            for (var i=alltxtNodes.length; i--;) {
+            for (var i = alltxtNodes.length; i--;) {
                 _wcount += alltxtNodes[i].nodeValue.match(this.regexp).length;
             }
         }
@@ -386,8 +386,8 @@ MaSha.prototype = {
         var wcount = container.data.substring(0, offset).match(this.regexp);
 
         if (wcount != null) {
-            if (pos=='start') {wcount = wcount.length+1;}
-            if (pos=='end') {wcount = wcount.length;}
+            if (pos == 'start') {wcount = wcount.length+1;}
+            if (pos == 'end') {wcount = wcount.length;}
         } else {
             wcount = 1;
         }
@@ -445,7 +445,7 @@ MaSha.prototype = {
         var hashAr = this.splittedHash();
         if (!hashAr) { return; }
 
-        for (var i=0; i < hashAr.length; i++) {
+        for (var i = 0; i < hashAr.length; i++) {
             this.deserializeSelection(hashAr[i]);
         }
         this.updateHash();
@@ -535,8 +535,8 @@ MaSha.prototype = {
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
                  if (stepCount == bits[1]) {
-                     if (pos=='start') {offset = myArray.index;}
-                     if (pos=='end') {offset = re.lastIndex;}
+                     if (pos == 'start') {offset = myArray.index;}
+                     if (pos == 'end') {offset = re.lastIndex;}
 
                      return {node: node, offset: parseInt(offset, 10)};
                  }
@@ -592,7 +592,7 @@ MaSha.prototype = {
         function stepBack(container, offset, condition) {
             // correcting selection stepping back and including symbols
             // that match a given condition
-            while (offset > 0 && condition(container.data.charAt(offset-1))) {
+            while (offset > 0 && condition(container.data.charAt(offset - 1))) {
                 offset--;
             }
             return offset;
@@ -615,7 +615,7 @@ MaSha.prototype = {
                 // XXX what is the case for this code?
                 var containerTextNodes = textNodes(container); // XXX lastTextNode
                 if (containerTextNodes.length) { // this if fixes regressionSelectionStartsAtImage test
-                    container = containerTextNodes[containerTextNodes.length-1];
+                    container = containerTextNodes[containerTextNodes.length - 1];
                     offset = container.data.length;
                 }
             }
@@ -643,10 +643,10 @@ MaSha.prototype = {
 
         if (position == 'end') {
             if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
-                container = container.childNodes[range.endOffset-1];
+                container = container.childNodes[range.endOffset - 1];
 
                 var containerTextNodes = textNodes(container); // XXX lastTextNode
-                container = containerTextNodes[containerTextNodes.length-1];
+                container = containerTextNodes[containerTextNodes.length - 1];
 
                 offset = container.data.length;
             }
@@ -683,13 +683,13 @@ MaSha.prototype = {
                 l = brackets.length;
                 brackets = brackets.replace(repl_reg, 'x');
             }
-            if (brackets.charAt(brackets.length-1) == cb &&
-                    text.charAt(text.length-1) == cb) {
+            if (brackets.charAt(brackets.length - 1) == cb &&
+                    text.charAt(text.length - 1) == cb) {
                 if (range.endOffset == 1) {
                     new_data = this.prevNode(range.endContainer);
                     range.setEnd(new_data.container, new_data.offset);
                 } else {
-                    range.setEnd(range.endContainer, range.endOffset-1);
+                    range.setEnd(range.endContainer, range.endOffset - 1);
                 }
             }
             if (brackets.charAt(0) == ob &&
@@ -733,7 +733,7 @@ MaSha.prototype = {
             }
 
             var node, iterator = range.getElementIterator();
-            while ((node=iterator())) {
+            while ((node = iterator())) {
                 if (node.nodeType == 1 && hasClass(node, 'masha_index')) {
                     return apply();
                 }
@@ -746,7 +746,7 @@ MaSha.prototype = {
                     pre = pre_data._container.data;
                 }
                 pre = trim(pre);
-                if (pre.charAt(pre.length-1).match(/(\.|\?|\!)/)) {
+                if (pre.charAt(pre.length - 1).match(/(\.|\?|\!)/)) {
                     return apply();
                 }
             }
@@ -783,12 +783,12 @@ MaSha.prototype = {
         if (last) {
             last = /(num\d+)(?:$| )/.exec(last.className)[1];
             var tnodes = textNodes(lastWithClass(this.selectable, last)); // XXX lastTextNode
-            var lastNode = tnodes[tnodes.length-1];
+            var lastNode = tnodes[tnodes.length - 1];
             range.setEnd(lastNode, lastNode.length);
         }
         if (merges.length) {
             // this breaks selection, so we need to dump a range and restore it after DOM changes
-            var sc = range.startContainer, so=range.startOffset,
+            var sc = range.startContainer, so = range.startOffset,
                 ec = range.endContainer, eo = range.endOffset;
             this.deleteSelections(merges);
             range.setStart(sc, so);
@@ -812,13 +812,13 @@ MaSha.prototype = {
     },
 
     addSelectionEvents: function(class_name) {
-        var timeoutHover=false;
+        var timeoutHover = false;
         var this_ = this;
 
         var wrappers = byClassName(this.selectable, class_name);
-        for (var i=wrappers.length;i--;) {
+        for (var i = wrappers.length; i--;) {
             addEvent(wrappers[i], 'mouseover', function() {
-                for (var i=wrappers.length;i--;) {
+                for (var i = wrappers.length; i--;) {
                     addClass(wrappers[i], 'hover');
                 }
                 window.clearTimeout(timeoutHover);
@@ -831,7 +831,7 @@ MaSha.prototype = {
                 }
                 if (!t || t.className != this.className) {
                     timeoutHover = window.setTimeout(function() {
-                        for (var i=wrappers.length;i--;) {
+                        for (var i = wrappers.length; i--;) {
                             removeClass(wrappers[i], 'hover');
                         }
                     }, 2000);
@@ -854,7 +854,7 @@ MaSha.prototype = {
                 this_.options.onUnmark.call(this_);
             }
         });
-        wrappers[wrappers.length-1].appendChild(closer_span);
+        wrappers[wrappers.length - 1].appendChild(closer_span);
 
         this.counter++;
         window.getSelection().removeAllRanges();
@@ -879,13 +879,13 @@ MaSha.prototype = {
             var hasBlocks = false;
             var blockStarted = false;
 
-            for (var idx=0; idx<children.length; ++idx) {
+            for (var idx = 0; idx<children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
-                if (nodeType==3 && !child.nodeValue.match(this_.regexp)) {
+                if (nodeType == 3 && !child.nodeValue.match(this_.regexp)) {
                     // ..if it is a textnode that is logically empty, ignore it
                     continue;
-                } else if (nodeType==3) {
+                } else if (nodeType == 3) {
                     if (!blockStarted) {
                         // remember the block
                         this_.captureCount++;
@@ -899,7 +899,7 @@ MaSha.prototype = {
                         this_.blocks[this_.captureCount] = child;
                         hasBlocks = blockStarted = true;
                     }
-                } else if (nodeType==1) {
+                } else if (nodeType == 1) {
                     // XXX check if this is correct
                     if (!this_.isIgnored(child)) {
                         var isBlock = this_.options.isBlock(child);
@@ -920,7 +920,7 @@ MaSha.prototype = {
     },
     isFirstTextNode: function(textNode) {
         var prevs = [textNode.previousSibling, textNode.parentNode.previousSibling];
-        for (var i=prevs.length;i--;) {
+        for (var i = prevs.length; i--;) {
             if (prevs[i] && prevs[i].nodeType == 1 && prevs[i].className == 'masha_index') {
                 return true;
             }
@@ -962,7 +962,7 @@ MaSha.prototype = {
             // supports simple selectors by class, by tag and by id
             var by_id = [], by_class = [], by_tag = [];
             var selectors = selector.split(',');
-            for (var i=0; i<selectors.length; i++) {
+            for (var i = 0; i < selectors.length; i++) {
               var sel = trim(selectors[i]);
               if (sel.charAt(0) == '#') {
                 by_id.push(sel.substr(1));
@@ -992,7 +992,7 @@ MaSha.prototype = {
     },
 
     rangeIsSelectable: function() {
-        var node, firstNode, lastNode, first=true;
+        var node, firstNode, lastNode, first = true;
         var range = this.getFirstRange();
         if (!range) { return false; }
         var iterator = range.getElementIterator();
@@ -1219,7 +1219,7 @@ Range.prototype.getWordIterator = function(regexp, reversed) {
 Range.prototype.wrapSelection = function(className) {
     this.splitBoundaries();
     var textNodes = this.getTextNodes();
-    for (var i=textNodes.length; i--;) {
+    for (var i = textNodes.length; i--;) {
         // XXX wrap sibling text nodes together
         var span = document.createElement('span');
         span.className = className;
@@ -1256,7 +1256,7 @@ MultiLocationHandler.prototype = {
     addHashchange: MaSha.LocationHandler.prototype.addHashchange,
     getHashPart: function() {
         var parts = window.location.hash.replace(/^#\|?/, '').split(/\||%7C/);
-        for (var i=0; i< parts.length; i++) {
+        for (var i = 0; i < parts.length; i++) {
             if (parts[i].substr(0, this.prefix.length + 1) == this.prefix + '=') {
                 return parts[i];
             }
@@ -1273,7 +1273,7 @@ var MultiMaSha = function(elements, getPrefix, options) {
 
   getPrefix = getPrefix || function(element) {return element.id;};
 
-  for (var i=0; i< elements.length; i++) {
+  for (var i = 0; i< elements.length; i++) {
       var element = elements[i];
       var prefix = getPrefix(element);
 
@@ -1313,7 +1313,7 @@ var $M = MaSha.$M = {};
 // XXX collect all auxillary methods in $M
 
 function extend(obj) {
-    for (var i=1; i<arguments.length; i++) {
+    for (var i = 1; i<arguments.length; i++) {
         for (var key in arguments[i]) {
             obj[key] = arguments[i][key];
         }
@@ -1360,7 +1360,7 @@ function firstWithClass(elem, cls) {
 function lastWithClass(elem, cls) {
     var elems = byClassName(elem, cls);
     if (elems) {
-        return elems[elems.length-1];
+        return elems[elems.length - 1];
     }
     return null;
 }
@@ -1428,7 +1428,7 @@ $M.removeClass = removeClass;
 function inArray(elem, array) {
     // from jQuery
     // Hate IE
-    for (var i = 0, length=array.length; i < length; i++) {
+    for (var i = 0, length = array.length; i < length; i++) {
         if (array[i] === elem) { return i; }
     }
     return -1;
