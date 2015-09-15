@@ -50,7 +50,7 @@ MaSha.version = "15.09.2015-17:34:42"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
-    'regexp': "[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+",
+    'regexp': '[^\\s,;:\u2013.!?<>\u2026\\n\u00a0\\*]+',
     'selectable': 'selectable-content',
     'marker': 'txtselect_marker',
     'ignored': null,
@@ -72,7 +72,7 @@ MaSha.defaultOptions = {
                     elem = elem.offsetParent;
                 }
 
-                window.scrollTo(x,y - 150);
+                window.scrollTo(x, y - 150);
             }, 1);
         }
     },
@@ -240,7 +240,7 @@ MaSha.prototype = {
             this._showMessage();
         }
 
-        if (hasClass(target, 'masha-social') ) {
+        if (hasClass(target, 'masha-social')) {
             var pattern = target.getAttribute('data-pattern');
             if (pattern) {
                 var new_url = pattern.replace('{url}', encodeURIComponent(window.location.toString()));
@@ -355,7 +355,7 @@ MaSha.prototype = {
     prevNode: function(cont, regexp) {
         return this._siblingNode(cont, 'previous', 'last', 1, regexp);
     },
-    nextNode: function (cont, regexp) {
+    nextNode: function(cont, regexp) {
         return this._siblingNode(cont, 'next', 'first', 0, regexp);
     },
 
@@ -386,7 +386,7 @@ MaSha.prototype = {
         var wcount = container.data.substring(0, offset).match(this.regexp);
 
         if (wcount != null) {
-            if (pos == 'start') {wcount = wcount.length+1;}
+            if (pos == 'start') {wcount = wcount.length + 1;}
             if (pos == 'end') {wcount = wcount.length;}
         } else {
             wcount = 1;
@@ -399,7 +399,7 @@ MaSha.prototype = {
         while (node && node != firstNode) {
             node = this.prevNode(node, /.*/)._container;
             wcount += this.wordCount(node);
-            //node = node? node.container: null;
+            //node = node ? node.container: null;
         }
 
         /*
@@ -433,7 +433,7 @@ MaSha.prototype = {
         for (var key in this.ranges) {
             hashAr.push(this.ranges[key]);
         }
-        var newHash = '#sel='+hashAr.join(';');
+        var newHash = '#sel=' + hashAr.join(';');
         this.lastHash = newHash;
         this.options.location.setHash(newHash);
     },
@@ -479,8 +479,8 @@ MaSha.prototype = {
 
     deserializeRange: function(serialized) {
         var result = /^([0-9A-Za-z:]+)(?:,|%2C)([0-9A-Za-z:]+)$/.exec(serialized);
-        var bits1 = result[1].split(":");
-        var bits2 = result[2].split(":");
+        var bits1 = result[1].split(':');
+        var bits2 = result[2].split(':');
         // XXX this if is ugly
         if (parseInt(bits1[0], 10) < parseInt(bits2[0], 10) ||
            (bits1[0] == bits2[0] && parseInt(bits1[1], 10) <= parseInt(bits2[1], 10))) {
@@ -544,7 +544,7 @@ MaSha.prototype = {
              }
              // word not found yet, trying next container
              node = this.nextNode(node, /.*/);
-             node = node? node._container: null;
+             node = node ? node._container : null;
              if (node && this.isFirstTextNode(node)) {
                  node = null;
              }
@@ -560,7 +560,7 @@ MaSha.prototype = {
             start += ':' + sums[0];
             end += ':' + sums[1];
         }
-        return start + "," + end;
+        return start + ',' + end;
     },
 
     checkSelection: function(range) {
@@ -668,7 +668,7 @@ MaSha.prototype = {
 
     checkBrackets: function(range) {
         this._checkBrackets(range, '(', ')', /\(|\)/g, /\(x*\)/g);
-        this._checkBrackets(range, "\u00ab", "\u00bb", /\\u00ab|\\u00bb/g, /\u00abx*\u00bb/g);
+        this._checkBrackets(range, '\u00ab', '\u00bb', /\\u00ab|\\u00bb/g, /\u00abx*\u00bb/g);
         // XXX Double brackets?
     },
     _checkBrackets: function(range, ob, cb, match_reg, repl_reg) {
@@ -698,7 +698,7 @@ MaSha.prototype = {
                     new_data = this.nextNode(range.endContainer);
                     range.setStart(new_data.container, new_data.offset);
                 } else {
-                    range.setStart(range.startContainer, range.startOffset+1);
+                    range.setStart(range.startContainer, range.startOffset + 1);
                 }
             }
         }
@@ -754,7 +754,7 @@ MaSha.prototype = {
         }
 
         function apply() {
-            range.setEnd(data._container, data._offset+1);
+            range.setEnd(data._container, data._offset + 1);
         }
     },
 
@@ -803,7 +803,7 @@ MaSha.prototype = {
         range = this.mergeSelections(range);
 
 
-        var class_name = 'num'+this.counter;
+        var class_name = 'num' + this.counter;
         // generating hash part for this range
         this.ranges[class_name] = this.serializeRange(range);
 
@@ -929,7 +929,7 @@ MaSha.prototype = {
     },
     getFirstTextNode: function(numclass) {
         if (!numclass) { return null; }
-        var tnode = byClassName(this.selectable, 'masha_index'+numclass)[0];
+        var tnode = byClassName(this.selectable, 'masha_index' + numclass)[0];
         if (tnode) {
             if (tnode.nextSibling.nodeType == 1) {
                 return tnode.nextSibling.childNodes[0];
@@ -1035,8 +1035,8 @@ MaSha.prototype = {
      */
 
     initMessage: function() {
-        this.msg = (typeof this.options.selectMessage == 'string'?
-                    document.getElementById(this.options.selectMessage):
+        this.msg = (typeof this.options.selectMessage == 'string' ?
+                    document.getElementById(this.options.selectMessage) :
                     this.options.selectMessage);
         this.close_button = this.getCloseButton();
         this.msg_autoclose = null;
@@ -1157,9 +1157,9 @@ function elementIterator(parent, cont, end, reversed) {
         if (finished) {return null;}
         var result = cont;
         if (cont.childNodes && cont.childNodes.length && !up) {
-            cont = cont[reversed? 'lastChild' : 'firstChild'];
-        } else if (cont[reversed? 'previousSibling' : 'nextSibling']) {
-            cont = cont[reversed? 'previousSibling' : 'nextSibling'];
+            cont = cont[reversed ? 'lastChild' : 'firstChild'];
+        } else if (cont[reversed ? 'previousSibling' : 'nextSibling']) {
+            cont = cont[reversed ? 'previousSibling' : 'nextSibling'];
             up = false;
         } else if (cont.parentNode) {
             cont = cont.parentNode;
@@ -1204,8 +1204,8 @@ Range.prototype.getWordIterator = function(regexp, reversed) {
                 }
             } while (node && !match);
             if (match) {
-                counter_aim = reversed? 0: match.length - 1;
-                i = reversed? match.length - 1: 0;
+                counter_aim = reversed ? 0 : match.length - 1;
+                i = reversed ? match.length - 1 : 0;
             }
         } else {
             if (reversed) {i--;} else {i++;}
@@ -1323,17 +1323,17 @@ function extend(obj) {
 $M.extend = extend;
 
 function trim(text) {
-    return (text || "").replace(/^\s+|\s+$/g, "");
+    return (text || '').replace(/^\s+|\s+$/g, '');
 }
 
 function getCompiledStyle(elem, strCssRule) {
     // copypasted from Internets
-    var strValue = "";
+    var strValue = '';
     if (document.defaultView && document.defaultView.getComputedStyle) {
-        strValue = document.defaultView.getComputedStyle(elem, "").getPropertyValue(strCssRule);
+        strValue = document.defaultView.getComputedStyle(elem, '').getPropertyValue(strCssRule);
     }
     else if (elem.currentStyle) {
-        strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
+        strCssRule = strCssRule.replace(/\-(\w)/g, function(strMatch, p1) {
             return p1.toUpperCase();
         });
         strValue = elem.currentStyle[strCssRule];
@@ -1400,7 +1400,7 @@ function textNodes(elem) {
 }
 
 function _classRegExp(cls) {
-    return new RegExp('(^|\\s+)'+cls+'(?:$|\\s+)', 'g');
+    return new RegExp('(^|\\s+)' + cls + '(?:$|\\s+)', 'g');
 }
 function hasClass(elem, cls) {
     var reg = _classRegExp(cls);
@@ -1438,7 +1438,7 @@ function addEvent(elem, type, fn) {
     if (elem.addEventListener) {
         elem.addEventListener(type, fn, false);
     } else if (elem.attachEvent) {
-        elem.attachEvent("on" + type, fn);
+        elem.attachEvent('on' + type, fn);
     }
 }
 $M.addEvent = addEvent;
@@ -1447,7 +1447,7 @@ function removeEvent(elem, type, fn) {
     if (elem.removeEventListener) {
         elem.removeEventListener(type, fn, false);
     } else if (elem.detachEvent) {
-        elem.detachEvent("on" + type, fn);
+        elem.detachEvent('on' + type, fn);
     }
 }
 $M.removeEvent = removeEvent;
