@@ -31,9 +31,9 @@ LocationHandler.prototype = {
 var MaSha = function(options) {
     options = options || {};
 
-    if ('select_message' in options) options.selectMessage = options.select_message;
-    if ('enable_haschange' in options) options.enableHaschange = options.enable_haschange;
-    if ('is_block' in options) options.isBlock = options.is_block;
+    if ('select_message' in options) {options.selectMessage = options.select_message;}
+    if ('enable_haschange' in options) {options.enableHaschange = options.enable_haschange;}
+    if ('is_block' in options) {options.isBlock = options.is_block;}
 
     this.options = extend({}, MaSha.defaultOptions, options);
 
@@ -46,7 +46,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "15.09.2015-17:20:09"; // filled automatically by hook
+MaSha.version = "15.09.2015-17:26:31"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -104,7 +104,7 @@ MaSha.prototype = {
         }
         this.regexp = new RegExp(this.options.regexp, 'ig');
 
-        if (!this.selectable) return;
+        if (!this.selectable) {return;}
 
         this.isIgnored = this.constructIgnored(this.options.ignored);
 
@@ -290,8 +290,8 @@ MaSha.prototype = {
         var regexp = new RegExp(this.options.regexp, 'g');
         var text = window.getSelection().toString();
 
-        if (text == '' || !regexp.test(text)) return;
-        if (!this.rangeIsSelectable()) return;
+        if (text == '' || !regexp.test(text)) {return;}
+        if (!this.rangeIsSelectable()) {return;}
 
         var coords = this.getMarkerCoords(this.marker, markerCoord);
 
@@ -386,8 +386,8 @@ MaSha.prototype = {
         var wcount = container.data.substring(0, offset).match(this.regexp);
 
         if (wcount != null) {
-            if (pos=='start') wcount = wcount.length+1;
-            if (pos=='end') wcount = wcount.length;
+            if (pos=='start') {wcount = wcount.length+1;}
+            if (pos=='end') {wcount = wcount.length;}
         } else {
             wcount = 1;
         }
@@ -457,11 +457,11 @@ MaSha.prototype = {
 
     splittedHash: function() {
         var hash = this.options.location.getHash();
-        if (!hash) return null;
+        if (!hash) {return null;}
 
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
 
-        if (! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) return null;
+        if (! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) {return null;}
 
         hash = hash.substring(4, hash.length);
         return hash.split(';');
@@ -535,8 +535,8 @@ MaSha.prototype = {
              while ((myArray = re.exec(node.data )) != null) {
                  stepCount++;
                  if (stepCount == bits[1]) {
-                     if (pos=='start') offset = myArray.index;
-                     if (pos=='end') offset = re.lastIndex;
+                     if (pos=='start') {offset = myArray.index;}
+                     if (pos=='end') {offset = re.lastIndex;}
 
                      return {node: node, offset: parseInt(offset, 10)};
                  }
@@ -1090,7 +1090,7 @@ MaSha.prototype = {
 
     _showMessage: function() {
         var this_ = this;
-        if (this.getMessageClosed()) return;
+        if (this.getMessageClosed()) {return;}
 
         this.showMessage();
 
@@ -1241,7 +1241,7 @@ MultiLocationHandler.prototype = {
     setHash: function(hash) {
         hash = hash.replace('sel', this.prefix).replace(/^#/, '');
 
-        if (hash.length == this.prefix.length + 1) hash = '';
+        if (hash.length == this.prefix.length + 1) {hash = '';}
 
         var old_hash = this.getHashPart(),
             new_hash;
@@ -1476,12 +1476,14 @@ var nativeBind = Function.prototype.bind;
 var slice = Array.prototype.slice;
 
 var bind = function(func, context) {
-  // Based on Underscore (see http://stackoverflow.com/q/23341577/168352)
-  if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-  var args = slice.call(arguments, 2);
-  return function() {
-    return func.apply(context, args.concat(slice.call(arguments)));
-  };
+    // Based on Underscore (see http://stackoverflow.com/q/23341577/168352)
+    if (func.bind === nativeBind && nativeBind) {
+        return nativeBind.apply(func, slice.call(arguments, 1));
+    }
+    var args = slice.call(arguments, 2);
+    return function() {
+        return func.apply(context, args.concat(slice.call(arguments)));
+    };
 };
 $M.bind = bind;
 
