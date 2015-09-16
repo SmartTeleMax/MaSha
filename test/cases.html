@@ -110,7 +110,8 @@
         options.location = {
             addHashchange: function(){},
             setHash: function(x){ hash = x.replace('#', ''); },
-            getHash: function(){ return hash; }
+            getHash: function(){ return hash; },
+            _removeHash: function(){ hash = ''; }
         };
         MaSha.captureCount = 0;
         return new MaSha(options);
