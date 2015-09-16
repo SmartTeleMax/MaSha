@@ -25,6 +25,14 @@ LocationHandler.prototype = {
         if (this.callback) {
             removeEvent(window, 'hashchange', this.callback);
         }
+    },
+    _removeHash: function() {
+        if (window.history.pushState) {
+            history.pushState('', document.title, window.location.pathname + window.location.search);
+        }
+        else {
+            this.setHash('');
+        }
     }
 };
 
@@ -46,7 +54,7 @@ var MaSha = function(options) {
     this.init();
 };
 
-MaSha.version = "15.09.2015-17:34:42"; // filled automatically by hook
+MaSha.version = "25.04.2013-09:55:11"; // filled automatically by hook
 MaSha.LocationHandler = LocationHandler;
 
 MaSha.defaultOptions = {
@@ -84,8 +92,8 @@ MaSha.defaultOptions = {
 
 MaSha.prototype = {
     init: function() { // domready
-        this.selectable = (typeof this.options.selectable == 'string'?
-                             document.getElementById(this.options.selectable):
+        this.selectable = (typeof this.options.selectable == 'string' ?
+                             document.getElementById(this.options.selectable) :
                              this.options.selectable);
         if (typeof this.options.marker == 'string') {
             this.marker = document.getElementById(this.options.marker);
@@ -188,7 +196,8 @@ MaSha.prototype = {
             if (s.rangeCount) {
                 var rects = s.getRangeAt(0).getClientRects();
                 if (rects.length) {
-                    var rect = rects[rects.length - 1], body = document.body;
+                    var rect = rects[rects.length - 1],
+                        body = document.body;
                     this.showMarker({x: rect.left + rect.width + body.scrollLeft,
                                      y: rect.top + rect.height/2 + body.scrollTop});
                 }
@@ -212,6 +221,7 @@ MaSha.prototype = {
         if (target != this.marker) {
             removeClass(this.marker, 'show');
         }
+        this.lastRange = null;
     },
 
     markerClick: function(e) {
@@ -257,7 +267,7 @@ MaSha.prototype = {
         window.open(url, '', 'status=no,toolbar=no,menubar=no,width=800,height=400');
     },
     getMarkerCoords: function(marker, markerCoord) {
-        return {'x': markerCoord.x + 5, 'y':markerCoord.y - 33};
+        return {'x': markerCoord.x + 5, 'y': markerCoord.y - 33, 'width': markerCoord.width};
     },
     getPositionChecksum: function(wordsIterator) {
         /*
@@ -297,6 +307,12 @@ MaSha.prototype = {
 
         this.marker.style.top = coords.y + 'px';
         this.marker.style.left = coords.x + 'px';
+
+        var sel = window.getSelection();
+        if (sel.rangeCount){
+            this.lastRange = sel.getRangeAt(0);
+        }
+
         addClass(this.marker, 'show');
     },
 
@@ -433,9 +449,13 @@ MaSha.prototype = {
         for (var key in this.ranges) {
             hashAr.push(this.ranges[key]);
         }
-        var newHash = '#sel=' + hashAr.join(';');
-        this.lastHash = newHash;
-        this.options.location.setHash(newHash);
+        if (hashAr.length) {
+            var newHash = '#sel=' + hashAr.join(';');
+            this.lastHash = newHash;
+            this.options.location.setHash(newHash);
+        } else {
+            this.options.location._removeHash();
+        }
     },
 
     readHash: function() {
@@ -460,7 +480,6 @@ MaSha.prototype = {
         if (!hash) {return null;}
 
         hash = hash.replace(/^#/, '').replace(/;+$/, '');
-
         if (! /^sel\=(?:\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?;)*\d+\:\d+(?:\:[^:;]*)?\,|%2C\d+\:\d+(?:\:[^:;]*)?$/.test(hash)) {return null;}
 
         hash = hash.substring(4, hash.length);
@@ -678,7 +697,7 @@ MaSha.prototype = {
         var new_data;
         if (brackets) {
             brackets = brackets.join('');
-            var l = brackets.length +1;
+            var l = brackets.length + 1;
             while (brackets.length < l) {
                 l = brackets.length;
                 brackets = brackets.replace(repl_reg, 'x');
@@ -807,7 +826,7 @@ MaSha.prototype = {
         // generating hash part for this range
         this.ranges[class_name] = this.serializeRange(range);
 
-        range.wrapSelection(class_name+' user_selection_true');
+        range.wrapSelection(class_name + ' user_selection_true');
         this.addSelectionEvents(class_name);
     },
 
@@ -863,6 +882,12 @@ MaSha.prototype = {
     getFirstRange: function() {
         var sel = window.getSelection();
         var res = sel.rangeCount ? sel.getRangeAt(0) : null;
+        if (this.lastRange && res &&
+                res.endContainer == res.startContainer &&
+                res.endOffset == res.startOffset) {
+            return this.lastRange
+        }
+
         return res;
     },
     enumerateElements: function() {
@@ -879,7 +904,7 @@ MaSha.prototype = {
             var hasBlocks = false;
             var blockStarted = false;
 
-            for (var idx = 0; idx<children.length; ++idx) {
+            for (var idx = 0; idx < children.length; ++idx) {
                 var child = children.item(idx);
                 var nodeType = child.nodeType;
                 if (nodeType == 3 && !child.nodeValue.match(this_.regexp)) {
@@ -1004,7 +1029,7 @@ MaSha.prototype = {
             }
             // We need to check first element. Text nodes are not checked, so we replace
             // it for it's parent.
-            node = (first && node.nodeType == 3)? node.parentNode : node;
+            node = (first && node.nodeType == 3) ? node.parentNode : node;
             first = false;
 
             if (node.nodeType == 1) {
@@ -1187,8 +1212,8 @@ Range.prototype.getWordIterator = function(regexp, reversed) {
     var finished = false, match, this_ = this;
     function next() {
         if (counter_aim == i && !finished) {
-            do{
-                do{
+            do {
+                do {
                     node = elem_iter();
                 } while (node && node.nodeType != 3);
                 finished = !node;
@@ -1243,15 +1268,15 @@ MultiLocationHandler.prototype = {
 
         if (hash.length == this.prefix.length + 1) {hash = '';}
 
-        var old_hash = this.getHashPart(),
-            new_hash;
-        if (old_hash) {
-            new_hash = window.location.hash.replace(old_hash, hash);
+        var oldHash = this.getHashPart(),
+            newHash;
+        if (oldHash) {
+            newHash = window.location.hash.replace(oldHash, hash);
         } else {
-            new_hash = window.location.hash + '|' + hash;
+            newHash = window.location.hash + '|' + hash;
         }
-        new_hash = '#' + new_hash.replace('||', '').replace(/^#?\|?|\|$/g, '');
-        window.location.hash = new_hash;
+        newHash = '#' + newHash.replace('||', '').replace(/^#?\|?|\|$/g, '');
+        window.location.hash = newHash;
     },
     addHashchange: MaSha.LocationHandler.prototype.addHashchange,
     getHashPart: function() {
@@ -1271,22 +1296,22 @@ MultiLocationHandler.prototype = {
 
 var MultiMaSha = function(elements, getPrefix, options) {
 
-  getPrefix = getPrefix || function(element) {return element.id;};
+    getPrefix = getPrefix || function(element) {return element.id;};
 
-  for (var i = 0; i< elements.length; i++) {
-      var element = elements[i];
-      var prefix = getPrefix(element);
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        var prefix = getPrefix(element);
 
-      if (prefix) {
-          var initOptions = extend({}, options || {}, {
-              'selectable': element,
-              'location': new MultiLocationHandler(prefix)
-          });
+        if (prefix) {
+            var initOptions = extend({}, options || {}, {
+                'selectable': element,
+                'location': new MultiLocationHandler(prefix)
+            });
 
-          new MaSha(initOptions);
-      }
-  }
-};
+            new MaSha(initOptions);
+        }
+    }
+}
 
 
 /*
@@ -1313,7 +1338,7 @@ var $M = MaSha.$M = {};
 // XXX collect all auxillary methods in $M
 
 function extend(obj) {
-    for (var i = 1; i<arguments.length; i++) {
+    for (var i = 1; i < arguments.length; i++) {
         for (var key in arguments[i]) {
             obj[key] = arguments[i][key];
         }
