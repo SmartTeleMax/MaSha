@@ -6,7 +6,6 @@
  */
 
 ;(function (global, factory) {
-  debugger;
     if (typeof exports === 'object' && typeof module !== 'undefined') {
         module.exports = factory();
     } else if (typeof define === 'function' && define.amd) {
