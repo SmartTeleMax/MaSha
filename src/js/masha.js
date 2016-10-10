@@ -253,8 +253,8 @@ MaSha.prototype = {
         if (hasClass(target, 'masha-social')) {
             var pattern = target.getAttribute('data-pattern');
             if (pattern) {
-                var new_url = pattern.replace('{url}', encodeURIComponent(window.location.toString()));
-                this.openShareWindow(new_url);
+                var newUrl = pattern.replace('{url}', encodeURIComponent(window.location.toString()));
+                this.openShareWindow(newUrl);
             }
         }
     },
@@ -267,7 +267,7 @@ MaSha.prototype = {
         window.open(url, '', 'status=no,toolbar=no,menubar=no,width=800,height=400');
     },
     getMarkerCoords: function(marker, markerCoord) {
-        return {'x': markerCoord.x + 5, 'y': markerCoord.y - 33, 'width': markerCoord.width};
+        return {'x': markerCoord.x, 'y': markerCoord.y, 'width': markerCoord.width};
     },
     getPositionChecksum: function(wordsIterator) {
         /*
@@ -306,7 +306,7 @@ MaSha.prototype = {
         var coords = this.getMarkerCoords(this.marker, markerCoord);
 
         this.marker.style.top = coords.y + 'px';
-        this.marker.style.left = coords.x + 'px';
+//        this.marker.style.left = coords.x + 'px';
 
         var sel = window.getSelection();
         if (sel.rangeCount){
@@ -690,23 +690,23 @@ MaSha.prototype = {
         this._checkBrackets(range, '\u00ab', '\u00bb', /\\u00ab|\\u00bb/g, /\u00abx*\u00bb/g);
         // XXX Double brackets?
     },
-    _checkBrackets: function(range, ob, cb, match_reg, repl_reg) {
+    _checkBrackets: function(range, ob, cb, matchReg, replReg) {
         // XXX Needs cleanup!
         var text = range.toString();//getTextNodes(range).map(function(x){return x.data;}).join('');
-        var brackets = text.match(match_reg);
-        var new_data;
+        var brackets = text.match(matchReg);
+        var newData;
         if (brackets) {
             brackets = brackets.join('');
             var l = brackets.length + 1;
             while (brackets.length < l) {
                 l = brackets.length;
-                brackets = brackets.replace(repl_reg, 'x');
+                brackets = brackets.replace(replReg, 'x');
             }
             if (brackets.charAt(brackets.length - 1) == cb &&
                     text.charAt(text.length - 1) == cb) {
                 if (range.endOffset == 1) {
-                    new_data = this.prevNode(range.endContainer);
-                    range.setEnd(new_data.container, new_data.offset);
+                    newData = this.prevNode(range.endContainer);
+                    range.setEnd(newData.container, newData.offset);
                 } else {
                     range.setEnd(range.endContainer, range.endOffset - 1);
                 }
@@ -714,8 +714,8 @@ MaSha.prototype = {
             if (brackets.charAt(0) == ob &&
                     text.charAt(0) == ob) {
                 if (range.startOffset == range.startContainer.data.length) {
-                    new_data = this.nextNode(range.endContainer);
-                    range.setStart(new_data.container, new_data.offset);
+                    newData = this.nextNode(range.endContainer);
+                    range.setStart(newData.container, newData.offset);
                 } else {
                     range.setStart(range.startContainer, range.startOffset + 1);
                 }
@@ -761,8 +761,8 @@ MaSha.prototype = {
             if (text.charAt(0).match(/[A-Z\u0410-\u042f\u0401]/)) {
                 var pre = range.startContainer.data.substring(0, range.startOffset);
                 if (!pre.match(/\S/)) {
-                    var pre_data = this.prevNode(range.startContainer, /\W*/);
-                    pre = pre_data._container.data;
+                    var preData = this.prevNode(range.startContainer, /\W*/);
+                    pre = preData._container.data;
                 }
                 pre = trim(pre);
                 if (pre.charAt(pre.length - 1).match(/(\.|\?|\!)/)) {
@@ -822,19 +822,19 @@ MaSha.prototype = {
         range = this.mergeSelections(range);
 
 
-        var class_name = 'num' + this.counter;
+        var className = 'num' + this.counter;
         // generating hash part for this range
-        this.ranges[class_name] = this.serializeRange(range);
+        this.ranges[className] = this.serializeRange(range);
 
-        range.wrapSelection(class_name + ' user_selection_true');
-        this.addSelectionEvents(class_name);
+        range.wrapSelection(className + ' user_selection_true');
+        this.addSelectionEvents(className);
     },
 
-    addSelectionEvents: function(class_name) {
+    addSelectionEvents: function(className) {
         var timeoutHover = false;
         var this_ = this;
 
-        var wrappers = byClassName(this.selectable, class_name);
+        var wrappers = byClassName(this.selectable, className);
         for (var i = wrappers.length; i--;) {
             addEvent(wrappers[i], 'mouseover', function() {
                 for (var i = wrappers.length; i--;) {
@@ -861,19 +861,19 @@ MaSha.prototype = {
         var closer = document.createElement('a');
         closer.className = 'txtsel_close';
         closer.href = '#';
-        var closer_span = document.createElement('span');
-        closer_span.className = 'closewrap';
-        closer_span.appendChild(closer);
+        var closerSpan = document.createElement('span');
+        closerSpan.className = 'closewrap';
+        closerSpan.appendChild(closer);
         addEvent(closer, 'click', function(e) {
             preventDefault(e);
-            this_.deleteSelections([class_name]);
+            this_.deleteSelections([className]);
             this_.updateHash();
 
             if (this_.options.onUnmark) {
                 this_.options.onUnmark.call(this_);
             }
         });
-        wrappers[wrappers.length - 1].appendChild(closer_span);
+        wrappers[wrappers.length - 1].appendChild(closerSpan);
 
         this.counter++;
         window.getSelection().removeAllRanges();
@@ -914,11 +914,11 @@ MaSha.prototype = {
                     if (!blockStarted) {
                         // remember the block
                         this_.captureCount++;
-                        var index_span = document.createElement('span');
+                        var indexSpan = document.createElement('span');
                         // XXX prefix all class and id attributes with "masha"
-                        index_span.className = 'masha_index masha_index' + this_.captureCount;
-                        index_span.setAttribute('rel', this_.captureCount);
-                        child.parentNode.insertBefore(index_span, child);
+                        indexSpan.className = 'masha_index masha_index' + this_.captureCount;
+                        indexSpan.setAttribute('rel', this_.captureCount);
+                        child.parentNode.insertBefore(indexSpan, child);
 
                         idx++;
                         this_.blocks[this_.captureCount] = child;
@@ -985,29 +985,29 @@ MaSha.prototype = {
             return selector;
         } else if (typeof selector == 'string') {
             // supports simple selectors by class, by tag and by id
-            var by_id = [], by_class = [], by_tag = [];
+            var byId = [], byClass = [], byTag = [];
             var selectors = selector.split(',');
             for (var i = 0; i < selectors.length; i++) {
               var sel = trim(selectors[i]);
               if (sel.charAt(0) == '#') {
-                by_id.push(sel.substr(1));
+                byId.push(sel.substr(1));
               } else if (sel.charAt(0) == '.') {
-                by_class.push(sel.substr(1));
+                byClass.push(sel.substr(1));
               } else {
-                by_tag.push(sel);
+                byTag.push(sel);
               }
             }
 
             return function(node) {
                 var i;
-                for (i = by_id.length; i--;) {
-                    if (node.id == by_id[i]) { return true; }
+                for (i = byId.length; i--;) {
+                    if (node.id == byId[i]) { return true; }
                 }
-                for (i = by_class.length; i--;) {
-                    if (hasClass(node, by_class[i])) { return true; }
+                for (i = byClass.length; i--;) {
+                    if (hasClass(node, byClass[i])) { return true; }
                 }
-                for (i = by_tag.length; i--;) {
-                    if (node.tagName == by_tag[i].toUpperCase()) { return true; }
+                for (i = byTag.length; i--;) {
+                    if (node.tagName == byTag[i].toUpperCase()) { return true; }
                 }
                 return false;
             };
@@ -1035,22 +1035,22 @@ MaSha.prototype = {
             if (node.nodeType == 1) {
                 // Checking element nodes. Check if the element node and all it's parents
                 // till selectable are not ignored
-                var iter_node = node;
-                while (iter_node != this.selectable && iter_node.parentNode) {
-                    if (this.isIgnored(iter_node)) {
+                var iterNode = node;
+                while (iterNode != this.selectable && iterNode.parentNode) {
+                    if (this.isIgnored(iterNode)) {
                         return false;
                     }
-                    iter_node = iter_node.parentNode;
+                    iterNode = iterNode.parentNode;
                 }
-                if (iter_node != this.selectable) { return false; }
+                if (iterNode != this.selectable) { return false; }
             }
         }
-        var first_selection = parentWithClass(firstNode, 'user_selection_true');
-        var last_selection = parentWithClass(lastNode, 'user_selection_true');
-        if (first_selection && last_selection) {
+        var firstSelection = parentWithClass(firstNode, 'user_selection_true');
+        var lastSelection = parentWithClass(lastNode, 'user_selection_true');
+        if (firstSelection && lastSelection) {
             var reg = /(?:^| )(num\d+)(?:$| )/;
-            return (reg.exec(first_selection.className)[1] !=
-                    reg.exec(last_selection.className)[1]);
+            return (reg.exec(firstSelection.className)[1] !=
+                    reg.exec(lastSelection.className)[1]);
         }
         return true;
     },
@@ -1063,18 +1063,18 @@ MaSha.prototype = {
         this.msg = (typeof this.options.selectMessage == 'string' ?
                     document.getElementById(this.options.selectMessage) :
                     this.options.selectMessage);
-        this.close_button = this.getCloseButton();
-        this.msg_autoclose = null;
+        this.closeButton = this.getCloseButton();
+        this.msgAutoclose = null;
 
         this.closeMessage = bind(this.closeMessage, this);
-        addEvent(this.close_button, 'click', this.closeMessage);
+        addEvent(this.closeButton, 'click', this.closeMessage);
     },
 
     closeMessage: function(e) {
         preventDefault(e);
         this.hideMessage();
         this.saveMessageClosed();
-        clearTimeout(this.msg_autoclose);
+        clearTimeout(this.msgAutoclose);
     },
 
     /*
@@ -1119,8 +1119,8 @@ MaSha.prototype = {
 
         this.showMessage();
 
-        clearTimeout(this.msg_autoclose);
-        this.msg_autoclose = setTimeout(function() {
+        clearTimeout(this.msgAutoclose);
+        this.msgAutoclose = setTimeout(function() {
             this_.hideMessage();
         }, 10000);
     }
@@ -1206,15 +1206,15 @@ Range.prototype.getElementIterator = function(reversed) {
     }
 };
 Range.prototype.getWordIterator = function(regexp, reversed) {
-    var elem_iter = this.getElementIterator(reversed);
+    var elemIter = this.getElementIterator(reversed);
     var node;
-    var counter_aim = 0, i = 0;
+    var counterAim = 0, i = 0;
     var finished = false, match, this_ = this;
     function next() {
-        if (counter_aim == i && !finished) {
+        if (counterAim == i && !finished) {
             do {
                 do {
-                    node = elem_iter();
+                    node = elemIter();
                 } while (node && node.nodeType != 3);
                 finished = !node;
                 if (!finished) {
@@ -1229,7 +1229,7 @@ Range.prototype.getWordIterator = function(regexp, reversed) {
                 }
             } while (node && !match);
             if (match) {
-                counter_aim = reversed ? 0 : match.length - 1;
+                counterAim = reversed ? 0 : match.length - 1;
                 i = reversed ? match.length - 1 : 0;
             }
         } else {
