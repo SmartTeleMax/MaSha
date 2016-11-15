@@ -395,7 +395,7 @@
                 if (match) { _wcount += match.length; }
             } else if (node.childNodes && node.childNodes.length) { // Child element
                 // counting words in element node with nested text nodes
-                var alltxtNodes = textNodes(node);
+                var alltxtNodes = textNodes(node, this.isIgnored);
                 for (var i = alltxtNodes.length; i--;) {
                     _wcount += alltxtNodes[i].nodeValue.match(this.regexp).length;
                 }
@@ -407,7 +407,7 @@
             // counting words in container from/untill offset position
 
             if (container.nodeType == 1) {
-                container = firstTextNode(container);
+                container = firstTextNode(container, this.isIgnored);
             }
             //get content part, that isn't included in selection,
             //split it with regexp and count words in it
@@ -440,19 +440,6 @@
             }
             */
             return selectionIndex + ':' + wcount;
-        },
-
-        symbols: function(_node) {
-            var _count = 0;
-            if (_node.nodeType == 3) {
-                _count = _node.nodeValue.length;
-            } else if (_node.childNodes && _node.childNodes.length) {
-                var allnodes = textNodes(_node);
-                for (var i = allnodes.length; i--; ) {
-                    _count += allnodes[i].nodeValue.length;
-                }
-            }
-            return _count;
         },
 
         updateHash: function() {
@@ -538,19 +525,19 @@
         validateRange: function(range, sum1, sum2) {
             var valid = true, sum;
             if (sum1) {
-                sum = this.getPositionChecksum(range.getWordIterator(this.regexp));
+                sum = this.getPositionChecksum(range.getWordIterator(this.regexp, false, this.isIgnored));
                 valid = valid && sum1 == sum;
             }
             if (sum2) {
-                sum = this.getPositionChecksum(range.getWordIterator(this.regexp, true));
+                sum = this.getPositionChecksum(range.getWordIterator(this.regexp, true, this.isIgnored));
                 valid = valid && sum2 == sum;
             }
             return valid;
         },
 
         getRangeChecksum: function(range) {
-            return [this.getPositionChecksum(range.getWordIterator(this.regexp)),
-                    this.getPositionChecksum(range.getWordIterator(this.regexp, true))];
+            return [this.getPositionChecksum(range.getWordIterator(this.regexp, false, this.isIgnored)),
+                    this.getPositionChecksum(range.getWordIterator(this.regexp, true, this.isIgnored))];
         },
 
         deserializePosition: function(bits, pos) {
@@ -644,7 +631,7 @@
                     offset = 0;
                 } else {
                     // XXX what is the case for this code?
-                    var containerTextNodes = textNodes(container); // XXX lastTextNode
+                    var containerTextNodes = textNodes(container, this.isIgnored); // XXX lastTextNode
                     if (containerTextNodes.length) { // this if fixes regressionSelectionStartsAtImage test
                         container = containerTextNodes[containerTextNodes.length - 1];
                         offset = container.data.length;
@@ -655,7 +642,7 @@
             if (position == 'start') {
 
                 if (container.nodeType == 1 && trim(textContent(container)) != '') {
-                    container = firstTextNode(container);
+                    container = firstTextNode(container, this.isIgnored);
                     offset = 0;
                 }
                 if (container.nodeType != 3 ||
@@ -676,7 +663,7 @@
                 if (container.nodeType == 1 && trim(textContent(container)) != '' && offset != 0) {
                     container = container.childNodes[range.endOffset - 1];
 
-                    var containerTextNodes = textNodes(container); // XXX lastTextNode
+                    var containerTextNodes = textNodes(container, this.isIgnored); // XXX lastTextNode
                     container = containerTextNodes[containerTextNodes.length - 1];
 
                     offset = container.data.length;
@@ -764,7 +751,7 @@
                     return apply();
                 }
 
-                var node, iterator = range.getElementIterator();
+                var node, iterator = range.getElementIterator(false, this.isIgnored);
                 while ((node = iterator())) {
                     if (node.nodeType == 1 && hasClass(node, 'masha_index')) {
                         return apply();
@@ -792,7 +779,7 @@
 
         mergeSelections: function(range) {
             var merges = [];
-            var iterator = range.getElementIterator();
+            var iterator = range.getElementIterator(false, this.isIgnored);
             var node = iterator();
             var last = node;
             var parent_ = parentWithClass(node, 'user_selection_true');
@@ -838,7 +825,7 @@
             // generating hash part for this range
             this.ranges[className] = this.serializeRange(range);
 
-            range.wrapSelection(className + ' user_selection_true');
+            range.wrapSelection(className + ' user_selection_true', this.isIgnored);
             this.addSelectionEvents(className);
         },
 
@@ -1000,14 +987,14 @@
                 var byId = [], byClass = [], byTag = [];
                 var selectors = selector.split(',');
                 for (var i = 0; i < selectors.length; i++) {
-                  var sel = trim(selectors[i]);
-                  if (sel.charAt(0) == '#') {
-                    byId.push(sel.substr(1));
-                  } else if (sel.charAt(0) == '.') {
-                    byClass.push(sel.substr(1));
-                  } else {
-                    byTag.push(sel);
-                  }
+                    var sel = trim(selectors[i]);
+                    if (sel.charAt(0) == '#') {
+                        byId.push(sel.substr(1));
+                    } else if (sel.charAt(0) == '.') {
+                        byClass.push(sel.substr(1));
+                    } else {
+                        byTag.push(sel);
+                    }
                 }
 
                 return function(node) {
@@ -1032,7 +1019,7 @@
             var node, firstNode, lastNode, first = true;
             var range = this.getFirstRange();
             if (!range) { return false; }
-            var iterator = range.getElementIterator();
+            var iterator = range.getElementIterator(false, this.isIgnored);
             while ((node = iterator())) {
                 if (node.nodeType == 3 && node.data.match(this.regexp) != null) {
                     // first and last TEXT nodes
@@ -1170,8 +1157,8 @@
         this.setEnd(ec, eo);
     };
 
-    Range.prototype.getTextNodes = function() {
-        var iterator = this.getElementIterator();
+    Range.prototype.getTextNodes = function(isIgnored) {
+        var iterator = this.getElementIterator(isIgnored);
         var textNodes = [], node;
         while ((node = iterator())) {
             // XXX was there a reason to check for empty string?
@@ -1184,15 +1171,26 @@
         return textNodes;
     };
 
-    function elementIterator(parent, cont, end, reversed) {
+    function elementIterator(parent, cont, end, reversed, isIgnored) {
         reversed = !!reversed;
         cont = cont || parent[reversed ? 'lastChild' : 'firstChild'];
         var finished = !cont;
         var up = false;
+        var ignoredParent = null;
+        var iterNode = cont;
+        
+
+        while (iterNode && iterNode.parentNode != document.body) {
+            if (isIgnored(iterNode)) {
+                ignoredParent = iterNode;
+            }
+        }
 
         function next() {
             if (finished) {return null;}
             var result = cont;
+
+
             if (cont.childNodes && cont.childNodes.length && !up) {
                 cont = cont[reversed ? 'lastChild' : 'firstChild'];
             } else if (cont[reversed ? 'previousSibling' : 'nextSibling']) {
@@ -1205,20 +1203,26 @@
                 next();
             }
             if (result === end) { finished = true; }
+            //if (ignoredParent) {
+            //    if (result == ignoredParent) {
+            //        ignoredParent = null;
+            //    }
+            //    return next();
+            //}
             return result;
         }
         return next;
     }
 
-    Range.prototype.getElementIterator = function(reversed) {
+    Range.prototype.getElementIterator = function(reversed, isIgnored) {
         if (reversed) {
-            return elementIterator(null, this.endContainer, this.startContainer, true);
+            return elementIterator(null, this.endContainer, this.startContainer, true, isIgnored);
         } else {
-            return elementIterator(null, this.startContainer, this.endContainer);
+            return elementIterator(null, this.startContainer, this.endContainer, false, isIgnored);
         }
     };
-    Range.prototype.getWordIterator = function(regexp, reversed) {
-        var elemIter = this.getElementIterator(reversed);
+    Range.prototype.getWordIterator = function(regexp, reversed, isIgnored) {
+        var elemIter = this.getElementIterator(reversed, isIgnored);
         var node;
         var counterAim = 0, i = 0;
         var finished = false, match, this_ = this;
@@ -1253,9 +1257,9 @@
         return next;
     };
 
-    Range.prototype.wrapSelection = function(className) {
+    Range.prototype.wrapSelection = function(className, isIgnored) {
         this.splitBoundaries();
-        var textNodes = this.getTextNodes();
+        var textNodes = this.getTextNodes(isIgnored);
         for (var i = textNodes.length; i--;) {
             // XXX wrap sibling text nodes together
             var span = document.createElement('span');
@@ -1386,8 +1390,8 @@
         while (p && !hasClass(p, cls)) {p = p.parentNode;}
         return p || null;
     }
-    function firstWithClass(elem, cls) {
-        var iter = elementIterator(elem);
+    function firstWithClass(elem, cls, isIgnored) {
+        var iter = elementIterator(elem, undefined, undefined, undefined, isIgnored);
         var node = null;
         while ((node = iter())) {
             if (node.nodeType === 1 && hasClass(node, cls)) {return node;}
@@ -1401,15 +1405,15 @@
         }
         return null;
     }
-    function firstTextNode(elem) {
-        var iter = elementIterator(elem);
+    function firstTextNode(elem, isIgnored) {
+        var iter = elementIterator(elem, undefined, undefined, undefined, isIgnored);
         var node = null;
         while ((node = iter())) {
             if (node.nodeType === 3) {return node;}
         }
         return node;
     }
-    function byClassName(elem, cls) {
+    function byClassName(elem, cls, isIgnored) {
         if (elem.getElementsByClassName) {
             return elem.getElementsByClassName(cls);
         } else {
@@ -1425,9 +1429,9 @@
     }
     $M.byClassName = byClassName;
 
-    function textNodes(elem) {
+    function textNodes(elem, isIgnored) {
         var ret = [], node;
-        var iter = elementIterator(elem);
+        var iter = elementIterator(elem, undefined, undefined, undefined, isIgnored);
         while ((node = iter())) {
             if (node.nodeType === 3) {
                 ret.push(node);
