@@ -124,7 +124,7 @@
         var test = arguments.callee.caller.name_;//toString();
         if(aim == output_html) {
             if (!silent){
-                console.log(test + ' ok')
+                console.info(test + ' ok')
             }
         } else {
             console.error(test + ' failure. Got:\n', output_html, '\n instead of:\n', aim);
@@ -139,7 +139,7 @@
         var test = arguments.callee.caller.name_;//toString();
         if(aim == output_html) {
             if (!silent){
-                console.log(test + ' ok')
+                console.info(test + ' ok')
             }
         } else {
             console.error(test + ' failure. Got:\n', output_html, '\n instead of:\n', aim);
@@ -148,7 +148,7 @@
     function assert(aim, result, silent){
         var test = arguments.callee.caller.name_;//toString();
         if(aim && !silent){
-            console.log(test + ' ok')
+            console.info(test + ' ok')
         } else if(!aim) {
             console.error(test + ' failure:', result);
         }
@@ -158,7 +158,7 @@
         var got_hash = sel.options.location.getHash().replace('sel=', '');
         if(got_hash == hash) {
             if (!silent){
-                console.log(test + ' ok');
+                console.info(test + ' ok');
             }
         } else {
             console.error(test + ' failure. Hash is:\n', got_hash, '\n instead of:\n', hash);
@@ -628,15 +628,38 @@
             var sel = new_selection(html, '1:3%2C1:4');
             assertSelectionEqual('of few');
         },
+
         ignoreInMiddle: function(){
             var html = '<p>Something strange <i>(ignored text) </i>is here.</p>';
             var sel = new_selection(html, undefined, {ignored: "i"});
-            createRange(0, 12, 2, 2, false);
+            createRange(0, 12, 2, 2);
 
-            document.getElementById('txtselect_marker').click();
+            assertSelectionEqual('strange is');
+            assertHashEqual(sel, '1:2,1:3');
+        },
+        ignoreNested: function(){
+            var html = '<p>Something strange <i>(ignored <i>nested ignore</i> text) </i>is here.</p>';
+            var sel = new_selection(html, undefined, {ignored: "i"});
+            createRange(0, 12, 4, 2);
 
-            var aim = 'strange is';
-            assertSelectionEqual(aim);
+            assertSelectionEqual('strange is');
+            assertHashEqual(sel, '1:2,1:3');
+        },
+        startInIgnore: function(){
+            var html = '<p>Something strange <i>(ignored <i>nested ignore</i> text) </i>is here.</p>';
+            var sel = new_selection(html, undefined, {ignored: "i"});
+            createRange(2, 4, 4, 2);
+
+            assertSelectionEqual('is');
+            assertHashEqual(sel, '1:3,1:3');
+        },
+        endInIgnore: function(){
+            var html = '<p>Something strange <i>(ignored <i>nested ignore</i> text) </i>is here.</p>';
+            var sel = new_selection(html, undefined, {ignored: "i"});
+            createRange(0, 12, 2, 4);
+
+            assertSelectionEqual('strange '); // XXX space after selection
+            assertHashEqual(sel, '1:2,1:2');
         }
         // XXX fix tests for IE!!!
         // XXX add tests for nbsp for IE

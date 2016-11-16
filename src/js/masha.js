@@ -362,30 +362,32 @@
             return false;
         },
 
-        _siblingNode: function(cont, prevnext, firstlast, offs, regexp) {
-            // XXX ignore
+        _siblingNode: function(cont, reversed, regexp) {
             regexp = regexp || this.regexp;
-            while (cont.parentNode && this.isInternal(cont)) {
-                while (cont[prevnext + 'Sibling']) {
-                    cont = cont[prevnext + 'Sibling'];
-                    while (cont.nodeType == 1 && cont.childNodes.length) {
-                        cont = cont[firstlast + 'Child'];
-                    }
-                    if (cont.nodeType == 3 &&
-                       (cont.data.match(regexp) != null)) {
-                        return {_container: cont, _offset: offs * cont.data.length};
-                    }
+            var node = cont;
+            if (reversed && node.previousSibling) {
+                node = node.previousSibling; // hack for Chrome triple click
+            }
+
+            var iter = elementIterator(this.selectable, node, undefined, reversed, this.isIgnored);
+            node = iter();
+            if (node == cont) { node = iter(); }
+
+            while (node) {
+                if (node.nodeType == 3 &&
+                   (node.data.match(regexp) != null)) {
+                    return {_container: node, _offset: reversed * node.data.length};
                 }
-                cont = cont.parentNode;
+                node = iter()
             }
             return null;
         },
 
         prevNode: function(cont, regexp) {
-            return this._siblingNode(cont, 'previous', 'last', 1, regexp);
+            return this._siblingNode(cont, 1, regexp);
         },
         nextNode: function(cont, regexp) {
-            return this._siblingNode(cont, 'next', 'first', 0, regexp);
+            return this._siblingNode(cont, 0, regexp);
         },
 
         wordCount: function wordCount(node) {
@@ -407,8 +409,15 @@
         words: function(container, offset, pos) {
             // counting words in container from/untill offset position
 
+            // Skip ignored elements at the start and at the end
+            var cont = elementIterator(this.selectable, container, undefined, pos === 'end', this.isIgnored)();
+            if (cont !== container) {
+                offset = pos == 'end' ? (cont.nodeType == 3? cont.textContent.length : 0) : 0;
+                container = cont;
+            }
+
             if (container.nodeType == 1) {
-                container = firstTextNode(container);
+                container = firstTextNode(container, this.isIgnored);
             }
             //get content part, that isn't included in selection,
             //split it with regexp and count words in it
@@ -973,10 +982,10 @@
             if (!numclass) { return null; }
             var tnode = byClassName(this.selectable, 'masha_index' + numclass)[0];
             if (tnode) {
-                if (tnode.nextSibling.nodeType == 1) {
-                    return tnode.nextSibling.childNodes[0];
-                } else {
-                    return tnode.nextSibling;
+                var iter = elementIterator(document.body, tnode, undefined, false, this.isIgnored);
+                var node;
+                while (node = iter()) {
+                    if (node.nodeType === 3) { return node; }
                 }
             }
             return null;
@@ -1266,11 +1275,9 @@
             }
         }
 
-        var i = 0;
         function next() {
             do {
                 if (finished) {return null;}
-                //if (result == document) { finished = true; }
 
                 var result = cont;
                 var resultIgnored = !!ignoredParent;
@@ -1278,9 +1285,9 @@
 
                 getNext();
 
+
                 if (isIgnored && isIgnored(result) && !resultIgnored) { ignoredParent = result; }
                 if (result === end) { finished = true; }
-                if(i>100) {throw "Ooops"};
             } while ((resultIgnored || ignoredParent) && result !== document && result);
             return result;
         }
@@ -1483,8 +1490,8 @@
         }
         return null;
     }
-    function firstTextNode(elem) {
-        var iter = elementIterator(elem);
+    function firstTextNode(elem, isIgnored) {
+        var iter = elementIterator(elem, undefined, undefined, undefined, isIgnored);
         var node = null;
         while ((node = iter())) {
             if (node.nodeType === 3) {return node;}
