@@ -419,6 +419,7 @@
             if (container.nodeType == 1) {
                 container = firstTextNode(container, this.isIgnored);
             }
+
             //get content part, that isn't included in selection,
             //split it with regexp and count words in it
             var wcount = container.data.substring(0, offset).match(this.regexp);

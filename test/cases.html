@@ -660,6 +660,26 @@
 
             assertSelectionEqual('strange '); // XXX space after selection
             assertHashEqual(sel, '1:2,1:2');
+        },
+
+        restoreIgnoreInMiddle: function(){
+            var html = '<p>Something strange <i>(ignored text) </i>is here.</p>';
+            var sel = new_selection(html, '1:2,1:3', {ignored: "i"});
+            assertSelectionEqual('strange is');
+        },
+        restoreIgnoreNested: function(){
+            var html = '<p>Something strange <i>(ignored <i>nested ignore</i> text) </i>is here.</p>';
+            var sel = new_selection(html, '1:2,1:3', {ignored: "i"});
+            assertSelectionEqual('strange is');
+        },
+
+        paragraphsInIgnore: function(){
+            var html = '<div>Something strange <i>(ignored <div>nested ignore</div><div>one more</div> text) </i>is here.</div>';
+            var sel = new_selection(html, undefined, {ignored: "i"});
+            createRange(0, 12, 5, 2);
+
+            assertSelectionEqual('strange is');
+            assertHashEqual(sel, '1:2,1:3');
         }
         // XXX fix tests for IE!!!
         // XXX add tests for nbsp for IE
