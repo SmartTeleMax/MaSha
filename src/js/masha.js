@@ -322,7 +322,7 @@
 
             var sel = window.getSelection();
             if (sel.rangeCount){
-                this.lastRange = sel.getRangeAt(0);
+                this.lastRange = new MaSha.Range(sel.getRangeAt(0), this);
             }
 
             addClass(this.marker, 'show');
@@ -363,6 +363,7 @@
         },
 
         _siblingNode: function(cont, prevnext, firstlast, offs, regexp) {
+            // XXX ignore
             regexp = regexp || this.regexp;
             while (cont.parentNode && this.isInternal(cont)) {
                 while (cont[prevnext + 'Sibling']) {
@@ -523,6 +524,7 @@
                     var range = document.createRange();
                     range.setStart(start.node, start.offset);
                     range.setEnd(end.node, end.offset);
+                    range = new MaSha.Range(range, this);
                     if (!this.options.validate || this.validateRange(range, bits1[2], bits2[2])) {
                         return range;
                     }
@@ -794,13 +796,16 @@
             var merges = [];
             var iterator = range.getElementIterator();
             var node = iterator();
-            var last = node;
             var parent_ = parentWithClass(node, 'user_selection_true');
             if (parent_) {
                 parent_ = /(num\d+)(?:$| )/.exec(parent_.className)[1];
                 range.setStart(firstTextNode(firstWithClass(this.selectable, parent_)), 0);
                 merges.push(parent_);
             }
+
+            iterator = range.getElementIterator();
+            node = iterator();
+            var last = node;
             while (node) {
                 if (node.nodeType == 1 && hasClass(node, 'user_selection_true')) {
                    var cls = /(num\d+)(?:$|)/.exec(node.className)[0];
@@ -900,7 +905,7 @@
                 return this.lastRange
             }
 
-            return res;
+            return new MaSha.Range(res, this);
         },
         enumerateElements: function() {
             // marks first text node in each visual block element:
@@ -1032,31 +1037,36 @@
             var node, firstNode, lastNode, first = true;
             var range = this.getFirstRange();
             if (!range) { return false; }
-            var iterator = range.getElementIterator();
-            while ((node = iterator())) {
-                if (node.nodeType == 3 && node.data.match(this.regexp) != null) {
-                    // first and last TEXT nodes
-                    firstNode = firstNode || node;
-                    lastNode = node;
-                }
-                // We need to check first element. Text nodes are not checked, so we replace
-                // it for it's parent.
-                node = (first && node.nodeType == 3) ? node.parentNode : node;
-                first = false;
 
-                if (node.nodeType == 1) {
-                    // Checking element nodes. Check if the element node and all it's parents
-                    // till selectable are not ignored
-                    var iterNode = node;
-                    while (iterNode != this.selectable && iterNode.parentNode) {
-                        if (this.isIgnored(iterNode)) {
-                            return false;
-                        }
-                        iterNode = iterNode.parentNode;
-                    }
-                    if (iterNode != this.selectable) { return false; }
-                }
-            }
+            var hasNodes = false;
+
+            var iterator = range.getElementIterator();
+            hasNodes = !!iterator()
+            // XXX is this needed?
+            //while ((node = iterator())) {
+            //    hasNodes = true;
+            //    if (node.nodeType == 3 && node.data.match(this.regexp) != null) {
+            //        // first and last TEXT nodes
+            //        firstNode = firstNode || node;
+            //        lastNode = node;
+            //    }
+            //    // We need to check first element. Text nodes are not checked, so we replace
+            //    // it for it's parent.
+            //    node = (first && node.nodeType == 3) ? node.parentNode : node;
+            //    first = false;
+
+            //    if (node.nodeType == 1) {
+            //        // Checking element nodes. Check if the element node and all it's parents
+            //        // till selectable are not ignored
+            //        var iterNode = node;
+            //        while (iterNode != this.selectable && iterNode.parentNode) {
+            //            iterNode = iterNode.parentNode;
+            //        }
+            //        if (iterNode != this.selectable) { return false; }
+            //    }
+            //}
+            if (! hasNodes) { return false; }
+
             var firstSelection = parentWithClass(firstNode, 'user_selection_true');
             var lastSelection = parentWithClass(lastNode, 'user_selection_true');
             if (firstSelection && lastSelection) {
@@ -1147,7 +1157,48 @@
     // XXX why this doesn't work without Range exposed
     var Range = window.Range || document.createRange().constructor;
 
-    Range.prototype.splitBoundaries = function() {
+    MaSha.Range = function(range, masha) {
+        this.range = range;
+        this.masha = masha;
+
+        this.startContainer = this.range.startContainer;
+        this.startOffset = this.range.startOffset;
+        this.endContainer = this.range.endContainer;
+        this.endOffset = this.range.endOffset;
+
+        this.nodes = null;
+    }
+
+    MaSha.Range.prototype.setEnd = function(container, offset) {
+        this.range.setEnd(container, offset);
+        this.endContainer = this.range.endContainer;
+        this.endOffset = this.range.endOffset;
+        this.nodes = null;
+    }
+
+    MaSha.Range.prototype.setStart = function(container, offset) {
+        this.range.setStart(container, offset);
+        this.startContainer = this.range.startContainer;
+        this.startOffset = this.range.startOffset;
+        this.nodes = null;
+    }
+
+    MaSha.Range.prototype.toString = function() {
+        return this.range.toString();
+    }
+
+    MaSha.Range.prototype.fillNodes = function() {
+        this.nodes = [];
+        var iter = elementIterator(document.body, this.startContainer, this.endContainer, false, this.masha.isIgnored);
+
+        var node = iter();
+        while (node) {
+            this.nodes.push(node);
+            node = iter();
+        }
+    }
+
+    MaSha.Range.prototype.splitBoundaries = function() {
         var sc = this.startContainer,
             so = this.startOffset,
             ec = this.endContainer,
@@ -1170,7 +1221,7 @@
         this.setEnd(ec, eo);
     };
 
-    Range.prototype.getTextNodes = function() {
+    MaSha.Range.prototype.getTextNodes = function() {
         var iterator = this.getElementIterator();
         var textNodes = [], node;
         while ((node = iterator())) {
@@ -1184,15 +1235,23 @@
         return textNodes;
     };
 
-    function elementIterator(parent, cont, end, reversed) {
+    function elementIterator(parent, cont, end, reversed, isIgnored) {
         reversed = !!reversed;
         cont = cont || parent[reversed ? 'lastChild' : 'firstChild'];
         var finished = !cont;
         var up = false;
 
-        function next() {
-            if (finished) {return null;}
-            var result = cont;
+        var ignoredParent = null;
+        var iterNode = cont;
+        
+        while (iterNode && iterNode.parentNode != document.body) {
+            if (isIgnored && isIgnored(iterNode)) {
+                ignoredParent = iterNode;
+            }
+            iterNode = iterNode.parentNode;
+        }
+
+        function getNext() {
             if (cont.childNodes && cont.childNodes.length && !up) {
                 cont = cont[reversed ? 'lastChild' : 'firstChild'];
             } else if (cont[reversed ? 'previousSibling' : 'nextSibling']) {
@@ -1201,23 +1260,46 @@
             } else if (cont.parentNode) {
                 cont = cont.parentNode;
                 if (cont === parent) { finished = true; }
+                if (cont === ignoredParent) { ignoredParent = null; }
                 up = true;
-                next();
+                getNext();
             }
-            if (result === end) { finished = true; }
+        }
+
+        var i = 0;
+        function next() {
+            do {
+                if (finished) {return null;}
+                //if (result == document) { finished = true; }
+
+                var result = cont;
+                var resultIgnored = !!ignoredParent;
+
+
+                getNext();
+
+                if (isIgnored && isIgnored(result) && !resultIgnored) { ignoredParent = result; }
+                if (result === end) { finished = true; }
+                if(i>100) {throw "Ooops"};
+            } while ((resultIgnored || ignoredParent) && result !== document && result);
             return result;
         }
         return next;
     }
 
-    Range.prototype.getElementIterator = function(reversed) {
+    MaSha.Range.prototype.getElementIterator = function(reversed) {
+        if (!this.nodes) { this.fillNodes(); }
+
         if (reversed) {
-            return elementIterator(null, this.endContainer, this.startContainer, true);
+            var i = this.nodes.length;
+            return function() { if (i>0) { i--; return this.nodes[i]; } }.bind(this);
         } else {
-            return elementIterator(null, this.startContainer, this.endContainer);
+            var i = 0;
+            return function() { if (i<this.nodes.length) { i++; return this.nodes[i-1]; } }.bind(this);
         }
     };
-    Range.prototype.getWordIterator = function(regexp, reversed) {
+
+    MaSha.Range.prototype.getWordIterator = function(regexp, reversed) {
         var elemIter = this.getElementIterator(reversed);
         var node;
         var counterAim = 0, i = 0;
@@ -1253,7 +1335,7 @@
         return next;
     };
 
-    Range.prototype.wrapSelection = function(className) {
+    MaSha.Range.prototype.wrapSelection = function(className) {
         this.splitBoundaries();
         var textNodes = this.getTextNodes();
         for (var i = textNodes.length; i--;) {
