@@ -1,6 +1,6 @@
 # MASHA (Mark + Share)
 
-![MASHA Logo](http://mashajs.com/img/logoyellow.png "MASHA Logo")
+![MASHA Logo](http://smarttelemax.github.io/MaSha/img/logoyellow.png "MASHA Logo")
 
 ## Introduction
 
