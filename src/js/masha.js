@@ -1044,14 +1044,11 @@
         },
 
         rangeIsSelectable: function() {
-            var node, firstNode, lastNode, first = true;
             var range = this.getFirstRange();
             if (!range) { return false; }
 
-            var hasNodes = false;
-
             var iterator = range.getElementIterator();
-            hasNodes = !!iterator()
+            var firstNode = iterator();
             // XXX is this needed?
             //while ((node = iterator())) {
             //    hasNodes = true;
@@ -1075,14 +1072,18 @@
             //        if (iterNode != this.selectable) { return false; }
             //    }
             //}
-            if (! hasNodes) { return false; }
+            if (! firstNode) { return false; }
+
 
             var firstSelection = parentWithClass(firstNode, 'user_selection_true');
+            var lastNode = range.getElementIterator(true)();
             var lastSelection = parentWithClass(lastNode, 'user_selection_true');
             if (firstSelection && lastSelection) {
                 var reg = /(?:^| )(num\d+)(?:$| )/;
-                return (reg.exec(firstSelection.className)[1] !=
-                        reg.exec(lastSelection.className)[1]);
+
+                var cls1 = reg.exec(firstSelection.className)[1];
+                var cls2 = reg.exec(lastSelection.className)[1];
+                return cls1 !== cls2;
             }
             return true;
         },
