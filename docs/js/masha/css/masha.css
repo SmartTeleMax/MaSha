@@ -1,0 +1,136 @@
+#selectable-content::selection {
+  background: #ffe600; /* Safari, Chrome, Opera */
+}
+#selectable-content::-moz-selection {
+  background: #ffe600; /* FireFox */
+}
+
+#txtselect_marker {
+    display: block;
+    visibility: hidden;
+    width: 34px;
+    height: 35px;
+    background:url(../img/textselect/marker.png) -0px -0px no-repeat;
+    position: absolute;
+    z-index: 1200; /* more than assignment_wrapper_ok */
+    opacity: 0;
+    margin-top: 17px;
+    -webkit-transition: opacity .4s, visibility .1s linear .4s;
+    -moz-transition: opacity .4s, visibility .1s linear .4s;
+    -o-transition: opacity .4s, visibility .1s linear .4s;
+    transition: opacity .4s, visibility .1s linear .4s;
+    cursor:pointer;
+    }
+    #txtselect_marker.show {
+        /* XXX make a common css fadeIn/fadeOut classes */
+        visibility: visible;
+        -webkit-transition: opacity .4s, visibility 0s;
+        -moz-transition: opacity .4s, visibility 0s;
+        -o-transition: opacity .4s, visibility 0s;
+        transition: opacity .4s, visibility 0s;
+        opacity: 1;
+        }
+
+
+.user_selection, .user_selection_true {
+    -webkit-animation-name: 'bganim';
+    -webkit-animation-duration: .5s;
+    animation-name: 'bganim';
+    animation-duration: .5s;
+    background-color:#fdfaa2; 
+    -moz-box-shadow:0 0 2px 2px #fdfaa2; 
+    -webkit-box-shadow:0 0 2px 2px #fdfaa2; 
+    box-shadow:0 0 2px 2px #fdfaa2;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 1px 0;
+    }
+    
+    @-webkit-keyframes 'bganim' {
+        from {
+            background-color: #ffe600;
+        }
+        to {
+            background-color: #fdfaa2;
+        }
+    }
+    @keyframes 'bganim' {
+        from {
+            background-color: #ffe600;
+        }
+        to {
+            background-color: #fdfaa2;
+        }	
+    }
+    
+.user_selection a.txtsel_close, .user_selection_true a.txtsel_close {
+    display:none;
+    }
+.user_selection .closewrap, .user_selection_true .closewrap {
+    position: relative;
+    }
+.user_selection.hover a.txtsel_close, .user_selection_true.hover a.txtsel_close {
+    display: inline-block;
+    position: absolute;
+    top: -7px;
+    left: -5px;
+    width: 37px;
+    height: 37px;
+    background: url(../img/textselect/closemarker.png) -0px -0px no-repeat;
+    }
+    .user_selection.hover a.txtsel_close:hover, .user_selection_true.hover a.txtsel_close:hover {
+        background-position: -0px -36px;
+        }
+        
+#upmsg-selectable {
+    position: fixed;
+    top: -57px;
+    left: 0;
+    height: 57px;
+    width: 100%;
+    visibility: hidden;
+    background: url(../img/textselect/upmsg_bg.png) repeat-x;
+    z-index: 9999;
+    overflow:hidden;
+    -webkit-transition: top .4s, visibility .1s linear .4s;
+    -moz-transition: top .4s, visibility .1s linear .4s;
+    -o-transition: top .4s, visibility .1s linear .4s;
+    transition: top .4s, visibility .1s linear .4s;
+    }
+    #upmsg-selectable .upmsg-selectable-inner {
+        width: 928px;
+        height: auto;
+        margin: 0 auto;
+        position: relative;
+        }
+        #upmsg-selectable .upmsg-selectable-inner img {
+            position: relative;
+            top: 8px;
+            }
+        #upmsg-selectable .upmsg-selectable-inner p {
+            bottom: 9px;
+            color: #343434;
+            font-size: 12px;
+            margin-left: 63px;
+            position: relative;
+            text-align: left;
+            }
+        #upmsg-selectable .upmsg-selectable-inner .upmsg_closebtn {
+            background: url("../img/textselect/upmsg_closebtn.png") no-repeat scroll center center transparent;
+            bottom: 10px;
+            display: block;
+            height: 19px;
+            position: absolute;
+            right: 0;
+            width: 19px;
+            }
+    #upmsg-selectable.show {
+        visibility: visible;
+        -webkit-transition: top .4s, visibility 0s;
+        -moz-transition: top .4s, visibility 0s;
+        -o-transition: top .4s, visibility 0s;
+        transition: top .4s, visibility 0s;
+        top: 0;
+        }
+ 
