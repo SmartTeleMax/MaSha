@@ -460,8 +460,9 @@
             createRange(1, 0, 1, 10, "do not click"==false);
             this.assert(!sel.rangeIsSelectable(), "range inside masha selection should not be selectable", 'silent');
 
-            createRange(3, 1, 3, 2, "do not click"==false);
+            createRange(3, 0, 3, 3, "do not click"==false);
             this.assert(!sel.rangeIsSelectable(), "range inside masha selection should not be selectable");
+
         },
 
         get_range_words: function(){

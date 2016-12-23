@@ -909,6 +909,9 @@
         getFirstRange: function() {
             var sel = window.getSelection();
             var res = sel.rangeCount ? sel.getRangeAt(0) : null;
+            if (res === null) {
+                return null;
+            }
             if (this.lastRange && res &&
                     res.endContainer == res.startContainer &&
                     res.endOffset == res.startOffset) {
