@@ -1,6 +1,6 @@
 {
   "name": "masha",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "JS tool for mark and share text parts",
   "main": "src/js/masha.js",
   "scripts": {
