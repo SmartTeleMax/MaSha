@@ -373,7 +373,7 @@
             node = iter();
             if (node == cont) { node = iter(); }
 
-            while (node) {
+            while (node && ! (node instanceof HTMLDocument)) {
                 if (node.nodeType == 3 &&
                    (node.data.match(regexp) != null)) {
                     return {_container: node, _offset: reversed * node.data.length};
@@ -436,9 +436,11 @@
             var firstNode = this.getFirstTextNode(selectionIndex);
 
             while (node && node != firstNode) {
-                node = this.prevNode(node, /.*/)._container;
-                wcount += this.wordCount(node);
-                //node = node ? node.container: null;
+                node = this.prevNode(node, /.*/);
+                if (node !== null) {
+                    node = node._container;
+                    wcount += this.wordCount(node);
+                }
             }
 
             /*
@@ -1050,7 +1052,7 @@
             var range = this.getFirstRange();
             if (!range) { return false; }
 
-            var iterator = range.getElementIterator();
+            var iterator = range.getTextNodeIterator();
             var firstNode = iterator();
             // XXX is this needed?
             //while ((node = iterator())) {
@@ -1079,7 +1081,7 @@
 
 
             var firstSelection = parentWithClass(firstNode, 'user_selection_true');
-            var lastNode = range.getElementIterator(true)();
+            var lastNode = range.getTextNodeIterator(true)();
             var lastSelection = parentWithClass(lastNode, 'user_selection_true');
             if (firstSelection && lastSelection) {
                 var reg = /(?:^| )(num\d+)(?:$| )/;
@@ -1088,6 +1090,18 @@
                 var cls2 = reg.exec(lastSelection.className)[1];
                 return cls1 !== cls2;
             }
+
+            var nodes = [firstNode, lastNode];
+            for (var i=nodes.length; i--;) {
+                var node = nodes[i];
+                while (node != this.selectable) {
+                    node = node.parentNode;
+                    if (!node || node instanceof HTMLDocument) {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         },
 
@@ -1249,21 +1263,27 @@
         return textNodes;
     };
 
+    function getIgnoredParent(iterNode, isIgnored) {
+        if (! isIgnored) { return null; }
+
+        var ignoredParent = null;
+        while (iterNode && ! (iterNode.parentNode instanceof HTMLDocument)) {
+            if (isIgnored(iterNode)) {
+                ignoredParent = iterNode;
+            }
+            iterNode = iterNode.parentNode;
+        }
+
+        return ignoredParent;
+    }
+
     function elementIterator(parent, cont, end, reversed, isIgnored) {
         reversed = !!reversed;
         cont = cont || parent[reversed ? 'lastChild' : 'firstChild'];
         var finished = !cont;
         var up = false;
 
-        var ignoredParent = null;
-        var iterNode = cont;
-        
-        while (iterNode && iterNode.parentNode != document.body) {
-            if (isIgnored && isIgnored(iterNode)) {
-                ignoredParent = iterNode;
-            }
-            iterNode = iterNode.parentNode;
-        }
+        var ignoredParent = getIgnoredParent(cont, isIgnored);
 
         function getNext() {
             if (cont.childNodes && cont.childNodes.length && !up) {
@@ -1273,7 +1293,7 @@
                 up = false;
             } else if (cont.parentNode) {
                 cont = cont.parentNode;
-                if (cont === parent) { finished = true; }
+                if (cont === parent || cont === end) { finished = true; }
                 if (cont === ignoredParent) { ignoredParent = null; }
                 up = true;
                 getNext();
@@ -1287,12 +1307,12 @@
                 var result = cont;
                 var resultIgnored = !!ignoredParent;
 
-
                 getNext();
 
-
                 if (isIgnored && isIgnored(result) && !resultIgnored) { ignoredParent = result; }
-                if (result === end) { finished = true; }
+                if (result === end && !(result.nodeType == 1 && result.childNodes.length && !up)) {
+                    finished = true;
+                }
             } while ((resultIgnored || ignoredParent) && result !== document && result);
             return result;
         }
@@ -1310,6 +1330,20 @@
             return function() { if (i<this.nodes.length) { i++; return this.nodes[i-1]; } }.bind(this);
         }
     };
+
+    MaSha.Range.prototype.getTextNodeIterator = function(reversed) {
+        var elemIter = this.getElementIterator(reversed);
+        function next() {
+            do {
+                var node = elemIter();
+                if (node && node.nodeType == 3) {
+                    return node;
+                }
+            } while(node);
+            return node;
+        }
+        return next;
+    }
 
     MaSha.Range.prototype.getWordIterator = function(regexp, reversed) {
         var elemIter = this.getElementIterator(reversed);
