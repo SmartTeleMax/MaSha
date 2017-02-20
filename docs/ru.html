@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>MASHA – js утилита, позволяющая отметить интересные фрагменты текста и получить уник. url с размеченными фрагментами.</title>
+    <link href="js/masha/css/masha.css" rel="stylesheet" />
+    <link href="css/jquery.jtweetsanywhere-1.2.1.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link href='js/sh/styles/shCore.css' rel='stylesheet' type='text/css' />
+    <link href='js/sh/styles/shThemeDefault.css' rel='stylesheet' type='text/css' />
+    <!--[IF IE]> <script type="text/javascript" src="js/masha/js/ierange.js"></script> <![ENDIF]-->
+</head>
+<body>
+    <div id="upmsg-selectable" class="">
+                <div class="upmsg-selectable-inner">
+                    <img alt="" src="js/masha/img/textselect/upmsg_arrow.png">
+                    <p>Вы можете отметить интересные вам фрагменты текста, которые будут доступны по уникальной ссылке в адресной строке браузера.</p>
+                    <a class="upmsg_closebtn" href="#"></a>
+                </div>
+            </div>
+    <div id="wraper">
+        <div class="leftbar">
+            <a class="lang_eng" href="/">ENG</a>
+            <div class="menu">
+                <ul>
+                    <li><a href="#masha">МАША</a></li>
+                    <li><a href="#usage">ИНСТРУКЦИИ</a></li>
+                    <li><a href="#plugins">ПЛАГИНЫ</a></li>
+                    <li><a href="#development">РАЗРАБОТКА</a></li>
+                    <li><a href="#authors">АВТОРЫ</a></li>
+                    <li><a href="#license">ЛИЦЕНЗИЯ</a></li>
+                    <li><a href="#download" style="border: 1px solid #ffe600;">СКАЧАТЬ</a></li>
+                </ul>
+            </div>
+            
+            <div id="tweets">
+                <a href="http://twitter.com/#!/search/%23mashajs">#MASHAJS</a>
+            </div>
+        </div>
+        <div class="content" id="selectable-content">
+            <div id="logo">
+                <img src="img/logoyellow.png" alt=""/>
+                <a href="http://www.kremlin.ru/news/8147#sel=4:9,4:20">kremlin.ru/news/8147#sel=4:9,4:20</a>
+            </div>
+            
+            <div class="section" id="masha">
+                <h1>MASHA</h1>
+                
+                <p>MASHA (сокращение от Mark &amp; Share) – утилита, позволяющая отметить интересные вам фрагменты текста на странице и получить уникальный url с размеченными фрагментами. Таким образом, любой желающий может, выделив в тексте нужные части (параграфы, предложения или слова), поделиться с кем-либо сгенерированной уникальной ссылкой. При переходе по такой ссылке пользователь попадет на страницу с исходным текстом и восстановленной маркировкой.</p>
+
+                <p>Попробуйте выделить любой текст и нажать иконку маркера на этой странице. Каждое выделение будет менять текущий url, добавляя к нему служебную информацию для восстановления маркировки. </p>
+
+                <p>Данная функция была разработана для официального сайта Президента (доступна на <a href="http://kremlin.ru/">kremlin.ru</a> с июля 2011 года). Но поскольку многие спрашивали, как утилита работает и можно ли забрать ее себе, она получила имя и этот сайт.</p>
+                
+            </div>
+            <div class="section" id="projects">
+                <h1>Уже работает</h1>
+                <div class="slider">
+                    <div class="item">
+                        <img src="img/gerb.png" alt="kremlin.ru" />
+                        <a href="http://kremlin.ru/events/president/news/51786#sel=375:9,375:26;375:41,375:48">Официальный сайт Президента России</a>
+                    </div>
+                    <div class="item">
+                        <img src="img/government.png" alt="government.ru" />
+                        <a href="http://government.ru/news/2638/#2638=1:22:yhh,1:33:gag">Интернет-портал Правительства Российской Федерации</a>
+                    </div>
+                    <!--<div class="item">
+                    <!--    <img src="img/vedomosti.png" alt="CАЙТ «ВЕДОМОСТЕЙ»" style="margin-top: 27px;margin-right: 5px;" />
+                    <!--    <a href="http://www.vedomosti.ru/finance/news/1819122/mea_ssha_stanut_mirovym_liderom_v_dobyche_gaza_uzhe_v_2017_g#sel=18:1,18:6">Cайт «Ведомостей»</a>
+                    <!--</div>
+                    <!--<div class="item">
+                    <!--    <img src="img/404fest_logo.png" alt="САЙТ ФЕСТИВАЛЯ ВЕБ-РАЗРАБОТЧИКОВ 404" style="    margin-bottom: 45px;margin-right: 5px;" />
+                    <!--    <a href="http://2011.404fest.ru/themes/masha/#sel=4:21,4:28">Сайт фестиваля веб-разработчиков «404»</a>
+                    <!--</div>-->
+                    <div class="item">
+                        <img src="img/duma_logo.png" alt="Государственная Дума Федерального Собрания РФ" style="    margin-bottom: 45px;margin-right: 5px;" />
+                        <a href="http://transcript.duma.gov.ru/node/3297/#sel=6:1,6:34">Государственная Дума Федерального Собрания РФ</a>
+                    </div>
+                    <div class="item">
+                        <img src="img/ntv_logo.png" alt="ТЕЛЕКОМПАНИЯ НТВ" style="    margin-bottom: 45px;margin-right: 5px;" />
+                        <a href="http://www.ntv.ru/novosti/234463/">Сайт «Телекомпании НТВ»</a>
+                    </div>
+                    <!--<div class="item">
+                    <!--    <img src="img/mon_gov_logo.png" alt="Министерство образования и науки Российской Федерации" style="margin-bottom: 45px;margin-right: 5px;" />
+                    <!--    <a href="http://xn--80abucjiibhv9a.xn--p1ai/%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8/2037#sel=7:25,7:50">Министерство образования и науки Российской Федерации</a>
+                    <!--</div>
+                    <!--<div class="item">
+                    <!--    <img src="img/opengov_logo.png" alt="Открытое правительство" style="margin-bottom: 45px;margin-right: 5px;" />
+                    <!--    <a href="http://xn--80abeamcuufxbhgound0h9cl.xn--p1ai/">Открытое правительство</a>
+                    <!--</div>-->
+                    <div class="item">
+                        <img src="img/raec_logo.png" alt="Российская ассоциация электронных коммуникаций" style="    margin-bottom: 45px;margin-right: 5px;" />
+                        <a href="http://raec.ru/about/#sel=8:1,8:23">Российская ассоциация электронных коммуникаций</a>
+                    </div>
+                    <div class="item">
+                        <img src="img/academic.png" alt="Словари и энциклопедии" style="    margin-bottom: 45px;margin-right: 5px;" />
+                        <a href="http://dic.academic.ru/dic.nsf/ruwiki/212986#sel=47:1,47:35">Словари и энциклопедии</a>
+                    </div>
+                    <div class="item youproject">
+                        <div>
+                            <h2 style="left: 0;top: 6px;">ВЫ?</h2>
+                        </div>
+                        <a style="top: 8px; left: 34px;" href="mailto: mashajs@gmail.com">пришлите ссылку на ваш проект</a>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+                
+            </div>
+            <div class="section" id="usage">
+                <h1>ИНСТРУКЦИИ</h1>
+                <p>MASHA написана на чистом javascript и не требует для своей работы каких-либо дополнительных библиотек (кроме ierange, поставляющегося вместе с MASHA для поддержки Internet Explorer).
+                Чтобы подключить MASHA, необходимо внутри тега &lt;head&gt;&lt;/head&gt; добавить:</p>
+                
+                <div class="code">
+                    
+                    <pre class="brush: js; html-script: true">
+                        &lt;!--[IF IE]> 
+                            &lt;script type="text/javascript" src="ierange.js">&lt;/script> 
+                        &lt;![ENDIF]-->
+                        &lt;script type="text/javascript" src="masha.js">&lt;/script>
+                        &lt;link rel="stylesheet" type="text/css" href="masha.css">
+                        &lt;script type="text/javascript">
+                            if(window.addEventListener){     
+                                window.addEventListener('load', function(){
+                                    // can be called by domready
+                                    MaSha.instance = new MaSha();
+                                }, false);
+                            } else {
+                                window.attachEvent('onload', function(){
+                                    // can be called by domready
+                                    MaSha.instance = new MaSha();
+                                });
+                            }
+                        &lt;/script>
+                    </pre>
+                </div>
+
+
+                <p>Для работы MASHA может потребоваться наличие в HTML следующих элементов:</p>
+                    <ol>
+
+                        <li>Элемент, содержащий текст, который можно выделять (cм. настройку <em>selectable</em> ниже), <strong>обязательно</strong>.</li>
+                        <li>Кнопка, появляющаяся при выделении текста мышкой, при нажатии на которую подсвечивается текст и меняется адресная строка браузера (cм. настройку <em>marker</em> ниже).</li>
+                        <li>Всплывающий элемент с пояснительным текстом (см. настройку <em>selectMessage</em>).</li>
+                    </ol>
+                <p>При активации MASHA вы можете воспользоваться настройками по умолчанию или переопределить их по своему усмотрению:</p>
+                <div class="code">
+            
+                    <pre class="brush: js">
+                        new MaSha({  option: 'value' }) 
+                    </pre>
+            
+                </div>
+                <p>Настройки передаются в виде словаря и по умолчанию имеют следующие значения:</p>
+                <div class="code">
+                    
+                    <pre class="brush: js">
+                        {
+                          'regexp': '[^\\s,;:–.!?<>…\\n\xA0\\*]+',<!--'-->
+                          'selectable': 'selectable-content',
+                          'marker': 'txtselect_marker',
+                          'ignored': null,
+                          'selectMessage': null,
+                          'location': new LocationHandler(),
+                          'validate': false,
+                          'onMark': null,
+                          'onUnmark': null,
+                          'onHashRead': function(){ … }
+                        }
+                    </pre>
+                    
+                </div>
+                <p>where</br>
+
+                <ul class="text nomargins">
+                    <li><strong>'regexp'</strong> — регулярное выражение, соответствующее слову (не компилированное, в виде строки);</li>
+                    <li><strong>'selectable'</strong> — html-элемент или id элемента, содержащего текст, который можно выделять;</li>
+                    <li><strong>'marker'</strong> — html-элемент или id элемента с иконкой маркера, который появляется при выделении текста. Если элемент не найден, то создается элемент &lt;a/&gt;;</li>
+                    <li><strong>'selectMessage'</strong> —  html-элемент или id элемента с пояснительным текстом, всплывающего при выделении текста. После закрытия элемент никогда не будет показан на сайте в текущем браузере (флаг хранится в localStorage или cookies). По-умолчанию, отключено;</li>
+                    <li><strong>'ignored'</strong> — функция или строка:
+
+                    <ul>
+                        <li>Функция, принимающая html-элемент и указывающая, должны ли игнорироваться выделения текста в нём. Возвращает true, если выделение игнорируется, иначе &ndash; false.</li>
+                        <li>Разделённые запятыми названия html-тегов, классов или id. Например: <em style="white-space: nowrap">'ul, .ignored-cls, #ignored-id'</em>.</li>
+                    </ul>
+                    </li>
+                    <li><strong>'location'</strong> — объект, используемый для получения URL из адресной строки. Должен реализовывать методы <em>getHash</em>, <em>setHash</em> и <em>addHashchange</em>. Может быть переопределён, например, для того, чтобы выводить URL не в адресной строке, а во всплывающем элементе или чтобы управлять изменением адресной строки вручную (для совместимости с другими компонентами);</li>
+                    <li><strong>'validate'</strong> — если true, в адресную строку включается проверочная сумма для каждого выделения, которая проверяется при загрузке страницы. Внимание! По-умолчанию, функция вычисления контрольной суммы не включена в MaSha. См. раздел <a href="#validation">«Валидация»</a>.</li>
+                    <li><strong>'enableHaschange'</strong> — если true, включается обработчик события hashchange;</li>
+                    <li><strong>'onMark'</strong> —  callback, вызывается при выделении текста;</li>
+                    <li><strong>'onUnmark'</strong> — callback, вызывается при снятии выделения;</li>
+                    <li><strong>'onHashRead'</strong> —  функция, вызывающаяся при загрузке страницы с метками, по умолчанию задана функция, проскроливающая страницу до первого выделенного фрагмента;</li>
+                </ul>
+        </div>
+        <div class="section">
+            <h1>Поддержка Internet Explorer </h1>
+            <p>Для поддержки Internet Explorer используется библиотека ierange, немного отличающаяся от <a href="http://code.google.com/p/ierange/">оригинала</a>. Вы можете использовать поставляющуюся вместе с MASHA, либо добавить в конец корневой функции строку:</p>
+            <div class="code">
+                <pre class="brush: js">
+                    window.DOMRange = DOMRange;
+                </pre>
+            </div>
+        </div>
+        <div class="section" id="validation">
+            <h1>Валидация</h1>
+
+            <p>В некоторых случаях изменения на странице (удаление или добавление слов или параграфов) могут вызвать нежелательное изменение выделенного фрагмента. Чтобы избежать этого можно воспользоваться механизмом валидации.</p>
+
+            <p>Чтобы воспользоваться валидацией, необходимо реализовать метод <em>MaSha.prototype.getPositionChecksum</em>. Этот метод принимает итератор последовательности слов выделения (функция, при каждом вызове возвращающая следующее слово или null, если слов больше нет) и возвращает строковое значение проверочной суммы. Метод <em>getPositionChecksum</em> вызывается дважды для каждого выделения: в прямом и обратном порядке.</p>
+
+            <p>Алгоритм вычисления проверочной суммы не включен в MaSha по-умолчанию, потому что разработчики пока не смогли придумать Лучший Алгоритм На Свете и решили не навязывать пользователям свой несовершенный вариант. Если Вас не смущает несовершенство алгоритма, можете использовать наш:</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    MaSha.prototype.getPositionChecksum = function(wordsIterator){
+                        var word1 = wordsIterator();
+                        var word2 = wordsIterator();
+                        var sum = makeSomeCalculations(word1, word2);
+                        return sum;
+                    }
+                </pre>
+            </div>
+        </div>
+        <div class="section" id="validation">
+            <h1>MaSha и форумные движки</h1>
+
+            <p>MaSha поддерживает работу со страницами с несколькими текстовыми блоками, такими как форумные движки. В этом случае для каждого блока текста создается собственный экземпляр MaSha, отдельно ведется нумерация параграфов и строк. Подобное поведение реализуется с помощью объекта <em>MultiMasha</em>, конструктор которого принимает два параметра:</p>
+                <ul class="text nomargins">
+                    <li><strong>'elements'</strong> — массив html-элементов — блоков текста;</li>
+                    <li><strong>'getPrefix'</strong> — функция, принимающая в качестве аргумента html-элемент — блок текста, возвращающая идентификатор этого элемента, который будет использоваться для ссылки на него в URL. По-умолчанию, возвращает <em>id</em> элемента.</li>
+                    <li><strong>'options'</strong> — параметры для объектов MaSha.</li>
+                </ul>
+            <p>Пример использования:</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    var posts = document.querySelectorAll('.post-text');
+                    new MultiMaSha(posts, function(element){
+                        return element.id.split('-')[1];
+                    });
+                </pre>
+            </div>
+        </div>
+
+        <div class="section" id="plugins">
+            <h1>ПЛАГИНЫ</h1>
+            <div class="pluginlist">
+                <a class="active" href="plugins/masha_wordpress.zip">
+                    <img src="img/plugin_wordpress.png" alt="WORDPRESS"/>
+                    <span>WORDPRESS</span>
+                </a>
+                <a href="#">
+                    <img src="img/plugins_2.png" alt="DRUPAL"/>
+                    <span>DRUPAL</span>
+                </a>
+                <a href="#">
+                    <img src="img/plugins_blogger.png" alt="BLOGGER"/>
+                    <span>BLOGGER</span>
+                </a>
+                <a class="active" href="http://tungusov.ru/downloads/item/masha.html">
+                    <img src="img/plugins_joomla.png" alt="JOOMLA" />
+                    <span>JOOMLA</span>
+                </a>
+                <a href="#">
+                    <img src="img/plugins_tumbler.png" alt="TUMBLER" />
+                    <span>TUMBLER</span>
+                </a>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+        <div class="section" id="development">
+            <h1>РАЗРАБОТКА</h1>
+            <a href="https://github.com/SmartTeleMax/MaSha"><img src="img/icon_github.png" style="margin-bottom: 15px;" alt="github"/></a>
+            <p>Разработка проекта <a href="https://github.com/SmartTeleMax/MaSha">ведётся на сервисе github</a>, где вы можете <A href="https://github.com/SmartTeleMax/MaSha/issues">сообщить об ошибке и предложить реализовать новые возможности</a> или <a href="http://help.github.com/fork-a-repo/">самостоятельно внести изменения и предложить их включить в основную ветку</a>.</p>
+        </div>
+        <div class="section" id="authors">
+            <h1>АВТОРЫ</h1>
+            <div class="authorslist">
+                <div class="card geller">
+                    <h3>АРТЕМ ГЕЛЛЕР</h3>
+                    <span class="slinks"><a href="http://twitter.com/#!/darkboutique">@darkboutique</a>, <a href="http://www.facebook.com/artemgeller">facebook</a>, <a href="https://plus.google.com/107566059773067039127/">gplus</a></span>
+                </div>
+                <div class="card sensey">
+                    <h3>ДЕНИС ОТКИДАЧ</h3>
+                    <span class="slinks"><a href="http://twitter.com/#!/otkds">@otkds</a></span>
+                </div>
+                <div style="clear:both;"></div>
+                <div class="card iam">
+                    <h3>СТАНИСЛАВ БОНБИН</h3>
+                    <span class="slinks"><a href="http://twitter.com/#!/iamn0s">@iamn0s</a>, <a href="http://www.facebook.com/sbonbin">facebook</a>, <a href="https://plus.google.com/118210746303172876703">gplus</a></span>
+                </div>
+                <div class="card harut">
+                    <h3>АРУТЮН ДАГЕСЯН</h3>
+                    <span class="slinks"><a href="http://twitter.com/#!/harutune">@harutune</a>, <a href="https://github.com/harut">github</a></span>
+                </div>
+                <div style="clear:both;"></div>
+                <div class="card kiril">
+                    <h3>КИРИЛЛ ГРИШИН</h3>
+                    <span class="slinks"><a href="http://twitter.com/#!/shiberz">@shiberz</a></span>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <p>Идею мы почерпнули из похожих начинаний NYTimes (проект <a href="http://nytimes.com/">Emphasis</a>), где слишком сложная механика побудила нас сделать приложение, для работы с которым не требуется чтение документации.</p>
+        </div>
+        <div class="section" id="license">
+            <h1>ЛИЦЕНЗИЯ</h1>
+            <p>MASHA распространяется по лицензии MIT (группа лицензий для свободного программного обеспечения). Данная лицензия позволяет безвозмездно использовать, изменять, распространять утилиту почти без ограничений.</p>
+        </div>
+
+        <div class="section" id="download">
+            <h1>СКАЧАТЬ</h1>
+
+            <a href="https://github.com/SmartTeleMax/MaSha/zipball/1.1.3">
+                <span class="blue">MASHA_ALL.ZIP</span><br/>
+                <span class="block">ver. 1.1.3</span>
+                <span class="block">js + css + image</span>
+            </a>
+
+            <a href="id/Masha_Logo.zip">
+                <span class="blue">MASHA_LOGO.ZIP</span> (315Kb)<br/>
+                <span class="block">логотип (eps, ai, psd)</span>
+                <span class="block">© Михаил Жашков</span>
+            </a>
+
+        </div>
+        <div style="text-align: center; padding-top: 100px; padding-bottom: 100px;">
+            <img src="img/krakozjabra.png" alt="" />
+        </div>
+    </div>
+
+    <div style="clear:both;"></div>
+    <div id="footer">
+        <div class="inner">
+            <img src="img/footerlogo.png" alt="" />
+            <div class="btn">
+                <img src="img/arrow.png" alt="" />
+                <div style="float:right; margin-left: 20px;">
+                    <a href="http://twitter.com/share" class="twitter-share-button" data-text="MASHA is a JavaScript utility allowing you to mark interesting parts of web page content and share it #mashajs" data-related="iamn0s:Masha developer" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+                    <g:plusone size="medium" count="false"></g:plusone>
+                    <div id="vk_like"></div>
+                    <div class="facebook_wrapper">
+                    <iframe src="http://www.facebook.com/plugins/like.php?app_id=247398771958833&amp;href=http%3A%2F%2Fmashajs.com%2F&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:21px;" allowTransparency="true"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a id="txtselect_marker" href=""></a>
+    <script type="text/javascript" src="js/packed.js?ver=0.1"></script>
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['toolbar'] = false;
+        SyntaxHighlighter.all()
+    </script>
+    
+    
+<!-- Yandex.Metrika counter --><div style="display:none;"><script type="text/javascript">(function(w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter8794819 = new Ya.Metrika({id:8794819, enableAll: true, trackHash:true}); } catch(e) { } }); })(window, "yandex_metrika_callbacks");</script></div><script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script><noscript><div><img src="//mc.yandex.ru/watch/8794819" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+    
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+      {lang: 'ru'}
+    </script>
+    <!-- Put this script tag to the <head> of your page -->
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?34"></script>
+
+    <script type="text/javascript">
+      VK.init({apiId: 2430782, onlyWidgets: true});
+    </script>
+    <script type="text/javascript">
+    VK.Widgets.Like("vk_like", {type: "mini"});
+    </script>
+
+    
+</body>
+</html>
