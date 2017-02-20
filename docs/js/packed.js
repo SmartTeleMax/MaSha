@@ -11086,7 +11086,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 	};
 	getRateLimit = function(options, callback)
 	{
-		$.getJSON("http://api.twitter.com/1/account/rate_limit_status.json?callback=?", function(rateLimit)
+		$.getJSON("https://api.twitter.com/1/account/rate_limit_status.json?callback=?", function(rateLimit)
 		{
 			options._stats.rateLimit = rateLimit;
 
