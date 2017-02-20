@@ -25,12 +25,12 @@
             <div class="menu">
                 <ul>
                     <li><a href="#masha">MASHA</a></li>
+                    <li><a href="#download" style="border: 1px solid #ffe600;">INSTALLATION</a></li>
                     <li><a href="#usage">USAGE</a></li>
                     <li><a href="#plugins">PLUGINS</a></li>
                     <li><a href="#development">DEVELOPMENT</a></li>
                     <li><a href="#authors">AUTHORS</a></li>
                     <li><a href="#license">LICENSE</a></li>
-                    <li><a href="#download" style="border: 1px solid #ffe600;">DOWNLOAD</a></li>
                 </ul>
             </div>
             
@@ -78,11 +78,37 @@
                         <div>
                             <h2 style="left: 0;top: 6px;">YOU?</h2>
                         </div>
-                        <a style="top: 8px; left: 34px;" href="mailto: mashajs@gmail.com">Please contact us</a>
+                        <a style="top: 8px; left: 34px;" href="https://github.com/SmartTeleMax/MaSha/issues">Please contact us</a>
                     </div>
                     <div style="clear:both;"></div>
                 </div>
                 
+            </div>
+            <div class="section" id="download">
+                <h1>INSTALLATION</h1>
+
+                <p>MASHA is available by npm:</p>
+
+                <div class="code">
+                    <pre class="brush: js">
+                        npm install --save masha
+                    </pre>
+                </div>
+
+                <p>Or you can download package archive:</p>
+
+                <a href="https://github.com/SmartTeleMax/MaSha/zipball/1.1.3">
+                    <span class="blue">MASHA_ALL.ZIP</span><br/>
+                    <span class="block">ver. 1.1.3</span>
+                    <span class="block">js + css + image</span>
+                </a>
+
+                <a href="id/Masha_Logo.zip">
+                    <span class="blue">MASHA_LOGO.ZIP</span> (315Kb)<br/>
+                    <span class="block">logo (eps, ai, psd)</span>
+                    <span class="block">© Mikhail Zhashkov</span>
+                </a>
+
             </div>
             <div class="section" id="usage">
                 <h1>USAGE</h1>
@@ -92,9 +118,6 @@
                 <div class="code">
                     
                     <pre class="brush: js; html-script: true">
-                        &lt;!--[IF IE]> 
-                            &lt;script type="text/javascript" src="ierange.js">&lt;/script> 
-                        &lt;![ENDIF]-->
                         &lt;script type="text/javascript" src="masha.js">&lt;/script>
                         &lt;link rel="stylesheet" type="text/css" href="masha.css">
                         &lt;script type="text/javascript">
@@ -118,6 +141,15 @@
                     </pre>
                 </div>
 
+                <p>For <strong>es2016/CommonJS</strong> import the class from the package:</p>
+
+                <div class="code">
+                    <pre class="brush: js; html-script: true">
+                        import { MaSha } from "masha";
+                        // or
+                        var MaSha = require("masha").MaSha;
+                    </pre>
+                </div>
 
                 <p>MASHA uses three elements on the page:</p>
                     <ol>
@@ -177,6 +209,14 @@
         <div class="section">
             <h1>Internet Explorer support</h1>
             <p>MASHA uses custom bundled variant of <a href="http://code.google.com/p/ierange/">ierange</a> script to support Internet Explorer.</p>
+
+            <div class="code">
+                <pre class="brush: js">
+                    &lt;!--[IF IE]> 
+                        &lt;script type="text/javascript" src="ierange.js">&lt;/script> 
+                    &lt;![ENDIF]-->
+                </pre>
+            </div>
 
             <p>If you use mainstream ierange library instead of bundled one please add this line to end of root function:</p>
             <div class="code">
@@ -294,28 +334,10 @@
             <h1>LICENSE</h1>
             <p>MASHA is released under the terms of MIT license, which means you can use, modify, redistribute it with almost no restrictions.</p>
         </div>
-        
-        <div class="section" id="download">
-            <h1>DOWNLOAD</h1>
 
-            <a href="https://github.com/SmartTeleMax/MaSha/zipball/1.1.3">
-                <span class="blue">MASHA_ALL.ZIP</span><br/>
-                <span class="block">ver. 1.1.3</span>
-                <span class="block">js + css + image</span>
-            </a>
-
-            <a href="id/Masha_Logo.zip">
-                <span class="blue">MASHA_LOGO.ZIP</span> (315Kb)<br/>
-                <span class="block">logo (eps, ai, psd)</span>
-                <span class="block">© Mikhail Zhashkov</span>
-            </a>
-
-        </div>
         <div style="text-align: center; padding-top: 100px; padding-bottom: 100px;">
             <img src="img/krakozjabra.png" alt="" />
         </div>
-        
-        
     </div>
     <div style="clear:both;"></div>
         <div id="footer">
@@ -340,9 +362,7 @@
             SyntaxHighlighter.defaults['toolbar'] = false;
             SyntaxHighlighter.all()
         </script>
-    
-        <!-- Yandex.Metrika counter --><div style="display:none;"><script type="text/javascript">(function(w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter8794819 = new Ya.Metrika({id:8794819, enableAll: true, trackHash:true}); } catch(e) { } }); })(window, "yandex_metrika_callbacks");</script></div><script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script><noscript><div><img src="//mc.yandex.ru/watch/8794819" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
-        
+
         <script type="text/javascript" src="js/masha/js/message.js"></script>
         <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
           {lang: 'en'}
